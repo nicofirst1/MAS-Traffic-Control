@@ -18,6 +18,8 @@ We can either import map with [OpenStreetMap](https://github.com/flow-project/fl
 or create a custom one with [Scenario](https://github.com/flow-project/flow/blob/master/tutorials/tutorial05_scenarios.ipynb).
  
 - Starting with a custom grid map
+    - Define right privilege []
+- Importing scenario from openmap
 
 ### Environment
 Check out the [environment tutorial](https://github.com/flow-project/flow/blob/master/tutorials/tutorial08_environments.ipynb)
@@ -25,9 +27,12 @@ for this part. This part covers the Autonomous agents using RL.
 
 Here we need to specify the:
 - Action space (using gym)
+    - Aks/give/take priority 
 - Observable space
+    - define what cars know about each other (turning direction)
 - Reward
-
+    - Driving time
+    - Total driving time * weighed 
 ## Problems
 
 ### - Could not connect to TraCI
