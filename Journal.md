@@ -1,7 +1,7 @@
-# Installation requirements
+# Useful Links
 
-- [Flow, Sumo, RLlib](https://flow.readthedocs.io/en/latest/flow_setup.html#local-installation-of-flow)
-
+- [Flow, Sumo, RLlib Installation](https://flow.readthedocs.io/en/latest/flow_setup.html#local-installation-of-flow)
+- [Flow Documentation](https://flow.readthedocs.io/en/latest/)
 
 # TODO
 
@@ -17,6 +17,8 @@
 We can either import map with [OpenStreetMap](https://github.com/flow-project/flow/blob/master/tutorials/tutorial06_osm.ipynb)
 or create a custom one with [Scenario](https://github.com/flow-project/flow/blob/master/tutorials/tutorial05_scenarios.ipynb).
  
+- Starting with a custom grid map
+
 ### Environment
 Check out the [environment tutorial](https://github.com/flow-project/flow/blob/master/tutorials/tutorial08_environments.ipynb)
 for this part. This part covers the Autonomous agents using RL.
