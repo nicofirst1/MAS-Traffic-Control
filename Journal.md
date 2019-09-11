@@ -27,3 +27,11 @@ Here we need to specify the:
 - Action space (using gym)
 - Observable space
 - Reward
+
+## Problems
+
+### - Could not connect to TraCI
+
+Error: ` server at localhost:58127 [Errno 61] Connection refused`
+
+Soltion: wait, as written [here](https://stackoverflow.com/questions/40362275/using-sumo-and-traci-could-not-connect-to-traci-server-61)
