@@ -1,16 +1,13 @@
-from flow.scenarios.traffic_light_grid import TrafficLightGridScenario, ADDITIONAL_NET_PARAMS
-from flow.core.params import VehicleParams
-from flow.controllers.car_following_models import IDMController
-from flow.controllers.routing_controllers import ContinuousRouter, GridRouter
-from flow.core.params import NetParams
-from flow.core.params import InitialConfig
-from flow.core.params import TrafficLightParams
-from flow.envs.ring.accel import AccelEnv, ADDITIONAL_ENV_PARAMS
-from flow.core.params import SumoParams
-from flow.core.params import EnvParams
-from flow.core.experiment import Experiment
 
 # the scenario name
+from flow.controllers import IDMController, GridRouter
+from flow.core.experiment import Experiment
+from flow.core.params import VehicleParams, NetParams, InitialConfig, TrafficLightParams, SumoParams, EnvParams
+from flow.envs import AccelEnv
+from flow.envs.traffic_light_grid import ADDITIONAL_ENV_PARAMS
+from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
+from flow.scenarios import TrafficLightGridScenario
+
 name = "grid_example"
 
 # vehicle params to take care of all the vehicles
