@@ -6,3 +6,9 @@
 *.csv
 
 FlowMas/Envs/__pycache__/
+
+flow/__pycache__/
+
+*.pyc
+
+flow/core/kernel/network/debug/
