@@ -8,8 +8,9 @@
 
 ## Starting
 
-1. Install [Flow, Sumo, RLlib](https://flow.readthedocs.io/en/latest/flow_setup.html#local-installation-of-flow)
-2. Complete tutorials in [FLOW](https://github.com/flow-project/flow/tree/master/tutorials), especially (0,1,3,5,6,8,11)
+1. Install [Flow **dependencies**, Sumo, RLlib](https://flow.readthedocs.io/en/latest/flow_setup.html#local-installation-of-flow)
+2. BEWARE do not install flow in your python environment, we have a local copy of the repo in [here](flow) that needs to be changed.
+3. Complete tutorials in [FLOW](https://github.com/flow-project/flow/tree/master/tutorials), especially (0,1,3,5,6,8,11)
 
 ## Project
 
@@ -55,3 +56,7 @@ Solution: You must install [rllab](https://github.com/rll/rllab) with the follow
 
 Check out [this](https://gist.github.com/yuanzhaoYZ/15bb640e1751da163d6a01675d54825f) for installation with conda
 and [this](https://rllab.readthedocs.io/en/latest/user/installation.html) for installation with custom environment.
+
+### - Errors with importing custom environments and/or network
+If you have any errors regarding importing custom environments and/or networks remember that we have our 
+[own flow](flow) directory and that your python environment must be free of other flow installations.
