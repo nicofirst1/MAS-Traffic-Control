@@ -58,5 +58,19 @@ Check out [this](https://gist.github.com/yuanzhaoYZ/15bb640e1751da163d6a01675d54
 and [this](https://rllab.readthedocs.io/en/latest/user/installation.html) for installation with custom environment.
 
 ### - Errors with importing custom environments and/or network
+
 If you have any errors regarding importing custom environments and/or networks remember that we have our 
 [own flow](flow) directory and that your python environment must be free of other flow installations.
+
+### - File "mtrand.pyx" ValueError: a must be non-empty
+
+Error:
+```
+File "mtrand.pyx", line 1126, in mtrand.RandomState.choice
+ValueError: a must be non-empty
+```
+
+Solution:  
+As written [here](https://stackoverflow.com/questions/57069566/when-test-the-grid-scenario-there-is-an-valueerror) :
+- Replace _GridRouter_ with _ContinuousRouter_
+- Add _spacing="custom"_ to _InitialConfig()_
