@@ -74,3 +74,15 @@ Solution:
 As written [here](https://stackoverflow.com/questions/57069566/when-test-the-grid-scenario-there-is-an-valueerror) :
 - Replace _GridRouter_ with _ContinuousRouter_
 - Add _spacing="custom"_ to _InitialConfig()_
+
+
+###  IndexError:  pos = start_pos[i][1], list index out of range
+
+Error:
+```  
+File "/Users/oblintosh/Desktop/dmas/flow/envs/base.py", line 279, in setup_initial_state
+pos = start_pos[i][1]
+IndexError: list index out of range
+```
+
+Solution: 
