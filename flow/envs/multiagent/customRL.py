@@ -1,20 +1,18 @@
 """Environment for training multi-agent experiments."""
 
-from copy import deepcopy
-import numpy as np
 import random
 import traceback
-from gym.spaces import Box
+from copy import deepcopy
 
+import numpy as np
+from gym.spaces import Box
+from ray.rllib.env import MultiAgentEnv
 from traci.exceptions import FatalTraCIError
 from traci.exceptions import TraCIException
-
-from ray.rllib.env import MultiAgentEnv
 
 from flow.core.rewards import min_delay, penalize_standstill, avg_delay_specified_vehicles
 from flow.envs.base import Env
 from flow.utils.exceptions import FatalFlowError
-
 
 ADDITIONAL_ENV_PARAMS = {
     # maximum acceleration of autonomous vehicles
@@ -24,7 +22,6 @@ ADDITIONAL_ENV_PARAMS = {
     # desired velocity for all vehicles in the network, in m/s
     "target_velocity": 25
 }
-
 
 
 class CustoMultiRL(MultiAgentEnv, Env):
@@ -317,7 +314,22 @@ class CustoMultiRL(MultiAgentEnv, Env):
         self._apply_rl_actions(clipped_actions)
 
     def compute_reward(self, rl_actions, **kwargs):
-        """See class definition."""
+        """Reward function for the RL agent(s).
+
+        MUST BE implemented in new environments.
+        Defaults to 0 for non-implemented environments.
+
+        Parameters
+        ----------
+        rl_actions : array_like
+            actions performed by rl vehicles
+        kwargs : dict
+            other parameters of interest. Contains a "fail" element, which
+            is True if a vehicle crashed, and False otherwise
+
+        Returns
+        -------
+        reward : float or list of float"""
 
         # in the warmup steps
         if rl_actions is None:
@@ -334,7 +346,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
             else:
 
                 # Reward function used to encourage minimization of total delay.
-                cost1=  min_delay(self)
+                cost1 = min_delay(self)
 
                 # Reward function that penalizes vehicle standstill (refer to all vehicles)
                 cost2 = penalize_standstill(self)
@@ -342,19 +354,19 @@ class CustoMultiRL(MultiAgentEnv, Env):
                 # todo: add selfish penalization for current agent being still
 
                 # Calculate the average delay for the current vehicle (Selfishness)
-                cost3=avg_delay_specified_vehicles(self, rl_id)
+                cost3 = avg_delay_specified_vehicles(self, rl_id)
 
                 # get the type of the agent (coop or not)
-                rl_type=self.k.vehicle.get_type(rl_id)
+                rl_type = self.k.vehicle.get_type(rl_id)
 
                 # then get the coop weight
-                w=self.k.vehicle.type_parameters.get(rl_type).get('cooperative_weight')
+                w = self.k.vehicle.type_parameters.get(rl_type).get('cooperative_weight')
 
                 # estimate the coop part of the reward
-                coop_reward=(cost1+cost2)*w
+                coop_reward = (cost1 + cost2) * w
 
                 # add the selfish
-                reward = max(coop_reward+cost3 , 0)
+                reward = max(coop_reward + cost3, 0)
 
                 print(f"\nReward for agent {rl_id} is : {reward}")
 
@@ -373,7 +385,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
             a bounded box depicting the shape and bounds of the action space
         """
 
-        #just example boxes with no meaning for now
+        # just example boxes with no meaning for now
         return Box(
             low=-np.abs(self.env_params.additional_params['max_decel']),
             high=self.env_params.additional_params['max_accel'],
@@ -390,7 +402,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
             a bounded box depicting the shape and bounds of the observation
             space
         """
-        #just example boxes with no meaning for now
+        # just example boxes with no meaning for now
 
         return Box(low=0, high=1, shape=(5,), dtype=np.float32)
 
