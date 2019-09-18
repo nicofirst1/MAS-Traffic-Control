@@ -1,9 +1,39 @@
 import os
+import random
+from math import floor
+from xml.etree import ElementTree as ET
+
 from FlowMas.parameters import Params
 
+MAP_DIRS = Params.MAP_DIRS
 
 
-MAP_DIRS=Params.MAP_DIRS
+def get_edges(map_name, perc=1.0):
+    """
+    Return a list of the map edges
+    :param map_name:  map name
+    :param perc: (float range 0,1) the percentage of the edges to return, if !=1, then 1-perc random elements will be discarded
+    :return: list
+    """
+
+    edges = []
+
+    if map_name == 'lust':
+        xml = ET.parse(os.path.join(MAP_DIRS["lust"], "scenario/lust.net.xml"))
+        root_element = xml.getroot()
+        for child in root_element:
+            if child.tag == "edge":
+                edges.append(child.attrib.get('id'))
+
+    if perc != 1:
+        # discarding random edges
+        random.shuffle(edges)
+        to_discard = floor(len(edges) * (1 - perc))
+        for _ in range(to_discard):
+            edges.pop()
+    return edges
+
+
 
 
 def import_map(map_name, net=True, vtype=False, rou=False):
