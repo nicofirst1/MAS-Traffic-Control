@@ -2,9 +2,10 @@ import os
 from copy import deepcopy
 
 # the Experiment class is used for running simulations
-from flow.controllers import IDMController, GridRouter
+from flow.controllers import IDMController
+from flow.controllers.routing_controllers import MinicityRouter
 from flow.core.experiment import Experiment
-from flow.core.params import EnvParams
+from flow.core.params import EnvParams, InitialConfig
 from flow.core.params import NetParams
 from flow.core.params import SumoParams
 # all other imports are standard
@@ -36,15 +37,15 @@ net_params = NetParams(
 
 # Adding human vehicles
 vehicles = VehicleParams()
-human_num=200
+human_num = 200
 # add human drivers with premade controllers/routers
 vehicles.add("human",
              acceleration_controller=(IDMController, {}),
-             routing_controller=(GridRouter, {}),
+             routing_controller=(MinicityRouter, {}),
              num_vehicles=human_num)
 
-horizon=1000
-sim_step=0.1
+horizon = 1000
+sim_step = 0.1
 # total simulation time is horizon/sim_step seconds
 
 # create some default parameters parameters
@@ -53,6 +54,7 @@ env_params = EnvParams(
     horizon=horizon,
 )
 
+# the simulation parameters
 sim_params = SumoParams(
     sim_step=sim_step,
     render=True,
@@ -60,11 +62,17 @@ sim_params = SumoParams(
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
 )
 
+initial_config = InitialConfig(
+    shuffle=True,
+    perturbation=1.0,
+)
+
 # create the network
 network = Network(
     name="tutorial_LuSTNetwork",
     net_params=net_params,
     vehicles=vehicles,
+    initial_config=initial_config,
 )
 
 # create the environment
