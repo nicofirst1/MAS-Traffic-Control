@@ -3,6 +3,7 @@
 - [Flow, Sumo, RLlib Installation](https://flow.readthedocs.io/en/latest/flow_setup.html#local-installation-of-flow)
 - [Flow Documentation](https://flow.readthedocs.io/en/latest/)
 - [More documentation and MAS](https://flow-project.github.io/tutorial.html)
+- [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
 
 # TODO
 
@@ -31,10 +32,16 @@ Here we need to specify the:
 - Action space (using gym)
     - Aks/give/take priority 
 - Observable space
-    - define what cars know about each other (turning direction)
+    - define what cars know about each other (turning direction), if you go by neighbors check out *getNeighbors* in the [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
 - Reward
     - Driving time
     - Total driving time * weighed 
+    
+### Router
+We need a custom router to choose random direction in the grid.
+
+
+
 ## Problems
 
 ### - Could not connect to TraCI
