@@ -146,7 +146,7 @@ register_env(gym_name, create_env)
 #  START OF TRAINING
 ########################
 
-ray.init(num_cpus=Params.N_CPUS + 1, redirect_output=False)
+ray.init(num_cpus=Params.N_CPUS + 1)
 
 # defining dictionary for the experiment
 experiment_params = dict(

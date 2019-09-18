@@ -1,11 +1,9 @@
 # number of parallel workers
 import json
 
-from FlowMas.parameters import Params
 from flow.utils.rllib import FlowParamsEncoder
 from ray.rllib.agents.registry import get_agent_class
-
-params=Params()
+from FlowMas.parameters import Params
 
 
 def ppo_default_config(horizon, params):
@@ -20,8 +18,8 @@ def ppo_default_config(horizon, params):
     alg_run = "PPO"
 
     config = get_agent_class(alg_run)._default_config.copy()
-    config["num_workers"] = params.N_CPUS - 1  # number of parallel workers
-    config["train_batch_size"] = horizon * params.N_ROLLOUTS  # batch size
+    config["num_workers"] = Params.N_CPUS - 1  # number of parallel workers
+    config["train_batch_size"] = horizon * Params.N_ROLLOUTS  # batch size
     config["gamma"] = 0.999  # discount rate
     config["model"].update({"fcnet_hiddens": [16, 16]})  # size of hidden layers in network
     config["use_gae"] = True  # using generalized advantage estimation
