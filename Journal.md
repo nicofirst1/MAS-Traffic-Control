@@ -2,7 +2,7 @@
 
 - [Flow, Sumo, RLlib Installation](https://flow.readthedocs.io/en/latest/flow_setup.html#local-installation-of-flow)
 - [Flow Documentation](https://flow.readthedocs.io/en/latest/)
-- [More documentation and MAS](https://flow-project.github.io/tutorial.html)
+- [More Flow documentation and MAS](https://flow-project.github.io/tutorial.html)
 - [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
 - [Ray docs](https://ray.readthedocs.io/en/latest/index.html)
 - [Ray repo](https://github.com/ray-project/ray)
@@ -22,9 +22,9 @@
 We can either import map with [OpenStreetMap](https://github.com/flow-project/flow/blob/master/tutorials/tutorial06_osm.ipynb)
 or create a custom one with [Scenario](https://github.com/flow-project/flow/blob/master/tutorials/tutorial05_scenarios.ipynb).
  
-- Starting with a custom grid map
-    - Define right privilege []
-- Importing scenario from openmap
+- Starting with a custom grid map [X]
+- Importing scenario from openmap [X]
+- Use lust scenario without traffic lights [X]
 
 #### Premade netwroks
 We can import a pre-made network as in [tutorial 4](FlowMas/Tutorials/4_ImportedMap.py), here's a list:
