@@ -25,11 +25,19 @@ or create a custom one with [Scenario](https://github.com/flow-project/flow/blob
 - Starting with a custom grid map [X]
 - Importing scenario from openmap [X]
 - Use lust scenario without traffic lights [X]
+- Set inflows from random starting edges in the lust network []
 
 #### Premade netwroks
 We can import a pre-made network as in [tutorial 4](FlowMas/Tutorials/4_ImportedMap.py), here's a list:
 - [Monaco](https://github.com/lcodeca/MoSTScenario)
 - [Lust](https://github.com/lcodeca/LuSTScenario)
+
+#### Router
+We need a custom router to choose random direction in the grid.
+
+- Create a router which is like MinicityRouter but makes car exit the map more often []
+
+
 
 ### Environment
 Check out the [environment tutorial](https://github.com/flow-project/flow/blob/master/tutorials/tutorial08_environments.ipynb)
@@ -44,7 +52,3 @@ Here we need to specify the:
     - Driving time
     - Total driving time * weighed 
     
-### Router
-We need a custom router to choose random direction in the grid.
-
-
