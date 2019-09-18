@@ -39,13 +39,14 @@ vehicles.add(
     num_vehicles=RL_num,
     cooperative_weight=0.7
 )
+
 # add selfish agent
 vehicles.add(
     "RL_selfish",
     acceleration_controller=(RLController, {}),
     routing_controller=(GridRouter, {}),
     num_vehicles=1,
-    cooperative_weight=0.2
+    cooperative_weight=0.1
 )
 
 
@@ -101,7 +102,7 @@ scenario = TrafficLightGridNetwork(name="grid_example",  # just the scenario nam
 # this will be passed to the gym to make the trainable environment
 params = dict(
     # name of the experiment
-    exp_tag="grid_rl_tutorial",
+    exp_tag="customRL_grid",
 
     # name of the flow environment the experiment is running on
     env_name="CustoMultiRL",  # this kind of env does not train anything, check it out in flow.env.testenv
@@ -143,7 +144,7 @@ params = dict(
 create_env, gym_name = make_create_env(params=params, version=0)
 
 # get default config for ppo
-config = ppo_default_config(HORIZON, params)
+ppo_config = ppo_default_config(HORIZON, params)
 
 # Register as rllib env
 register_env(gym_name, create_env)
@@ -158,7 +159,7 @@ experiment_params = dict(
 
     run="PPO",  # must be the same as the default config
     env=gym_name,
-    config={**config},
+    config={**ppo_config},
     checkpoint_freq=20,
     checkpoint_at_end=True,
     max_failures=999,
