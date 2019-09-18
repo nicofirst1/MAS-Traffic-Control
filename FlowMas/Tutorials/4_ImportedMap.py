@@ -31,13 +31,13 @@ additional_net_params['traffic_lights'] = False
 # specify net params
 net_params = NetParams(
     template=import_map("lust"),
-    additional_params=ADDITIONAL_NET_PARAMS,
+    additional_params=additional_net_params,
 
 )
 
 # Adding human vehicles
 vehicles = VehicleParams()
-human_num = 200
+human_num = 300
 # add human drivers with premade controllers/routers
 vehicles.add("human",
              acceleration_controller=(IDMController, {}),
@@ -64,7 +64,7 @@ sim_params = SumoParams(
 
 initial_config = InitialConfig(
     shuffle=True,
-    perturbation=1.0,
+    perturbation=50.0,
 )
 
 # create the network
