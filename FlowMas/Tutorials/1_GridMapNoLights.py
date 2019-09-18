@@ -5,7 +5,7 @@ from copy import deepcopy
 from flow.controllers import IDMController, GridRouter
 from flow.core.experiment import Experiment
 from flow.core.params import VehicleParams, NetParams, InitialConfig, TrafficLightParams, SumoParams, EnvParams
-from flow.envs import AccelEnv
+from flow.envs import TestEnv
 from flow.envs.traffic_light_grid import ADDITIONAL_ENV_PARAMS
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.scenarios import TrafficLightGridScenario
@@ -63,7 +63,7 @@ scenario = TrafficLightGridScenario(name="grid_tutorial",
 #    Env/Exp creation
 ##############################
 # create the environment object
-env = AccelEnv(env_params, sumo_params, scenario)
+env = TestEnv(env_params, sumo_params, scenario)
 
 # create the experiment object
 exp = Experiment(env)
