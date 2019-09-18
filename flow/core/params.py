@@ -422,7 +422,8 @@ class CustomVehicleParams:
             Params object specifying attributes for Sumo car following model.
         lane_change_params : flow.core.params.SumoLaneChangeParams
             Params object specifying attributes for Sumo lane changing model.
-            :param cooperative_weight:  the percentage of cooperativiness the car takes into account when driving (used for RL agents)
+        cooperative_weight:  int, optional
+        the percentage of cooperativiness the car takes into account when driving (used for RL agents)
         """
         if car_following_params is None:
             # FIXME: depends on simulator
