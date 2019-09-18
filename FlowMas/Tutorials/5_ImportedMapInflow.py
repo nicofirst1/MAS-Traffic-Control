@@ -21,18 +21,14 @@ try:
     from ray.rllib.agents.agent import get_agent_class
 except ImportError:
     from ray.rllib.agents.registry import get_agent_class
+from flow.core.params import InFlows
 
 
 # Remove traffic lights
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
 additional_net_params['traffic_lights'] = False
 
-# specify net params
-net_params = NetParams(
-    template=import_map("lust"),
-    additional_params=additional_net_params,
 
-)
 
 # Adding human vehicles
 vehicles = VehicleParams()
@@ -68,13 +64,32 @@ initial_config = InitialConfig(
     perturbation=50.0,
 )
 
+# Adding inflows
+inflow= InFlows()
+inflow.add(veh_type="human",
+           edge="inflow_highway", # todo: find lust starting edges and choose randomly
+           vehs_per_hour=2000,
+           depart_lane="random",
+           begin=10,  # time in seconds to start the inflow
+
+           )
+
+# specify net params
+net_params = NetParams(
+    template=import_map("lust"),
+    additional_params=additional_net_params,
+    inflows=inflow,
+
+)
+
 # create the network
 network = Network(
-    name="tutorial_imported_network",
+    name="tutorial_inflow",
     net_params=net_params,
     vehicles=vehicles,
     initial_config=initial_config,
 )
+
 
 # create the environment
 env = TestEnv(

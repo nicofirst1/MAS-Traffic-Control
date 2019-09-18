@@ -9,7 +9,7 @@ from flow.envs import AccelEnv
 from flow.envs.traffic_light_grid import ADDITIONAL_ENV_PARAMS
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.scenarios import TrafficLightGridScenario
-
+from FlowMas.parameters import Params
 
 ##############################
 #      Vehicle Params
@@ -45,7 +45,7 @@ net_params = NetParams(additional_params=additional_net_params)
 
 initial_config = InitialConfig(spacing="custom", perturbation=1)
 
-sumo_params = SumoParams(sim_step=0.1, render=True, emission_path='data')
+sumo_params = SumoParams(sim_step=0.1, render=True, emission_path=Params.DATA_DIR)
 
 additional_env_params= deepcopy(ADDITIONAL_ENV_PARAMS)
 env_params = EnvParams(additional_params=additional_env_params)

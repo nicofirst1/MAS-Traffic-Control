@@ -1,10 +1,9 @@
 import os
+from FlowMas.parameters import Params
 
-MAP_DIRS = dict(
 
-    lust=os.path.join(os.getcwd().split("FlowMas")[0], "FlowMas/maps/LuSTScenario"),
-    monaco=os.path.join(os.getcwd().split("FlowMas")[0], "FlowMas/maps/MoSTScenario"),
-)
+
+MAP_DIRS=Params.MAP_DIRS
 
 
 def import_map(map_name, net=True, vtype=False, rou=False):

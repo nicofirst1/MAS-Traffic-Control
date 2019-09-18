@@ -1,7 +1,7 @@
 import ray
 from ray.tune import register_env, run_experiments
 
-from FlowMas.utils import ppo_default_config, N_CPUS
+from FlowMas.utils import ppo_default_config
 from flow.controllers import IDMController, RLController
 from flow.controllers.routing_controllers import GridRouter
 from flow.core.params import SumoParams, EnvParams, NetParams, InitialConfig
@@ -10,6 +10,9 @@ from flow.core.params import VehicleParams
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.scenarios.traffic_light_grid import TrafficLightGridNetwork
 from flow.utils.registry import make_create_env
+from FlowMas.parameters import Params
+
+
 
 ##############################
 #      Vehicle Params
@@ -107,7 +110,7 @@ params = dict(
         sim_step=0.2,
         render=False,  # no renderer will be displayed for training, this is for speed up
         restart_instance=True,
-        emission_path='data',
+        emission_path=Params.DATA_DIR,
     ),
 
     # environment related parameters (see flow.core.params.EnvParams)
@@ -143,7 +146,7 @@ register_env(gym_name, create_env)
 #  START OF TRAINING
 ########################
 
-ray.init(num_cpus=N_CPUS + 1, redirect_output=False)
+ray.init(num_cpus=Params.N_CPUS + 1, redirect_output=False)
 
 # defining dictionary for the experiment
 experiment_params = dict(
