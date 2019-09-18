@@ -118,6 +118,7 @@ params = dict(
         sim_step=0.2,
         render=False,  # no renderer will be displayed for training, this is for speed up
         restart_instance=True,
+        emission_path='data',
     ),
 
     # environment related parameters (see flow.core.params.EnvParams)

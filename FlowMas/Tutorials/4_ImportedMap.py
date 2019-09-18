@@ -60,8 +60,10 @@ sim_params = SumoParams(
     render=True,
     show_radius=True,  # show a circle on top of RL agents
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
+    emission_path='data',
 )
 
+# setting initial configuration files
 initial_config = InitialConfig(
     shuffle=True,
     perturbation=50.0,
@@ -69,7 +71,7 @@ initial_config = InitialConfig(
 
 # create the network
 network = Network(
-    name="tutorial_LuSTNetwork",
+    name="tutorial_imported_network",
     net_params=net_params,
     vehicles=vehicles,
     initial_config=initial_config,

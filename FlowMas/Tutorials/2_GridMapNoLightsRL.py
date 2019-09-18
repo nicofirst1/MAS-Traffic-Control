@@ -11,10 +11,9 @@ from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.scenarios.traffic_light_grid import TrafficLightGridNetwork
 from flow.utils.registry import make_create_env
 
-########################
-#      VEHICLES
-########################
-
+##############################
+#      Vehicle Params
+##############################
 
 # vehicle params to take care of all the vehicles
 vehicles = VehicleParams()
@@ -50,7 +49,7 @@ ADDITIONAL_ENV_PARAMS = {
 }
 
 # initializing env params, since env is just Test there will be no learning, but the procedure is the same
-env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS, horizon=HORIZON, sims_per_step=5, )
+env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS, horizon=HORIZON,  )
 
 ########################
 #       NET PARAM
@@ -108,6 +107,7 @@ params = dict(
         sim_step=0.2,
         render=False,  # no renderer will be displayed for training, this is for speed up
         restart_instance=True,
+        emission_path='data',
     ),
 
     # environment related parameters (see flow.core.params.EnvParams)
