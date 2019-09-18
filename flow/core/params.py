@@ -349,6 +349,163 @@ class VehicleParams:
         return self.__vehicles[veh_id]["type"]
 
 
+class CustomVehicleParams:
+    """Base vehicle class.
+
+    This is used to describe the state of all vehicles in the network.
+    State information on the vehicles for a given time step can be set or
+    retrieved from this class.
+    """
+
+    def __init__(self):
+        """Instantiate the base vehicle class."""
+        self.ids = []  # ids of all vehicles
+
+        # vehicles: Key = Vehicle ID, Value = Dictionary describing the vehicle
+        # Ordered dictionary used to keep neural net inputs in order
+        self.__vehicles = collections.OrderedDict()
+
+        #: total number of vehicles in the network
+        self.num_vehicles = 0
+        #: int : number of rl vehicles in the network
+        self.num_rl_vehicles = 0
+        #: int : number of unique types of vehicles in the network
+        self.num_types = 0
+        #: list of str : types of vehicles in the network
+        self.types = []
+
+        #: dict (str, str) : contains the parameters associated with each type
+        #: of vehicle
+        self.type_parameters = dict()
+
+        #: dict (str, int) : contains the minGap attribute of each type of
+        #: vehicle
+        self.minGap = dict()
+
+        #: list : initial state of the vehicles class, used for serialization
+        #: purposes
+        self.initial = []
+
+    def add(self,
+            veh_id,
+            acceleration_controller=(SimCarFollowingController, {}),
+            lane_change_controller=(SimLaneChangeController, {}),
+            routing_controller=None,
+            initial_speed=0,
+            num_vehicles=0,
+            car_following_params=None,
+            lane_change_params=None,
+            cooperative_weight=0):
+        """Add a sequence of vehicles to the list of vehicles in the network.
+
+        Parameters
+        ----------
+        veh_id : str
+            base vehicle ID for the vehicles (will be appended by a number)
+        acceleration_controller : tup, optional
+            1st element: flow-specified acceleration controller
+            2nd element: controller parameters (may be set to None to maintain
+            default parameters)
+        lane_change_controller : tup, optional
+            1st element: flow-specified lane-changer controller
+            2nd element: controller parameters (may be set to None to maintain
+            default parameters)
+        routing_controller : tup, optional
+            1st element: flow-specified routing controller
+            2nd element: controller parameters (may be set to None to maintain
+            default parameters)
+        initial_speed : float, optional
+            initial speed of the vehicles being added (in m/s)
+        num_vehicles : int, optional
+            number of vehicles of this type to be added to the network
+        car_following_params : flow.core.params.SumoCarFollowingParams
+            Params object specifying attributes for Sumo car following model.
+        lane_change_params : flow.core.params.SumoLaneChangeParams
+            Params object specifying attributes for Sumo lane changing model.
+            :param cooperative_weight:  the percentage of cooperativiness the car takes into account when driving (used for RL agents)
+        """
+        if car_following_params is None:
+            # FIXME: depends on simulator
+            car_following_params = SumoCarFollowingParams()
+
+        if lane_change_params is None:
+            # FIXME: depends on simulator
+            lane_change_params = SumoLaneChangeParams()
+
+        type_params = {}
+        type_params.update(car_following_params.controller_params)
+        type_params.update(lane_change_params.controller_params)
+
+        # This dict will be used when trying to introduce new vehicles into
+        # the network via a Flow. It is passed to the vehicle kernel object
+        # during environment instantiation.
+        self.type_parameters[veh_id] = \
+            {"acceleration_controller": acceleration_controller,
+             "lane_change_controller": lane_change_controller,
+             "routing_controller": routing_controller,
+             "initial_speed": initial_speed,
+             "car_following_params": car_following_params,
+             "lane_change_params": lane_change_params,
+             "cooperative_weight":cooperative_weight}
+
+        # TODO: delete?
+        self.initial.append({
+            "veh_id":
+                veh_id,
+            "acceleration_controller":
+                acceleration_controller,
+            "lane_change_controller":
+                lane_change_controller,
+            "routing_controller":
+                routing_controller,
+            "initial_speed":
+                initial_speed,
+            "num_vehicles":
+                num_vehicles,
+            "car_following_params":
+                car_following_params,
+            "lane_change_params":
+                lane_change_params,
+            "cooperative_weight": cooperative_weight,
+        })
+
+        # This is used to return the actual headways from the vehicles class.
+        # It is passed to the vehicle kernel class during environment
+        # instantiation.
+        self.minGap[veh_id] = type_params["minGap"]
+
+        for i in range(num_vehicles):
+            v_id = veh_id + '_%d' % i
+
+            # add the vehicle to the list of vehicle ids
+            self.ids.append(v_id)
+
+            self.__vehicles[v_id] = dict()
+
+            # specify the type
+            self.__vehicles[v_id]["type"] = veh_id
+
+            # update the number of vehicles
+            self.num_vehicles += 1
+            if acceleration_controller[0] == RLController:
+                self.num_rl_vehicles += 1
+
+        # increase the number of unique types of vehicles in the network, and
+        # add the type to the list of types
+        self.num_types += 1
+        self.types.append({"veh_id": veh_id, "type_params": type_params})
+
+    def get_type(self, veh_id):
+        """Return the type of a specified vehicle.
+
+        Parameters
+        ----------
+        veh_id : str
+            vehicle ID whose type the user is querying
+        """
+        return self.__vehicles[veh_id]["type"]
+
+
 class SimParams(object):
     """Simulation-specific parameters.
 

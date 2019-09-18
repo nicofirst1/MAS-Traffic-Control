@@ -12,7 +12,6 @@ from flow.envs.ring.wave_attenuation import WaveAttenuationEnv, \
     WaveAttenuationPOEnv
 from flow.envs.merge import MergePOEnv
 from flow.envs.test import TestEnv
-from flow.envs.customRL import CustomRL
 
 # deprecated classes whose names have changed
 from flow.envs.bottleneck_env import BottleNeckAccelEnv
@@ -22,8 +21,7 @@ from flow.envs.green_wave_env import GreenWaveTestEnv
 
 
 __all__ = [
-    # Customs
-    'CustomRL',
+
 
     # Original
     'Env',
