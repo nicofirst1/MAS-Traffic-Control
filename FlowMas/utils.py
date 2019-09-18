@@ -14,7 +14,7 @@ def ppo_default_config(horizon, params):
     Return a dict representing the config file of a standard PPO algorithm in rrlib
 
     :param horizon: (int) duration of one episode (during which the RL-agent acquire data).
-    :param params:
+    :param params: (dict)  general dictionary containing every configuration parameter (env, netwrok, inflow ...)
     :return:(dict)
     
     """
