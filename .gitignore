@@ -12,3 +12,5 @@ flow/__pycache__/
 *.pyc
 
 flow/core/kernel/network/debug/
+
+.vscode/
