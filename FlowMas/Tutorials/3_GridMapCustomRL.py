@@ -1,20 +1,17 @@
-import time
 from copy import deepcopy
 
 import ray
 from ray.tune import register_env, run_experiments
-from ray.tune.trial_executor import TrialExecutor
 
 from FlowMas.utils import ppo_default_config, N_CPUS
 from flow.controllers import IDMController, RLController
 from flow.controllers.routing_controllers import GridRouter
-from flow.core.params import SumoParams, EnvParams, NetParams, InitialConfig
+from flow.core.params import SumoParams, EnvParams, NetParams, InitialConfig, CustomVehicleParams
 from flow.core.params import TrafficLightParams
-from flow.core.params import VehicleParams
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.scenarios.traffic_light_grid import TrafficLightGridNetwork
 from flow.utils.registry import make_create_env
-from flow.envs.customRL import ADDITIONAL_ENV_PARAMS
+from flow.envs.multiagent.customRL import ADDITIONAL_ENV_PARAMS
 
 ########################
 #      VEHICLES
@@ -22,9 +19,10 @@ from flow.envs.customRL import ADDITIONAL_ENV_PARAMS
 
 
 # vehicle params to take care of all the vehicles
-vehicles = VehicleParams()
+vehicles = CustomVehicleParams()
 # number of human drivers
-human_num = 1
+human_num = 2
+RL_num = 2
 
 # add human drivers with premade controllers/routers
 vehicles.add("human",
@@ -32,13 +30,24 @@ vehicles.add("human",
              routing_controller=(GridRouter, {}),
              num_vehicles=human_num)
 
-# add RL agent with premade controller
+# add RL agents with premade controller
+# add coop agents
 vehicles.add(
-    "RL",
+    "RL_coop",
+    acceleration_controller=(RLController, {}),
+    routing_controller=(GridRouter, {}),
+    num_vehicles=RL_num,
+    cooperative_weight=0.7
+)
+# add selfish agent
+vehicles.add(
+    "RL_selfish",
     acceleration_controller=(RLController, {}),
     routing_controller=(GridRouter, {}),
     num_vehicles=1,
+    cooperative_weight=0.2
 )
+
 
 ########################
 #       ENV PARAM
@@ -95,7 +104,7 @@ params = dict(
     exp_tag="grid_rl_tutorial",
 
     # name of the flow environment the experiment is running on
-    env_name="CustomRL",  # this kind of env does not train anything, check it out in flow.env.testenv
+    env_name="CustoMultiRL",  # this kind of env does not train anything, check it out in flow.env.testenv
 
     # name of the network class the experiment is running on
     network="TrafficLightGridNetwork",
@@ -142,7 +151,7 @@ register_env(gym_name, create_env)
 ########################
 #  START OF TRAINING
 ########################
-ray.init(num_cpus=N_CPUS, local_mode=True)
+ray.init(num_cpus=N_CPUS, local_mode=True) # use local mode when debugging, remove it for performance increase
 
 # defining dictionary for the experiment
 experiment_params = dict(
