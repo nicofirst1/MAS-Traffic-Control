@@ -1,18 +1,20 @@
 
 ## Problems
-This file concersgeneral errors encountered while writing the software.
+This file cancers general errors encountered while writing the software.
 
-### - Could not connect to TraCI
+### - Error 1
 
-Error: ` server at localhost:58127 [Errno 61] Connection refused`
+__Traceback:__
 
-Solution: wait, as written [here](https://stackoverflow.com/questions/40362275/using-sumo-and-traci-could-not-connect-to-traci-server-61)
+ ``` server at localhost:58127 [Errno 61] Connection refused```
 
-### - No module named 'rllab'
+__Solution:__ wait, as written [here](https://stackoverflow.com/questions/40362275/using-sumo-and-traci-could-not-connect-to-traci-server-61)
 
-Error: `ModuleNotFoundError: No module named 'rllab'`
+### -  Error 2
 
-Solution: You must install [rllab](https://github.com/rll/rllab) with the following commands:
+__Traceback:__ `ModuleNotFoundError: No module named 'rllab'`
+
+__Solution:__ You must install [rllab](https://github.com/rll/rllab) with the following commands:
 
 - `git clone https://github.com/rll/rllab`
 - `cd rllab`
@@ -24,14 +26,14 @@ and [this](https://rllab.readthedocs.io/en/latest/user/installation.html) for in
 
 Update: Flow is getting rid of *rllib* so you won't need it anymore.
 
-### - Errors with importing custom environments and/or network
+### - Errors with importing custom environments and/or network [3]
 
 If you have any errors regarding importing custom environments and/or networks remember that we have our 
 [own flow](flow) directory and that your python environment must be free of other flow installations.
 
-### - File "mtrand.pyx" ValueError: a must be non-empty
+### -  Error 4
 
-Error:
+__Traceback:__
 ```
 File "mtrand.pyx", line 1126, in mtrand.RandomState.choice
 ValueError: a must be non-empty
@@ -44,13 +46,25 @@ As written [here](https://stackoverflow.com/questions/57069566/when-test-the-gri
 
 
 
-###  IndexError:  pos = start_pos[i][1], list index out of range
+### Error 5
 
-Error:
+__Traceback:__
+:
 ```  
 File "/Users/oblintosh/Desktop/dmas/flow/envs/base.py", line 279, in setup_initial_state
 pos = start_pos[i][1]
 IndexError: list index out of range
 ```
 
-Solution:  Router problem, same as before
+__Solution:__  Router problem, same as before
+
+### Error 6
+
+__Traceback:__
+```
+ File "/anaconda3/envs/dmas/lib/python3.6/site-packages/ray/actor.py", line 548, in _actor_method_call
+    function = getattr(worker.actors[self._ray_actor_id], method_name)
+AttributeError: 'PPO' object has no attribute 'set_global_vars'
+```
+
+__Solution:__
