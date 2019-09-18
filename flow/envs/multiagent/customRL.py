@@ -294,25 +294,6 @@ class CustoMultiRL(MultiAgentEnv, Env):
                     a_max=self.action_space.high)
         return rl_actions
 
-    def apply_rl_actions(self, rl_actions=None):
-        """Specify the actions to be performed by the rl agent(s).
-
-        If no actions are provided at any given step, the rl agents default to
-        performing actions specified by sumo.
-
-        Parameters
-        ----------
-        rl_actions : dict of array_like
-            dict of list of actions provided by the RL algorithm
-        """
-        # ignore if no actions are issued
-        if rl_actions is None:
-            return
-
-        # clip according to the action space requirements
-        clipped_actions = self.clip_actions(rl_actions)
-        self._apply_rl_actions(clipped_actions)
-
     def compute_reward(self, rl_actions, **kwargs):
         """Reward function for the RL agent(s).
 
