@@ -1,7 +1,8 @@
 import os
 import random
 from math import floor
-from xml.etree import ElementTree as ET
+from xml.etree import ElementTree
+from xml.etree.ElementTree import XMLParser
 
 from FlowMas.parameters import Params
 
@@ -16,14 +17,34 @@ def get_edges(map_name, perc=1.0):
     :return: list
     """
 
-    edges = []
+
+    def import_edges_from_path(map_path):
+        """
+        Get list of edges ids from path
+        :param map_path: (str) the path for the xml file
+        :return: list of edges
+        """
+        # import the .net.xml file containing all edge/type data
+        parser = XMLParser()
+        tree = ElementTree.parse(map_path, parser=parser)
+        root = tree.getroot()
+
+        edges = list()
+
+        # collect all information on the edges
+        for edge in root.findall('edge'):
+            edge_id=edge.attrib['id']
+            if edge_id[0] != ':':
+                edges.append(edge_id)
+
+        return edges
 
     if map_name == 'lust':
-        xml = ET.parse(os.path.join(MAP_DIRS["lust"], "scenario/lust.net.xml"))
-        root_element = xml.getroot()
-        for child in root_element:
-            if child.tag == "edge":
-                edges.append(child.attrib.get('id'))
+        path = os.path.join(MAP_DIRS["lust"], "scenario/lust.net.xml")
+        edges = import_edges_from_path(path)
+
+    else:
+        raise NotImplementedError(f"Edge extractor for {map_name} has not been implemented yet")
 
     if perc != 1:
         # discarding random edges
@@ -34,6 +55,7 @@ def get_edges(map_name, perc=1.0):
     return edges
 
 
+get_edges("lust")
 
 
 def import_map(map_name, net=True, vtype=False, rou=False):
@@ -64,7 +86,7 @@ def import_map(map_name, net=True, vtype=False, rou=False):
                         os.path.join(MAP_DIRS["lust"], "scenario/DUARoutes/local.2.rou.xml")]
             })
 
-    elif "monaco" in map_name.lower():
+    elif "monaco" in map_name.lower():  # fixme
 
         if net:
             template.update({"net": os.path.join(MAP_DIRS["monaco"], "scenario/in/most.net.xml")})

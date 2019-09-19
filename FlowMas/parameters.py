@@ -31,6 +31,12 @@ class Params:
     N_ROLLOUTS = 1
 
 
+    ##########################
+    # Scenarios and Network
+    ##########################
+
+    map="lust"
+    percentage_edges=0.3
 
     def __init__(self):
         print("Params class initialized")

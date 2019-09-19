@@ -3,10 +3,11 @@ from copy import deepcopy
 
 # the Experiment class is used for running simulations
 from FlowMas.parameters import Params
+from FlowMas.utils import inflow_random_edges
 from flow.controllers import IDMController
 from flow.controllers.routing_controllers import MinicityRouter
 from flow.core.experiment import Experiment
-from flow.core.params import EnvParams, InitialConfig
+from flow.core.params import EnvParams, InitialConfig, TrafficLightParams
 from flow.core.params import NetParams
 from flow.core.params import SumoParams
 # all other imports are standard
@@ -26,7 +27,6 @@ from flow.core.params import InFlows
 
 # Remove traffic lights
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
-additional_net_params['traffic_lights'] = False
 
 
 
@@ -47,6 +47,7 @@ sim_step = 0.1
 env_params = EnvParams(
     # length of one rollout
     horizon=horizon,
+
 )
 
 # the simulation parameters
@@ -56,6 +57,7 @@ sim_params = SumoParams(
     show_radius=True,  # show a circle on top of RL agents
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
     emission_path=Params.DATA_DIR,
+    restart_instance=True,
 )
 
 # setting initial configuration files
@@ -66,17 +68,21 @@ initial_config = InitialConfig(
 
 # Adding inflows
 inflow= InFlows()
-inflow.add(veh_type="human",
-           edge="inflow_highway", # todo: find lust starting edges and choose randomly
-           vehs_per_hour=2000,
-           depart_lane="random",
-           begin=10,  # time in seconds to start the inflow
 
-           )
+human_inflow= dict(
+                veh_type="human",
+                probability=0.001,
+                depart_lane="random",
+                depart_speed="random",
+                begin=5,  # time in seconds to start the inflow
+)
+
+# adding human inflows
+inflow_random_edges(inflow, Params.map, Params.percentage_edges, **human_inflow)
 
 # specify net params
 net_params = NetParams(
-    template=import_map("lust"),
+    template=import_map(Params.map),
     additional_params=additional_net_params,
     inflows=inflow,
 
@@ -95,7 +101,8 @@ network = Network(
 env = TestEnv(
     env_params=env_params,
     sim_params=sim_params,
-    network=network
+    network=network,
+
 )
 
 # run the simulation for 100000 steps
