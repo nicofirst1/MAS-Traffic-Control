@@ -1,6 +1,6 @@
 
 ## Problems
-This file cancers general errors encountered while writing the software.
+This file concerns general errors encountered while writing the software.
 
 ### - Error 1
 

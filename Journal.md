@@ -6,6 +6,7 @@
 - [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
 - [Ray docs](https://ray.readthedocs.io/en/latest/index.html)
 - [Ray repo](https://github.com/ray-project/ray)
+- [SUMO documentation](http://sumo.sourceforge.net/userdoc/index.html)
 
 # TODO
 
@@ -17,7 +18,7 @@
 
 ## Project
 
-### Scenarios
+### Network : completed
 
 We can either import map with [OpenStreetMap](https://github.com/flow-project/flow/blob/master/tutorials/tutorial06_osm.ipynb)
 or create a custom one with [Scenario](https://github.com/flow-project/flow/blob/master/tutorials/tutorial05_scenarios.ipynb).
@@ -32,8 +33,10 @@ We can import a pre-made network as in [tutorial 4](FlowMas/Tutorials/4.5_Import
 - [Monaco](https://github.com/lcodeca/MoSTScenario)
 - [Lust](https://github.com/lcodeca/LuSTScenario)
 
+This approach has been discarded since there is no easy way to remove traffic lights (network geometry) form this imported scenarios. Using OSM instead.
+
 #### Router
-We need a custom router to choose random direction in the grid.
+We could use a custom router to choose random direction in the grid.
 
 - Create a router which is like MinicityRouter but makes car exit the map more often []
 
@@ -45,9 +48,11 @@ for this part. This part covers the Autonomous agents using RL.
 
 Here we need to specify the:
 - Action space (using gym)
-    - Aks/give/take priority 
+    - Stop 
+    - De/accelerate
+    
 - Observable space
-    - define what cars know about each other (turning direction), if you go by neighbors check out *getNeighbors* in the [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
+    - Define what cars know about each other (turning direction), if you go by neighbors check out *getNeighbors* in the [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
 - Reward
     - Driving time
     - Total driving time * weighed 
