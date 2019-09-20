@@ -43,7 +43,7 @@ def get_edges(map_name, perc=1.0):
         edges = import_edges_from_path(path)
 
     elif map_name == 'rome':
-        path = os.path.join(Params.MAP_DIRS["rome"], "osm.net.xml")
+        path = os.path.join(Params.MAP_DIRS["rome"], "rome.net.xml")
         edges = import_edges_from_path(path)
 
 
@@ -79,30 +79,30 @@ def import_map(map_name, net=True, vtype=False, rou=False):
     if "lust" in map_name.lower():
 
         if net:
-            template.update({"net": os.path.join(MAP_DIRS["lust"], "scenario/lust.net.xml")})
+            template.update({"net": os.path.join(Params.MAP_DIRS["lust"], "scenario/lust.net.xml")})
         if vtype:
-            template.update({"vtype": os.path.join(MAP_DIRS["lust"], "scenario/vtypes.add.xml")})
+            template.update({"vtype": os.path.join(Params.MAP_DIRS["lust"], "scenario/vtypes.add.xml")})
         if rou:
             template.update({
-                "rou": [os.path.join(MAP_DIRS["lust"], "scenario/DUARoutes/local.0.rou.xml"),
-                        os.path.join(MAP_DIRS["lust"], "scenario/DUARoutes/local.1.rou.xml"),
-                        os.path.join(MAP_DIRS["lust"], "scenario/DUARoutes/local.2.rou.xml")]
+                "rou": [os.path.join(Params.MAP_DIRS["lust"], "scenario/DUARoutes/local.0.rou.xml"),
+                        os.path.join(Params.MAP_DIRS["lust"], "scenario/DUARoutes/local.1.rou.xml"),
+                        os.path.join(Params.MAP_DIRS["lust"], "scenario/DUARoutes/local.2.rou.xml")]
             })
 
     elif "monaco" in map_name.lower():  # fixme
 
         if net:
-            template.update({"net": os.path.join(MAP_DIRS["monaco"], "scenario/in/most.net.xml")})
+            template.update({"net": os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/most.net.xml")})
         if vtype:
-            template.update({"vtype": os.path.join(MAP_DIRS["monaco"], "/scenario/in/add/basic.vType.xml")})
+            template.update({"vtype": os.path.join(Params.MAP_DIRS["monaco"], "/scenario/in/add/basic.vType.xml")})
         if rou:
             template.update({
-                "rou": [os.path.join(MAP_DIRS["monaco"], "scenario/in/route/most.buses.flows.xml"),
-                        os.path.join(MAP_DIRS["monaco"], "scenario/in/route/most.commercial.rou.xml"),
-                        os.path.join(MAP_DIRS["monaco"], "scenario/in/route/most.highway.flows.xml"),
-                        os.path.join(MAP_DIRS["monaco"], "scenario/in/route/most.pedestrian.rou.xml"),
-                        os.path.join(MAP_DIRS["monaco"], "scenario/in/route/most.special.rou.xml"),
-                        os.path.join(MAP_DIRS["monaco"], "scenario/in/route/most.trains.flows.xml"), ]
+                "rou": [os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.buses.flows.xml"),
+                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.commercial.rou.xml"),
+                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.highway.flows.xml"),
+                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.pedestrian.rou.xml"),
+                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.special.rou.xml"),
+                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.trains.flows.xml"), ]
             })
 
     return template
