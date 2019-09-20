@@ -18,3 +18,5 @@ flow/core/kernel/network/debug/
 
 FlowMas/data/
 
+
+*.bat

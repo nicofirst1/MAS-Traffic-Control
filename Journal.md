@@ -24,11 +24,11 @@ or create a custom one with [Scenario](https://github.com/flow-project/flow/blob
  
 - Starting with a custom grid map [X]
 - Importing scenario from openmap [X]
-- Use lust scenario without traffic lights [X]
-- Set inflows from random starting edges in the lust network []
+- Use lust scenario without traffic lights: not possible, switching to OSM networks
+- Set inflows from random starting edges in the OSM network [X]
 
 #### Premade netwroks
-We can import a pre-made network as in [tutorial 4](FlowMas/Tutorials/4_ImportedMap.py), here's a list:
+We can import a pre-made network as in [tutorial 4](FlowMas/Tutorials/4.5_ImportedScenario.py), here's a list:
 - [Monaco](https://github.com/lcodeca/MoSTScenario)
 - [Lust](https://github.com/lcodeca/LuSTScenario)
 

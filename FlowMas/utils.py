@@ -8,7 +8,7 @@ from flow.utils.rllib import FlowParamsEncoder
 from maps_utils import get_edges
 
 
-def inflow_random_edges(inflow, map_name, perc_edges, **kwargs):
+def inflow_random_edges(inflow, **kwargs):
     """
     Add inflow from random edges.
     :param inflow: the inflow class
@@ -20,7 +20,7 @@ def inflow_random_edges(inflow, map_name, perc_edges, **kwargs):
     """
 
     # get the edges
-    edges = get_edges(map_name, perc=perc_edges)
+    edges = get_edges(Params.map, perc=Params.percentage_edges)
 
     # scale the vehs_per_hour parameter by the number of edges
     if "vehs_per_hour" in kwargs.keys():
