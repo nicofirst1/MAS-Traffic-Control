@@ -78,13 +78,13 @@ human_inflow= dict(
 )
 
 # adding human inflows
-inflow_random_edges(inflow, Params.map, Params.percentage_edges, **human_inflow)
+#inflow_random_edges(inflow, Params.map, Params.percentage_edges, **human_inflow)
 
 # specify net params
 net_params = NetParams(
-    template=import_map(Params.map),
     additional_params=additional_net_params,
     inflows=inflow,
+    osm_path=Params.MAP_DIRS["rome"] + "/osm_bbox.osm.xml"
 
 )
 

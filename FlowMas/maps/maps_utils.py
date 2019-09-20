@@ -6,7 +6,6 @@ from xml.etree.ElementTree import XMLParser
 
 from FlowMas.parameters import Params
 
-MAP_DIRS = Params.MAP_DIRS
 
 
 def get_edges(map_name, perc=1.0):
@@ -40,8 +39,13 @@ def get_edges(map_name, perc=1.0):
         return edges
 
     if map_name == 'lust':
-        path = os.path.join(MAP_DIRS["lust"], "scenario/lust.net.xml")
+        path = os.path.join(Params.MAP_DIRS["lust"], "scenario/lust.net.xml")
         edges = import_edges_from_path(path)
+
+    elif map_name == 'rome':
+        path = os.path.join(Params.MAP_DIRS["rome"], "osm.net.xml")
+        edges = import_edges_from_path(path)
+
 
     else:
         raise NotImplementedError(f"Edge extractor for {map_name} has not been implemented yet")
@@ -55,7 +59,6 @@ def get_edges(map_name, perc=1.0):
     return edges
 
 
-get_edges("lust")
 
 
 def import_map(map_name, net=True, vtype=False, rou=False):

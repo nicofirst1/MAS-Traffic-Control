@@ -17,8 +17,9 @@ class Params:
 
     MAP_DIRS = dict(
 
-        lust=os.path.join(os.getcwd().split("FlowMas")[0], "FlowMas/maps/LuSTScenario"),
-        monaco=os.path.join(os.getcwd().split("FlowMas")[0], "FlowMas/maps/MoSTScenario"),
+        lust=join_paths(WORKING_DIR, "maps/LuSTScenario"),
+        monaco=join_paths(WORKING_DIR, "maps/MoSTScenario"),
+        rome= join_paths(WORKING_DIR, "maps/RomeOSM")
     )
 
     DATA_DIR= join_paths(WORKING_DIR,"data")
@@ -35,7 +36,7 @@ class Params:
     # Scenarios and Network
     ##########################
 
-    map="lust"
+    map="rome"
     percentage_edges=0.3
 
     def __init__(self):

@@ -1,7 +1,6 @@
 
 .idea/
 
-*.xml
 
 *.csv
 
@@ -14,3 +13,8 @@ flow/__pycache__/
 flow/core/kernel/network/debug/
 
 .vscode/
+
+*.DS_Store
+
+FlowMas/data/
+
