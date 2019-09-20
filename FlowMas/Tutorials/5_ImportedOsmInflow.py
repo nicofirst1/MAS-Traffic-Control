@@ -78,7 +78,7 @@ human_inflow= dict(
 )
 
 # adding human inflows
-#inflow_random_edges(inflow, Params.map, Params.percentage_edges, **human_inflow)
+inflow_random_edges(inflow, **human_inflow)
 
 # specify net params
 net_params = NetParams(
