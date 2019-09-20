@@ -1,6 +1,7 @@
 import ray
 from ray.tune import register_env, run_experiments
 
+from FlowMas.parameters import Params
 from FlowMas.utils import ppo_default_config
 from flow.controllers import IDMController, RLController
 from flow.controllers.routing_controllers import GridRouter
@@ -10,9 +11,6 @@ from flow.core.params import VehicleParams
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.scenarios.traffic_light_grid import TrafficLightGridNetwork
 from flow.utils.registry import make_create_env
-from FlowMas.parameters import Params
-
-
 
 ##############################
 #      Vehicle Params
@@ -52,7 +50,7 @@ ADDITIONAL_ENV_PARAMS = {
 }
 
 # initializing env params, since env is just Test there will be no learning, but the procedure is the same
-env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS, horizon=HORIZON,  )
+env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS, horizon=HORIZON, )
 
 ########################
 #       NET PARAM
@@ -76,7 +74,7 @@ additional_net_params['grid_array']['short_length'] = 500
 additional_net_params['traffic_lights'] = False  # setting traffic lights to false
 
 # standard stuff, check it out in the tutorial
-net_params = NetParams(additional_params=additional_net_params,)
+net_params = NetParams(additional_params=additional_net_params, )
 
 # create the scenario object
 scenario = TrafficLightGridNetwork(name="grid_example",  # just the scenario name

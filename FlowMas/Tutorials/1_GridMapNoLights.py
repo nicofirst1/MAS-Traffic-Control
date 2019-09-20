@@ -2,6 +2,7 @@
 # the scenario name
 from copy import deepcopy
 
+from FlowMas.parameters import Params
 from flow.controllers import IDMController, GridRouter
 from flow.core.experiment import Experiment
 from flow.core.params import VehicleParams, NetParams, InitialConfig, TrafficLightParams, SumoParams, EnvParams
@@ -9,7 +10,6 @@ from flow.envs import TestEnv
 from flow.envs.traffic_light_grid import ADDITIONAL_ENV_PARAMS
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.scenarios import TrafficLightGridScenario
-from FlowMas.parameters import Params
 
 ##############################
 #      Vehicle Params

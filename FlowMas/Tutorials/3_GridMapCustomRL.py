@@ -3,16 +3,17 @@ from copy import deepcopy
 import ray
 from ray.tune import register_env, run_experiments
 
+from FlowMas.parameters import Params
 from FlowMas.utils import ppo_default_config
 from flow.controllers import IDMController, RLController
 from flow.controllers.routing_controllers import GridRouter
 from flow.core.params import SumoParams, EnvParams, NetParams, InitialConfig, CustomVehicleParams
 from flow.core.params import TrafficLightParams
+from flow.envs.multiagent.customRL import ADDITIONAL_ENV_PARAMS
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.scenarios.traffic_light_grid import TrafficLightGridNetwork
 from flow.utils.registry import make_create_env
-from flow.envs.multiagent.customRL import ADDITIONAL_ENV_PARAMS
-from FlowMas.parameters import Params
+
 ########################
 #      VEHICLES
 ########################
@@ -49,13 +50,12 @@ vehicles.add(
     cooperative_weight=0.1
 )
 
-
 ########################
 #       ENV PARAM
 ########################
 
 HORIZON = 1500  # the duration of one episode (during which the RL-agent acquire data).
-additional_env_params=deepcopy(ADDITIONAL_ENV_PARAMS)
+additional_env_params = deepcopy(ADDITIONAL_ENV_PARAMS)
 # the reward parameters for the acceleration
 
 
@@ -84,7 +84,7 @@ additional_net_params['grid_array']['short_length'] = 500
 additional_net_params['traffic_lights'] = False  # setting traffic lights to false
 
 # standard stuff, check it out in the tutorial
-net_params = NetParams(additional_params=additional_net_params,)
+net_params = NetParams(additional_params=additional_net_params, )
 
 # create the scenario object
 scenario = TrafficLightGridNetwork(name="grid_example",  # just the scenario name
@@ -153,7 +153,7 @@ register_env(gym_name, create_env)
 ########################
 #  START OF TRAINING
 ########################
-ray.init(num_cpus=Params.N_CPUS, local_mode=True) # use local mode when debugging, remove it for performance increase
+ray.init(num_cpus=Params.N_CPUS, local_mode=True)  # use local mode when debugging, remove it for performance increase
 
 # defining dictionary for the experiment
 experiment_params = dict(

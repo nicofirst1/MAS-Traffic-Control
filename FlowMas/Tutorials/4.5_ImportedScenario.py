@@ -1,4 +1,3 @@
-import os
 from copy import deepcopy
 
 # the Experiment class is used for running simulations
@@ -21,7 +20,6 @@ try:
     from ray.rllib.agents.agent import get_agent_class
 except ImportError:
     from ray.rllib.agents.registry import get_agent_class
-
 
 # Remove traffic lights
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)

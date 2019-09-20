@@ -1,13 +1,11 @@
-import os
 from copy import deepcopy
 
 # the Experiment class is used for running simulations
 from FlowMas.parameters import Params
-from FlowMas.utils import inflow_random_edges
 from flow.controllers import IDMController
 from flow.controllers.routing_controllers import MinicityRouter
 from flow.core.experiment import Experiment
-from flow.core.params import EnvParams, InitialConfig, TrafficLightParams
+from flow.core.params import EnvParams, InitialConfig
 from flow.core.params import NetParams
 from flow.core.params import SumoParams
 # all other imports are standard
@@ -16,19 +14,14 @@ from flow.core.params import VehicleParams
 from flow.envs import TestEnv
 from flow.networks import Network
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
-from maps_utils import import_map
 
 try:
     from ray.rllib.agents.agent import get_agent_class
 except ImportError:
     from ray.rllib.agents.registry import get_agent_class
-from flow.core.params import InFlows
-
 
 # Remove traffic lights
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
-
-
 
 # Adding human vehicles
 vehicles = VehicleParams()
@@ -66,7 +59,6 @@ initial_config = InitialConfig(
     perturbation=50.0,
 )
 
-
 # specify net params
 net_params = NetParams(
     additional_params=additional_net_params,
@@ -81,7 +73,6 @@ network = Network(
     vehicles=vehicles,
     initial_config=initial_config,
 )
-
 
 # create the environment
 env = TestEnv(
