@@ -24,10 +24,18 @@ class Params:
 
     DATA_DIR= join_paths(WORKING_DIR,"data")
 
+
+    ##########################
+    # Agent  params
+    ##########################
+    # todo: make distance dependent of map measures
+    min_neighbors_distance=50 # minunum distance between vehicle to be considered neighbors (in meters)
+
+
     ##########################
     # Performance stuff
     ##########################
-    N_CPUS = 2
+    N_CPUS = 1
     # number of rollouts per training iteration
     N_ROLLOUTS = 1
 
