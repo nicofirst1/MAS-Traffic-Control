@@ -1,10 +1,12 @@
 """Environment for training multi-agent experiments."""
 
 import random
+import sys
 import traceback
 from copy import deepcopy
 
 import numpy as np
+import termcolor
 from gym.spaces import Box
 from ray.rllib.env import MultiAgentEnv
 from traci.exceptions import FatalTraCIError
@@ -14,14 +16,13 @@ from flow.core.rewards import min_delay, penalize_standstill, avg_delay_specifie
 from flow.envs.base import Env
 from flow.envs.env_utils import standard_observation, neighbors_observation
 from flow.utils.exceptions import FatalFlowError
+from FlowMas.parameters import Params
 
 ADDITIONAL_ENV_PARAMS = {
     # maximum acceleration of autonomous vehicles
-    'max_accel': 1,
+    'max_accel': 10,
     # maximum deceleration of autonomous vehicles
-    'max_decel': 1,
-    # desired velocity for all vehicles in the network, in m/s
-    "target_velocity": 25
+    'max_decel': 3.5,
 }
 
 
@@ -344,18 +345,32 @@ class CustoMultiRL(MultiAgentEnv, Env):
                 # then get the coop weight
                 w = self.k.vehicle.type_parameters.get(rl_type).get('cooperative_weight')
 
+
                 # estimate the coop part of the reward
                 coop_reward = (cost1 + cost2) * w
 
-                # add the selfish
-                reward = max(coop_reward + cost3, 0)
+                # jerk related reward factor, to penalize excessive de/acceleration behaviors
+                jerk = self.k.vehicle.get_jerk(rl_id)
 
-                print(f"\nReward for agent {rl_id} is : {reward}")
+                # getting scaling factor for jerk
+                scaling_factor = self.env_params.additional_params["max_accel"] \
+                                 - self.env_params.additional_params["max_decel"]
+                scaling_factor /= self.sim_params.sim_step
+
+                # fixme: check if jerk 0 should be better or 1-jerk needed
+                jerk = pow(jerk, 2) / pow(scaling_factor, 2)
+
+                # add the selfish
+
+                reward = max(coop_reward + cost3 + jerk, 0)
+
+                if Params.DEBUG:
+                    termcolor.colored(f"\nReward for agent {rl_id} is : {reward}","yellow")
 
             rewards[rl_id] = reward
         return rewards
 
-    # TODO: all of the following
+
     @property
     def action_space(self):
         """Identify the dimensions and bounds of the action space.
@@ -383,9 +398,8 @@ class CustoMultiRL(MultiAgentEnv, Env):
             a bounded box depicting the shape and bounds of the observation
             space
         """
-        # just example boxes with no meaning for now
-
-        return Box(low=0, high=len(self.k.vehicle.num_vehicles), shape=(8,), dtype=np.float32)
+        #fixme: get lowest value right (-max_speed?)
+        return Box(low=(-sys.maxsize - 1), high=self.k.vehicle.num_vehicles, shape=(8,), dtype=np.float32)
 
     def get_state(self):
         """Return the state of the simulation as perceived by the RL agent.
@@ -402,7 +416,9 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
         for rl_id in self.k.vehicle.get_rl_ids():
             standard = standard_observation(self.k.vehicle, rl_id, max_speed, max_length)
-            neighbors = neighbors_observation(self.k.vehicle, rl_id, max_speed)
+            neighbors = neighbors_observation(self.k.vehicle, rl_id, max_speed,
+                                              self.env_params.additional_params["max_accel"],
+                                              self.sim_step)
 
             observation = np.concatenate((standard, neighbors), axis=0)
 
