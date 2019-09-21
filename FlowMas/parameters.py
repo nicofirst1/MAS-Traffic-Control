@@ -34,6 +34,8 @@ class Params:
     # number of rollouts per training iteration
     N_ROLLOUTS = 1
 
+    DEBUG=True
+
     ##########################
     # Scenarios and Network
     ##########################
