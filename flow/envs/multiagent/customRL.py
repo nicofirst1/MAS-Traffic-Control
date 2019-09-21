@@ -12,7 +12,9 @@ from traci.exceptions import TraCIException
 
 from flow.core.rewards import min_delay, penalize_standstill, avg_delay_specified_vehicles
 from flow.envs.base import Env
+from flow.envs.env_utils import standard_observation, neighbors_observation
 from flow.utils.exceptions import FatalFlowError
+from FlowMas.parameters import Params
 
 ADDITIONAL_ENV_PARAMS = {
     # maximum acceleration of autonomous vehicles
@@ -355,12 +357,10 @@ class CustoMultiRL(MultiAgentEnv, Env):
         return rewards
 
 
-    #TODO: all of the above
+    #TODO: all of the following
     @property
     def action_space(self):
         """Identify the dimensions and bounds of the action space.
-
-        MUST BE implemented in new environments.
 
         Returns
         -------
@@ -368,7 +368,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
             a bounded box depicting the shape and bounds of the action space
         """
 
-        # just example boxes with no meaning for now
+        # The action space is just the de/acceleration
         return Box(
             low=-np.abs(self.env_params.additional_params['max_decel']),
             high=self.env_params.additional_params['max_accel'],
@@ -387,12 +387,10 @@ class CustoMultiRL(MultiAgentEnv, Env):
         """
         # just example boxes with no meaning for now
 
-        return Box(low=0, high=1, shape=(5,), dtype=np.float32)
+        return Box(low=0, high=len(self.k.vehicle.num_vehicles), shape=(8,), dtype=np.float32)
 
     def get_state(self):
         """Return the state of the simulation as perceived by the RL agent.
-
-
         Returns
         -------
         state : array_like
@@ -404,34 +402,30 @@ class CustoMultiRL(MultiAgentEnv, Env):
         max_speed = self.k.network.max_speed()
         max_length = self.k.network.length()
 
+
         for rl_id in self.k.vehicle.get_rl_ids():
-            this_speed = self.k.vehicle.get_speed(rl_id)
-            lead_id = self.k.vehicle.get_leader(rl_id)
-            follower = self.k.vehicle.get_follower(rl_id)
 
-            if lead_id in ["", None]:
-                # in case leader is not visible
-                lead_speed = max_speed
-                lead_head = max_length
-            else:
-                lead_speed = self.k.vehicle.get_speed(lead_id)
-                lead_head = self.k.vehicle.get_headway(lead_id)
 
-            if follower in ["", None]:
-                # in case follower is not visible
-                follow_speed = 0
-                follow_head = max_length
-            else:
-                follow_speed = self.k.vehicle.get_speed(follower)
-                follow_head = self.k.vehicle.get_headway(follower)
+            standard=standard_observation(self.k.vehicle,rl_id,max_speed,max_length)
+            neighbors=neighbors_observation(self.k.vehicle,rl_id,max_speed)
 
-            observation = np.array([
-                this_speed / max_speed,
-                (lead_speed - this_speed) / max_speed,
-                lead_head / max_length,
-                (this_speed - follow_speed) / max_speed,
-                follow_head / max_length
-            ])
+            observation =np.concatenate((standard,neighbors),axis=0)
+
+            """
+            Each observation should be scaled 0-1
+            
+            Observation
+            1) agent speed
+            2) difference between lead speed and agent
+            3) distance from leader
+            4) difference between agent speed and follower
+            5) distance from follower
+            6) number of neighbors (not scaled obv)
+            7) average neighbors speed
+            8) average neighbors acceleration
+            
+            
+            """
 
             obs.update({rl_id: observation})
 
