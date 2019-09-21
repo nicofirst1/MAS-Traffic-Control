@@ -1,19 +1,19 @@
 """Script containing the TraCI vehicle kernel class."""
-import traceback
-
-from flow.core.kernel.vehicle import KernelVehicle
-import traci.constants as tc
-from traci.exceptions import FatalTraCIError, TraCIException
-import numpy as np
 import collections
-import warnings
-from flow.controllers.car_following_models import SimCarFollowingController
-from flow.controllers.rlcontroller import RLController
-from flow.controllers.lane_change_controllers import SimLaneChangeController
-from bisect import bisect_left
 import itertools
+import traceback
+import warnings
+from bisect import bisect_left
 from copy import deepcopy
 
+import numpy as np
+import traci.constants as tc
+from traci.exceptions import FatalTraCIError, TraCIException
+
+from flow.controllers.car_following_models import SimCarFollowingController
+from flow.controllers.lane_change_controllers import SimLaneChangeController
+from flow.controllers.rlcontroller import RLController
+from flow.core.kernel.vehicle import KernelVehicle
 # colors for vehicles
 WHITE = (255, 255, 255)
 CYAN = (0, 255, 255)
@@ -99,6 +99,7 @@ class TraCIVehicle(KernelVehicle):
                 self.__vehicles[veh_id] = dict()
                 self.__vehicles[veh_id]['type'] = typ['veh_id']
                 self.__vehicles[veh_id]['initial_speed'] = typ['initial_speed']
+                self.__vehicles[veh_id]['position'] = ()  # fixme
                 self.num_vehicles += 1
                 if typ['acceleration_controller'][0] == RLController:
                     self.num_rl_vehicles += 1
@@ -169,7 +170,7 @@ class TraCIVehicle(KernelVehicle):
             # add vehicles from a network template, if applicable
             if hasattr(self.master_kernel.network.network,
                        "template_vehicles"):
-                for veh_id in self.master_kernel.network.network.\
+                for veh_id in self.master_kernel.network.network. \
                         template_vehicles:
                     vals = deepcopy(self.master_kernel.network.network.
                                     template_vehicles[veh_id])
@@ -206,6 +207,7 @@ class TraCIVehicle(KernelVehicle):
                     list(_position) + [_angle]
                 self.__vehicles[veh_id]["timestep"] = _time_step
                 self.__vehicles[veh_id]["timedelta"] = _time_delta
+                self.__vehicles[veh_id]["position"] = self.kernel_api.vehicle.getPosition(veh_id)
             except TypeError:
                 print(traceback.format_exc())
             headway = vehicle_obs.get(veh_id, {}).get(tc.VAR_LEADER, None)
@@ -837,7 +839,7 @@ class TraCIVehicle(KernelVehicle):
                 if len(edge_dict[edge][lane]) > 0:
                     leader = edge_dict[edge][lane][0][0]
                     headway = edge_dict[edge][lane][0][1] - pos + add_length \
-                        - self.get_length(leader)
+                              - self.get_length(leader)
             except KeyError:
                 # current edge has no vehicles, so move on
                 # print(traceback.format_exc())
@@ -1035,3 +1037,53 @@ class TraCIVehicle(KernelVehicle):
     def set_max_speed(self, veh_id, max_speed):
         """See parent class."""
         self.kernel_api.vehicle.setMaxSpeed(veh_id, max_speed)
+
+    # Custom
+    def get_neighbors(self, veh_id, distance):
+        """
+        Return a list of neighbors for a given vehicle id and a maximum distance
+        :param veh_id: (string) the vehicle id
+        :param distance:  (float) distance in meters
+        :return: (dict), {vehicle_id:distance}
+        """
+
+        def point_dist(pt1, pt2):
+            """
+            Return the distance betwen two points
+
+            :param pt1: (tuple) Point 1 : (x,y)
+            :param pt2: (tuple) Point 2 : (x,y)
+            :return:  float: distance
+            """
+
+            square_dist = pow(pt1[0] - pt2[0], 2) + pow(pt1[1] - pt2[1], 2)
+            return np.sqrt(square_dist)
+
+        # add support for list of vehicles
+        if isinstance(veh_id, (list, np.ndarray)):
+            return [self.get_neighbors(vehID, distance) for vehID in veh_id]
+
+        # get the current vechile position
+        p_org = self.kernel_api.vehicle.getPosition(veh_id)
+
+        neighbors = dict()
+
+        # for every veh in the env, iterate over id and position
+        for id, pos in self.__vehicles.items():
+            p_i = pos["position"]
+
+            # skip if the id is the same as the wanted one
+            if id == veh_id: continue
+
+            # estimate distance
+            dist = point_dist(p_org, p_i)
+
+            # if point_i is close enough ad it to dict
+            if dist <= distance:
+                neighbors[id] = pos
+
+        return neighbors
+
+    def get_acceleration(self,veh_id ):
+
+        return self.kernel_api.vehicle.getAccel(veh_id)

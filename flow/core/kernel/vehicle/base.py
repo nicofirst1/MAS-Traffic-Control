@@ -659,3 +659,19 @@ class KernelVehicle(object):
         float
         """
         raise NotImplementedError
+
+    def get_neighbors(self, veh_id, distance):
+        """Return a list of vehicle ids and their distance from veh_id
+
+        Parameters
+        ----------
+        veh_id : str or list of str
+            vehicle id, or list of vehicle ids
+        distance : float
+            Distance in meters from vehid
+
+        Returns
+        -------
+        list
+        """
+        raise NotImplementedError
