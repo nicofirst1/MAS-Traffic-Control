@@ -100,7 +100,11 @@ class TraCIVehicle(KernelVehicle):
                 self.__vehicles[veh_id] = dict()
                 self.__vehicles[veh_id]['type'] = typ['veh_id']
                 self.__vehicles[veh_id]['initial_speed'] = typ['initial_speed']
-                self.__vehicles[veh_id]['position'] = ()  # fixme
+                # Custom
+                self.__vehicles[veh_id]["jerk"] = 0
+                self.__vehicles[veh_id]["prev_acceleration"] = 0
+                self.__vehicles[veh_id]['position'] = ()
+                # End Custom
                 self.num_vehicles += 1
                 if typ['acceleration_controller'][0] == RLController:
                     self.num_rl_vehicles += 1
@@ -208,7 +212,11 @@ class TraCIVehicle(KernelVehicle):
                     list(_position) + [_angle]
                 self.__vehicles[veh_id]["timestep"] = _time_step
                 self.__vehicles[veh_id]["timedelta"] = _time_delta
+                # Custom params
                 self.__vehicles[veh_id]["position"] = self.kernel_api.vehicle.getPosition(veh_id)
+                jerk = self.kernel_api.vehicle.getAccel(veh_id) - self.__vehicles[veh_id]["prev_acceleration"]
+                self.__vehicles[veh_id]["jerk"] = jerk / _time_delta
+                self.__vehicles[veh_id]["prev_acceleration"] = self.kernel_api.vehicle.getAccel(veh_id)
             except TypeError:
                 print(traceback.format_exc())
             headway = vehicle_obs.get(veh_id, {}).get(tc.VAR_LEADER, None)
@@ -1085,6 +1093,20 @@ class TraCIVehicle(KernelVehicle):
 
         return neighbors
 
-    def get_acceleration(self,veh_id ):
+    def get_acceleration(self, veh_id):
+        """
+        Return the acceleration of vehicle
+        :param veh_id: (string) vehicle id
+        :return: (float) the acceleration in m/s^2
+        """
 
         return self.kernel_api.vehicle.getAccel(veh_id)
+
+    def get_jerk(self, veh_id):
+        """
+        Return the jerk of a vehicle
+        :param veh_id: (string) vehicle id
+        :return: (float) the jerk in m/s^3
+        """
+
+        return self.__vehicles[veh_id]["jerk"]
