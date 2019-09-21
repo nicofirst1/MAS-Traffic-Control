@@ -105,7 +105,7 @@ params = dict(
     exp_tag="customRL_grid",
 
     # name of the flow environment the experiment is running on
-    env_name="CustoMultiRL",  # this kind of env does not train anything, check it out in flow.env.testenv
+    env_name="CustoMultiRL",
 
     # name of the network class the experiment is running on
     network="TrafficLightGridNetwork",
@@ -167,7 +167,6 @@ experiment_params = dict(
     stop={"training_iteration": 200, },  # stop conditions
 
 )
-
 # weird thing the function wats
 experiment_params = {params["exp_tag"]: experiment_params}
 

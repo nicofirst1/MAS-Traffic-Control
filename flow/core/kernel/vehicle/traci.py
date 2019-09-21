@@ -14,6 +14,7 @@ from flow.controllers.car_following_models import SimCarFollowingController
 from flow.controllers.lane_change_controllers import SimLaneChangeController
 from flow.controllers.rlcontroller import RLController
 from flow.core.kernel.vehicle import KernelVehicle
+
 # colors for vehicles
 WHITE = (255, 255, 255)
 CYAN = (0, 255, 255)

@@ -14,7 +14,6 @@ from flow.core.rewards import min_delay, penalize_standstill, avg_delay_specifie
 from flow.envs.base import Env
 from flow.envs.env_utils import standard_observation, neighbors_observation
 from flow.utils.exceptions import FatalFlowError
-from FlowMas.parameters import Params
 
 ADDITIONAL_ENV_PARAMS = {
     # maximum acceleration of autonomous vehicles
@@ -356,8 +355,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
             rewards[rl_id] = reward
         return rewards
 
-
-    #TODO: all of the following
+    # TODO: all of the following
     @property
     def action_space(self):
         """Identify the dimensions and bounds of the action space.
@@ -402,14 +400,11 @@ class CustoMultiRL(MultiAgentEnv, Env):
         max_speed = self.k.network.max_speed()
         max_length = self.k.network.length()
 
-
         for rl_id in self.k.vehicle.get_rl_ids():
+            standard = standard_observation(self.k.vehicle, rl_id, max_speed, max_length)
+            neighbors = neighbors_observation(self.k.vehicle, rl_id, max_speed)
 
-
-            standard=standard_observation(self.k.vehicle,rl_id,max_speed,max_length)
-            neighbors=neighbors_observation(self.k.vehicle,rl_id,max_speed)
-
-            observation =np.concatenate((standard,neighbors),axis=0)
+            observation = np.concatenate((standard, neighbors), axis=0)
 
             """
             Each observation should be scaled 0-1

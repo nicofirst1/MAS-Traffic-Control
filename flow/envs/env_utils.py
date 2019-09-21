@@ -1,7 +1,9 @@
-from FlowMas.parameters import Params
 import numpy as np
 
-def standard_observation(vehicle_api,rl_id,max_speed,max_length):
+from FlowMas.parameters import Params
+
+
+def standard_observation(vehicle_api, rl_id, max_speed, max_length):
     """
     Standard observation for agent
     :param vehicle_api: (flow.core.kernel.network.traci.TraCIKernelNetwork) vehicle api
@@ -39,14 +41,15 @@ def standard_observation(vehicle_api,rl_id,max_speed,max_length):
         follow_head = vehicle_api.get_headway(follower)
 
     return np.array([
-                this_speed / max_speed,
-                (lead_speed - this_speed) / max_speed,
-                lead_head / max_length,
-                (this_speed - follow_speed) / max_speed,
-                follow_head / max_length,
-            ])
+        this_speed / max_speed,
+        (lead_speed - this_speed) / max_speed,
+        lead_head / max_length,
+        (this_speed - follow_speed) / max_speed,
+        follow_head / max_length,
+    ])
 
-def neighbors_observation(vehicle_api,rl_id,max_speed):
+
+def neighbors_observation(vehicle_api, rl_id, max_speed):
     """
 
     Neighbors related observation for agent
@@ -64,20 +67,18 @@ def neighbors_observation(vehicle_api,rl_id,max_speed):
     """
 
     k = vehicle_api.get_neighbors(rl_id, Params.min_neighbors_distance)
-    ids=[k for k in k.keys()]
+    ids = [k for k in k.keys()]
 
-    mean_speed=0
-    mean_acc=0
+    mean_speed = 0
+    mean_acc = 0
 
     for id in ids:
-        mean_speed+=vehicle_api.get_speed(id)
-        mean_acc+=vehicle_api.get_acceleration(id)
+        mean_speed += vehicle_api.get_speed(id)
+        mean_acc += vehicle_api.get_acceleration(id)
 
     return np.array([
         len(ids),
-        mean_speed/len(ids)/max_speed,
-        mean_acc/len(ids),
+        mean_speed / len(ids) / max_speed,
+        mean_acc / len(ids),
 
     ])
-
-
