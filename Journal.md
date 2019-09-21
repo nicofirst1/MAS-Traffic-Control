@@ -7,6 +7,7 @@
 - [Ray docs](https://ray.readthedocs.io/en/latest/index.html)
 - [Ray repo](https://github.com/ray-project/ray)
 - [SUMO documentation](http://sumo.sourceforge.net/userdoc/index.html)
+- [SUMO repo](https://github.com/eclipse/sumo)
 
 # TODO
 
@@ -47,17 +48,41 @@ Check out the [environment tutorial](https://github.com/flow-project/flow/blob/m
 for this part. This part covers the Autonomous agents using RL.
 
 Here we need to specify the:
-- Action space (using gym)
-    - Stop 
-    - De/accelerate
-    
-- Observable space
-    - Define what cars know about each other (turning direction), if you go by neighbors check out *getNeighbors* in the [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
-- Reward
-    - Driving time
-    - Total driving time * weighed 
+#### Action space (using gym)
+Action space is used to tell the Agent it what can/cannot do. Notice that deceleration and acceleration are considered just one param
+- __Deceleration__: using comfortable deceleration rate at 3.5 m/s^2 as stated [here](http://ijtte.com/uploads/2012-10-01/5ebd8343-9b9c-b1d4IJTTE%20vol2%20no3%20(7).pdf)
+- __Acceleration__: using 10m/s^2 (ferrari acceleration rate), should look into this [wiki link](https://en.wikipedia.org/wiki/G-force#Horizontal) which states that comfortable acceleration for 10 seconds is 20g (200m/s^2) and 10g for 1 minute
+- __Lane_changing__: something
+
+#### Observable space
+Define what cars know about each other (turning direction), if you go by neighbors check out *getNeighbors* in the [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
+
+Note that each observation should be scaled 0-1
+            
+Observation:
+1) agent speed
+2) difference between lead speed and agent
+3) distance from leader
+4) difference between agent speed and follower
+5) distance from follower
+6) number of neighbors (not scaled obv)
+7) average neighbors speed
+8) average neighbors acceleration
+
+
+#### Reward
+
+The reward is the sum of the following params:
+
+- __Cooperative__: (system_delay + system_standstill_time)*cooperative_weight
+- __Selfish__: agent_specific_delay
+- __Scaled jerk__: the lower the better
     
 #### Modifying flow/core/kernel/vehicle/traci.py
 If you wish to add more functions to the traci file you need to look into the [Vehicle file](/anaconda3/envs/dmas/lib/python3.6/site-packages/traci/_vehicle.py) which can be found 
 inside your conda envs, for example mine is in:
 `/anaconda3/envs/dmas/lib/python3.6/site-packages/traci/_vehicle.py`
+
+#### Related papers
+- [Reward function for accelerated learning](http://www.sci.brooklyn.cuny.edu/~sklar/teaching/boston-college/s01/mc375/ml94.pdf)
+- [1Safe, Efficient, and Comfortable Velocity Controlbased on Reinforcement Learning forAutonomous Driving](https://arxiv.org/pdf/1902.00089.pdf)
