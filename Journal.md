@@ -57,3 +57,7 @@ Here we need to specify the:
     - Driving time
     - Total driving time * weighed 
     
+#### Modifying flow/core/kernel/vehicle/traci.py
+If you wish to add more functions to the traci file you need to look into the [Vehicle file](/anaconda3/envs/dmas/lib/python3.6/site-packages/traci/_vehicle.py) which can be found 
+inside your conda envs, for example mine is in:
+`/anaconda3/envs/dmas/lib/python3.6/site-packages/traci/_vehicle.py`

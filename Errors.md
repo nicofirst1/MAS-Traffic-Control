@@ -69,4 +69,5 @@ AttributeError: 'PPO' object has no attribute 'set_global_vars'
 
 __Solution:__
 
-Follow [git thread](https://github.com/ray-project/ray/issues/5715)
+Follow [git thread](https://github.com/ray-project/ray/issues/5715) and [this](https://github.com/ray-project/ray/issues/5748), 
+fix by setting _num_cpu=1_ in ray.init()
