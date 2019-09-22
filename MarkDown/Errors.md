@@ -126,4 +126,6 @@ ray.exceptions.RayTaskError: ray_worker (pid=30587, host=Ublion18)
 ImportError: Could not import tensorflow
 ```
 
-__Solution__:
+__Solution__: Install tensorflow with
+ 
+ `pip install --upgrade tensorflow`
