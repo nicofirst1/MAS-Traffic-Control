@@ -28,7 +28,7 @@ or create a custom one with [Scenario](https://github.com/flow-project/flow/blob
 - Importing scenario from openmap [X]
 - Use lust scenario without traffic lights: not possible, switching to OSM networks
 - Set inflows from random starting edges in the OSM network [X]
-- Add GroningenOSM to the map_utils []
+- Add GroningenOSM to the map_utils [x]
 
 #### Premade netwroks
 We can import a pre-made network as in [tutorial 4](../FlowMas/Tutorials/4.5_ImportedScenario.py), here's a list:

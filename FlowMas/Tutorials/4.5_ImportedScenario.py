@@ -14,7 +14,7 @@ from flow.core.params import VehicleParams
 from flow.envs import TestEnv
 from flow.networks import Network
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
-from FlowMas.utils.maps_utils import import_map
+from FlowMas.utils.maps_utils import import_template
 
 try:
     from ray.rllib.agents.agent import get_agent_class
@@ -27,7 +27,7 @@ additional_net_params['traffic_lights'] = False
 
 # specify net params
 net_params = NetParams(
-    template=import_map("lust"),
+    template=import_template("lust"),
     additional_params=additional_net_params,
 
 )

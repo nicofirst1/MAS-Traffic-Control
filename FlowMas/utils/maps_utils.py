@@ -7,7 +7,6 @@ from xml.etree.ElementTree import XMLParser
 from FlowMas.utils.parameters import Params
 
 
-
 def get_edges(map_name, perc=1.0):
     """
     Return a list of the map edges
@@ -15,7 +14,6 @@ def get_edges(map_name, perc=1.0):
     :param perc: (float range 0,1) the percentage of the edges to return, if !=1, then 1-perc random elements will be discarded
     :return: list
     """
-
 
     def import_edges_from_path(map_path):
         """
@@ -32,7 +30,7 @@ def get_edges(map_name, perc=1.0):
 
         # collect all information on the edges
         for edge in root.findall('edge'):
-            edge_id=edge.attrib['id']
+            edge_id = edge.attrib['id']
             if edge_id[0] != ':':
                 edges.append(edge_id)
 
@@ -46,9 +44,14 @@ def get_edges(map_name, perc=1.0):
         path = os.path.join(Params.MAP_DIRS["rome"], "rome.net.xml")
         edges = import_edges_from_path(path)
 
+    elif map_name == 'groningen':
+        path = os.path.join(Params.MAP_DIRS["groningen"], "groningen.net.xml")
+        edges = import_edges_from_path(path)
+
 
     else:
-        raise NotImplementedError(f"Edge extractor for {map_name} has not been implemented yet")
+        raise NotImplementedError(
+            f"Edge extractor for {map_name} has not been implemented yet\nAvaiable are {Params.MAP_DIRS.keys()}")
 
     if perc != 1:
         # discarding random edges
@@ -59,11 +62,9 @@ def get_edges(map_name, perc=1.0):
     return edges
 
 
-
-
-def import_map(map_name, net=True, vtype=False, rou=False):
+def import_template(map_name, net=True, vtype=False, rou=False):
     """
-    Import a map from the map dir, it can be imported using various features
+    Import a scenario template from the map dir, it can be imported using various features
     :param map_name: (string) the name of the map
     :param net: (bool) network geometry features
     :param vtype: (bool) The vehicle types file describing the
