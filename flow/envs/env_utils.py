@@ -1,6 +1,6 @@
 import numpy as np
 import termcolor
-from FlowMas.parameters import Params
+from FlowMas.utils.parameters import Params
 
 
 def standard_observation(vehicle_api, rl_id, max_speed, max_length):

@@ -1,8 +1,8 @@
 from copy import deepcopy
 
 # the Experiment class is used for running simulations
-from FlowMas.parameters import Params
-from FlowMas.utils import inflow_random_edges
+from FlowMas.utils.parameters import Params
+from FlowMas.utils.general_utils import inflow_random_edges
 from flow.controllers import IDMController
 from flow.controllers.routing_controllers import MinicityRouter
 from flow.core.experiment import Experiment

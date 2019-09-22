@@ -14,7 +14,7 @@
 ## Starting
 
 1. Install [Flow **dependencies**, Sumo, RLlib](https://flow.readthedocs.io/en/latest/flow_setup.html#local-installation-of-flow)
-2. BEWARE do not install flow in your python environment, we have a local copy of the repo in [here](flow) that needs to be changed.
+2. BEWARE do not install flow in your python environment, we have a local copy of the repo in [here](../flow) that needs to be changed.
 3. Complete tutorials in [FLOW](https://github.com/flow-project/flow/tree/master/tutorials), especially (0,1,3,5,6,8,11)
 
 ## Project
@@ -28,9 +28,10 @@ or create a custom one with [Scenario](https://github.com/flow-project/flow/blob
 - Importing scenario from openmap [X]
 - Use lust scenario without traffic lights: not possible, switching to OSM networks
 - Set inflows from random starting edges in the OSM network [X]
+- Add GroningenOSM to the map_utils []
 
 #### Premade netwroks
-We can import a pre-made network as in [tutorial 4](FlowMas/Tutorials/4.5_ImportedScenario.py), here's a list:
+We can import a pre-made network as in [tutorial 4](../FlowMas/Tutorials/4.5_ImportedScenario.py), here's a list:
 - [Monaco](https://github.com/lcodeca/MoSTScenario)
 - [Lust](https://github.com/lcodeca/LuSTScenario)
 

@@ -29,7 +29,7 @@ Update: Flow is getting rid of *rllib* so you won't need it anymore.
 ### - Errors with importing custom environments and/or network [3]
 
 If you have any errors regarding importing custom environments and/or networks remember that we have our 
-[own flow](flow) directory and that your python environment must be free of other flow installations.
+[own flow](../flow) directory and that your python environment must be free of other flow installations.
 
 ### -  Error 4
 

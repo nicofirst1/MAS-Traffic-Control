@@ -16,7 +16,7 @@ from flow.core.rewards import min_delay, penalize_standstill, avg_delay_specifie
 from flow.envs.base import Env
 from flow.envs.env_utils import standard_observation, neighbors_observation
 from flow.utils.exceptions import FatalFlowError
-from FlowMas.parameters import Params
+from FlowMas.utils.parameters import Params
 
 ADDITIONAL_ENV_PARAMS = {
     # maximum acceleration of autonomous vehicles

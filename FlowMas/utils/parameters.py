@@ -16,7 +16,8 @@ class Params:
 
         lust=join_paths(WORKING_DIR, "maps/LuSTScenario"),
         monaco=join_paths(WORKING_DIR, "maps/MoSTScenario"),
-        rome=join_paths(WORKING_DIR, "maps/RomeOSM")
+        rome=join_paths(WORKING_DIR, "maps/RomeOSM"),
+        groningen = join_paths(WORKING_DIR, "maps/GroningenOSM"),
     )
 
     DATA_DIR = join_paths(WORKING_DIR, "data")
@@ -30,11 +31,11 @@ class Params:
     ##########################
     # Performance stuff
     ##########################
-    N_CPUS = 1
+    N_CPUS = 4
     # number of rollouts per training iteration
     N_ROLLOUTS = 1
 
-    DEBUG=True
+    DEBUG=False
 
     ##########################
     # Scenarios and Network

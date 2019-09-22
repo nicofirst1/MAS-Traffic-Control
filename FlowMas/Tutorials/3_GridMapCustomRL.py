@@ -3,8 +3,8 @@ from copy import deepcopy
 import ray
 from ray.tune import register_env, run_experiments
 
-from FlowMas.parameters import Params
-from FlowMas.utils import ppo_default_config
+from FlowMas.utils.parameters import Params
+from FlowMas.utils.general_utils import ppo_default_config
 from flow.controllers import IDMController, RLController
 from flow.controllers.routing_controllers import GridRouter
 from flow.core.params import SumoParams, EnvParams, NetParams, InitialConfig, CustomVehicleParams
@@ -22,8 +22,8 @@ from flow.utils.registry import make_create_env
 # vehicle params to take care of all the vehicles
 vehicles = CustomVehicleParams()
 # number of human drivers
-human_num = 2
-RL_num = 2
+human_num = 100
+RL_num = 50
 
 # add human drivers with premade controllers/routers
 vehicles.add("human",
@@ -153,7 +153,7 @@ register_env(gym_name, create_env)
 ########################
 #  START OF TRAINING
 ########################
-ray.init(num_cpus=Params.N_CPUS, local_mode=True)  # use local mode when debugging, remove it for performance increase
+ray.init(num_cpus=Params.N_CPUS, local_mode=Params.DEBUG)  # use local mode when debugging, remove it for performance increase
 
 # defining dictionary for the experiment
 experiment_params = dict(

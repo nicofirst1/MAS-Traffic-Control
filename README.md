@@ -2,7 +2,7 @@
 This repo is about modelling the interaction between Autonomous Agents [AA] and Human Agents [HA] in a mixed traffic environment.
 We simulate various scenarios such as: selfishness vs cooperativeness in AAs, behavior of AAs with varying number of HAs and other.
 
-If you wish to learn more about the papers and the project goal refer to [Project_definiton.md](Project_definiton.md).
+If you wish to learn more about the papers and the project goal refer to [Project_definiton.md](MarkDown/Project_definiton.md).
 
 # Setup
 This project relays on [Flow](https://github.com/flow-project/flow) a python framework which allows the interaction 
@@ -15,7 +15,7 @@ To install the required modules run the following commands:
  `conda create --name dmas python=3.6`
 - Install requirements :
 
-`pip install -r requirements.txt --no-index` 
+`python setup.py insall` 
 
 
 Then you will need to install SUMO, either by using the [scripts](https://github.com/flow-project/flow/tree/master/scripts) in Flow or by using the [SUMO documentation](http://sumo.sourceforge.net/userdoc/Downloads.html)
@@ -29,6 +29,8 @@ There repository is currently structured as follows:
 - [FlowMas](FlowMas): the project's core containing the following dirs:
     - [maps](FlowMas/maps): a dir containing custom maps, you can follow the [readme](FlowMas/maps/README.md) for further information.
     - [Tutorials](FlowMas/Tutorials): which has an incrementing number of tutorials each being a step forward in the final implementation of the project. You can check the [tutorial readme](FlowMas/Tutorials/README.md) for more infos.
-- The [Error](Errors.md) markdown file contains common errors encountered during the project development.
-- The [Journal](Journal.md) markdown file has both an _useful_link_ section as well as a _todo_ section in which the project'steps are enumerated.
-- The [Project_definiton](Project_definiton.md) markdown file holds the project' specifications.
+    - [utils](FlowMas/utils): contains utility scripts
+- [MarkDown](MarkDown): a directory for useful markdowns:
+    - The [Error](MarkDown/Errors.md) markdown file contains common errors encountered during the project development.
+    - The [Journal](MarkDown/Journal.md) markdown file has both an _useful_link_ section as well as a _todo_ section in which the project'steps are enumerated.
+    - The [Project_definiton](MarkDown/Project_definiton.md) markdown file holds the project' specifications.

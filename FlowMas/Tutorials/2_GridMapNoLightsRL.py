@@ -1,8 +1,8 @@
 import ray
 from ray.tune import register_env, run_experiments
 
-from FlowMas.parameters import Params
-from FlowMas.utils import ppo_default_config
+from FlowMas.utils.parameters import Params
+from FlowMas.utils.general_utils import ppo_default_config
 from flow.controllers import IDMController, RLController
 from flow.controllers.routing_controllers import GridRouter
 from flow.core.params import SumoParams, EnvParams, NetParams, InitialConfig

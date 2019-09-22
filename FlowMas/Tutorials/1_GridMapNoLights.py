@@ -2,7 +2,7 @@
 # the scenario name
 from copy import deepcopy
 
-from FlowMas.parameters import Params
+from FlowMas.utils.parameters import Params
 from flow.controllers import IDMController, GridRouter
 from flow.core.experiment import Experiment
 from flow.core.params import VehicleParams, NetParams, InitialConfig, TrafficLightParams, SumoParams, EnvParams

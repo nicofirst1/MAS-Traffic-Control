@@ -4,7 +4,7 @@ from math import floor
 from xml.etree import ElementTree
 from xml.etree.ElementTree import XMLParser
 
-from FlowMas.parameters import Params
+from FlowMas.utils.parameters import Params
 
 
 

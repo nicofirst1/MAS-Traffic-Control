@@ -1,6 +1,9 @@
 
 .idea/
 
+build/
+
+dist/
 
 *.csv
 
@@ -20,3 +23,5 @@ FlowMas/data/
 
 
 *.bat
+
+dmas.egg-info/

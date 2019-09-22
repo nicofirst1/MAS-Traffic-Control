@@ -3,9 +3,9 @@ import json
 
 from ray.rllib.agents.registry import get_agent_class
 
-from FlowMas.parameters import Params
+from FlowMas.utils.parameters import Params
 from flow.utils.rllib import FlowParamsEncoder
-from maps_utils import get_edges
+from FlowMas.utils.maps_utils import get_edges
 
 
 def inflow_random_edges(inflow, **kwargs):
