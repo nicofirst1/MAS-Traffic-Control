@@ -82,7 +82,7 @@ inflow_random_edges(inflow, **human_inflow)
 net_params = NetParams(
     additional_params=additional_net_params,
     inflows=inflow,
-    osm_path=Params.MAP_DIRS["rome"] + "/osm_bbox.osm.xml"
+    osm_path=Params.MAP_DIRS_DICT["rome"] + "/osm_bbox.osm.xml"
 
 )
 

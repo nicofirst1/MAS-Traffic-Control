@@ -41,6 +41,7 @@ There repository is currently structured as follows:
     - [maps](FlowMas/maps): a dir containing custom maps, you can follow the [readme](FlowMas/maps/README.md) for further information.
     - [Tutorials](FlowMas/Tutorials): which has an incrementing number of tutorials each being a step forward in the final implementation of the project. You can check the [tutorial readme](FlowMas/Tutorials/README.md) for more infos.
     - [utils](FlowMas/utils): contains utility scripts
+    - [simulation.py](FlowMas/simulation.py): which is the main file for training and evaluating the RL agents
 - [MarkDown](MarkDown): a directory for useful markdowns:
     - The [Error](MarkDown/Errors.md) markdown file contains common errors encountered during the project development.
     - The [Journal](MarkDown/Journal.md) markdown file has both an _useful_link_ section as well as a _todo_ section in which the project'steps are enumerated.

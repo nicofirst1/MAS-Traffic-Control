@@ -62,7 +62,7 @@ initial_config = InitialConfig(
 # specify net params
 net_params = NetParams(
     additional_params=additional_net_params,
-    osm_path=Params.MAP_DIRS["rome"] + "/osm_bbox.osm.xml"
+    osm_path=Params.MAP_DIRS_DICT["rome"] + "/osm_bbox.osm.xml"
 
 )
 

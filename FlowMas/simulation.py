@@ -126,7 +126,7 @@ inflow_random_edges(inflow, **human_inflow)
 net_params = NetParams(
     additional_params=additional_net_params,
     inflows=inflow,
-    osm_path=Params.MAP_DIRS["rome"] + "/osm_bbox.osm.xml"
+    osm_path=Params.MAP_DIRS_DICT["rome"] + "/osm_bbox.osm.xml"
 
 )
 
@@ -157,7 +157,7 @@ params = dict(
     sim=SumoParams(
         render=False,  # no renderer will be displayed for training, this is for speed up
         restart_instance=True, # for performance reasons
-        emission_path=Params.DATA_DIR,
+        emission_path=Params.emission_path_dir,
     ),
 
     # environment related parameters (see flow.core.params.EnvParams)
@@ -209,6 +209,7 @@ experiment_params = dict(
     checkpoint_at_end=True,
     max_failures=999,
     stop=Params.stop_conditions,
+    local_dir=Params.ray_results_dir,
 
 )
 # weird thing the function wats

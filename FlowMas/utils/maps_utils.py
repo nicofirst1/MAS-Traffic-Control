@@ -37,21 +37,21 @@ def get_edges(map_name, perc=1.0):
         return edges
 
     if map_name == 'lust':
-        path = os.path.join(Params.MAP_DIRS["lust"], "scenario/lust.net.xml")
+        path = os.path.join(Params.MAP_DIRS_DICT["lust"], "scenario/lust.net.xml")
         edges = import_edges_from_path(path)
 
     elif map_name == 'rome':
-        path = os.path.join(Params.MAP_DIRS["rome"], "rome.net.xml")
+        path = os.path.join(Params.MAP_DIRS_DICT["rome"], "rome.net.xml")
         edges = import_edges_from_path(path)
 
     elif map_name == 'groningen':
-        path = os.path.join(Params.MAP_DIRS["groningen"], "groningen.net.xml")
+        path = os.path.join(Params.MAP_DIRS_DICT["groningen"], "groningen.net.xml")
         edges = import_edges_from_path(path)
 
 
     else:
         raise NotImplementedError(
-            f"Edge extractor for {map_name} has not been implemented yet\nAvaiable are {Params.MAP_DIRS.keys()}")
+            f"Edge extractor for {map_name} has not been implemented yet\nAvaiable are {Params.MAP_DIRS_DICT.keys()}")
 
     if perc != 1:
         # discarding random edges
@@ -80,30 +80,30 @@ def import_template(map_name, net=True, vtype=False, rou=False):
     if "lust" in map_name.lower():
 
         if net:
-            template.update({"net": os.path.join(Params.MAP_DIRS["lust"], "scenario/lust.net.xml")})
+            template.update({"net": os.path.join(Params.MAP_DIRS_DICT["lust"], "scenario/lust.net.xml")})
         if vtype:
-            template.update({"vtype": os.path.join(Params.MAP_DIRS["lust"], "scenario/vtypes.add.xml")})
+            template.update({"vtype": os.path.join(Params.MAP_DIRS_DICT["lust"], "scenario/vtypes.add.xml")})
         if rou:
             template.update({
-                "rou": [os.path.join(Params.MAP_DIRS["lust"], "scenario/DUARoutes/local.0.rou.xml"),
-                        os.path.join(Params.MAP_DIRS["lust"], "scenario/DUARoutes/local.1.rou.xml"),
-                        os.path.join(Params.MAP_DIRS["lust"], "scenario/DUARoutes/local.2.rou.xml")]
+                "rou": [os.path.join(Params.MAP_DIRS_DICT["lust"], "scenario/DUARoutes/local.0.rou.xml"),
+                        os.path.join(Params.MAP_DIRS_DICT["lust"], "scenario/DUARoutes/local.1.rou.xml"),
+                        os.path.join(Params.MAP_DIRS_DICT["lust"], "scenario/DUARoutes/local.2.rou.xml")]
             })
 
     elif "monaco" in map_name.lower():  # fixme
 
         if net:
-            template.update({"net": os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/most.net.xml")})
+            template.update({"net": os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/most.net.xml")})
         if vtype:
-            template.update({"vtype": os.path.join(Params.MAP_DIRS["monaco"], "/scenario/in/add/basic.vType.xml")})
+            template.update({"vtype": os.path.join(Params.MAP_DIRS_DICT["monaco"], "/scenario/in/add/basic.vType.xml")})
         if rou:
             template.update({
-                "rou": [os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.buses.flows.xml"),
-                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.commercial.rou.xml"),
-                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.highway.flows.xml"),
-                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.pedestrian.rou.xml"),
-                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.special.rou.xml"),
-                        os.path.join(Params.MAP_DIRS["monaco"], "scenario/in/route/most.trains.flows.xml"), ]
+                "rou": [os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.buses.flows.xml"),
+                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.commercial.rou.xml"),
+                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.highway.flows.xml"),
+                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.pedestrian.rou.xml"),
+                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.special.rou.xml"),
+                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.trains.flows.xml"), ]
             })
 
     return template
