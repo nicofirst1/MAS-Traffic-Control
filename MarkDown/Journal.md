@@ -75,13 +75,14 @@ Observation:
 
 The reward is the sum of the following params:
 
-- __Cooperative__: (system_delay + system_standstill_time)*cooperative_weight
+- __Cooperative__: (system_delay + system_standstill_time) * cooperative_weight
 - __Selfish__: agent_specific_delay
 - __Scaled jerk__: the lower the better
     
 #### Modifying flow/core/kernel/vehicle/traci.py
 If you wish to add more functions to the traci file you need to look into the [Vehicle file](/anaconda3/envs/dmas/lib/python3.6/site-packages/traci/_vehicle.py) which can be found 
 inside your conda envs, for example mine is in:
+
 `/anaconda3/envs/dmas/lib/python3.6/site-packages/traci/_vehicle.py`
 
 #### Related papers
