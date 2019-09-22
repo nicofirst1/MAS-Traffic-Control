@@ -1,5 +1,5 @@
 This directory contains imported network and scenarios.
-As well as [map_utils](FlowMas/maps/maps_utils.py) a set of scripts to handle maps related processes.
+
 ## Importing OSM 
 To import a custom map from [OpenStreetMap](https://www.openstreetmap.org/) you will need to install the sumo binaries and use the [webWizard](http://sumo.sourceforge.net/userdoc/Tutorials/OSMWebWizard.html) to download the necessary files.
 

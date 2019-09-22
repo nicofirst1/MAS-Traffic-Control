@@ -19,7 +19,11 @@ To install the required modules run the following commands:
 
 
 Then you will need to install SUMO, either by using the [scripts](https://github.com/flow-project/flow/tree/master/scripts) in Flow or by using the [SUMO documentation](http://sumo.sourceforge.net/userdoc/Downloads.html)
-(Remember to link the SUMO binaries in your _.bashrc_)
+(Remember to link the SUMO binaries in your _.bashrc_).
+
+Once you are done you can run the first Tutorial with:
+
+`python FlowMas/Tutorials/1_GridMapNoLights.py`
 
 ## Repo structure
 
@@ -34,3 +38,4 @@ There repository is currently structured as follows:
     - The [Error](MarkDown/Errors.md) markdown file contains common errors encountered during the project development.
     - The [Journal](MarkDown/Journal.md) markdown file has both an _useful_link_ section as well as a _todo_ section in which the project'steps are enumerated.
     - The [Project_definiton](MarkDown/Project_definiton.md) markdown file holds the project' specifications.
+    
