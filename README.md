@@ -13,13 +13,20 @@ To install the required modules run the following commands:
 - Optional: create a custom environment with conda
  
  `conda create --name dmas python=3.6`
-- Install requirements :
+ 
+- Install SUMO, either by using the [scripts](https://github.com/flow-project/flow/tree/master/scripts) in
+  Flow or by using the [SUMO documentation](http://sumo.sourceforge.net/userdoc/Downloads.html) (Remember to
+  link the SUMO binaries in your _.bashrc_).
+
+- Install sumotools: 
+
+`pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl`
+
+- Lastly configure packages:
 
 `python setup.py insall` 
 
-
-Then you will need to install SUMO, either by using the [scripts](https://github.com/flow-project/flow/tree/master/scripts) in Flow or by using the [SUMO documentation](http://sumo.sourceforge.net/userdoc/Downloads.html)
-(Remember to link the SUMO binaries in your _.bashrc_).
+#
 
 Once you are done you can run the first Tutorial with:
 
