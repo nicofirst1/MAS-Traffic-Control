@@ -1,6 +1,5 @@
 ray==0.7.4
 pyglet==1.3.2
-sumotools==0.3.1
 numpy==1.14.0
 scipy==1.1.0
 imutils==0.5.1
@@ -8,3 +7,4 @@ lxml==4.2.4
 opencv_python==4.1.1.26
 gym==0.14.0
 matplotlib==3.0.0
+termcolor

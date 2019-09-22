@@ -71,3 +71,61 @@ __Solution:__
 
 Follow [git thread](https://github.com/ray-project/ray/issues/5715) and [this](https://github.com/ray-project/ray/issues/5748), 
 fix by setting _num_cpu=1_ in ray.init()
+
+### Error 7
+
+__Traceback__:
+
+```
+Traceback (most recent call last):
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/tune/web_server.py", line 26, in <module>
+    import requests  # `requests` is not part of stdlib.
+ModuleNotFoundError: No module named 'requests'
+Couldn't import `requests` library. Be sure to install it on the client side.
+lz4 not available, disabling sample compression. This will significantly impact RLlib performance. To install lz4, run `pip install lz4`.
+Traceback (most recent call last):
+  File "FlowMas/Tutorials/3_GridMapCustomRL.py", line 12, in <module>
+    from flow.envs.multiagent.customRL import ADDITIONAL_ENV_PARAMS
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/envs/__init__.py", line 2, in <module>
+    from flow.envs.base import Env
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/envs/base.py", line 16, in <module>
+    from traci.exceptions import FatalTraCIError
+ModuleNotFoundError: No module named 'traci'
+```
+
+__Solution__: Install sumotools with 
+
+
+`pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl`
+
+
+### Error 8
+
+__Traceback__: 
+
+```
+ray.exceptions.RayTaskError: ray_worker (pid=30587, host=Ublion18)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/rllib/agents/trainer_template.py", line 90, in __init__
+    Trainer.__init__(self, config, env, logger_creator)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/rllib/agents/trainer.py", line 366, in __init__
+    Trainable.__init__(self, config, logger_creator)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/tune/trainable.py", line 99, in __init__
+    self._setup(copy.deepcopy(self.config))
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/rllib/agents/trainer.py", line 486, in _setup
+    self._init(self.config, self.env_creator)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/rllib/agents/trainer_template.py", line 109, in _init
+    self.config["num_workers"])
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/rllib/agents/trainer.py", line 531, in _make_workers
+    logdir=self.logdir)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/worker_set.py", line 64, in __init__
+    RolloutWorker, env_creator, policy, 0, self._local_config)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/worker_set.py", line 220, in _make_worker
+    _fake_sampler=config.get("_fake_sampler", False))
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/rollout_worker.py", line 338, in __init__
+    raise ImportError("Could not import tensorflow")
+ImportError: Could not import tensorflow
+```
+
+__Solution__: Install tensorflow with
+ 
+ `pip install --upgrade tensorflow`
