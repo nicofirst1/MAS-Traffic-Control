@@ -8,3 +8,5 @@ opencv_python==4.1.1.26
 gym==0.14.0
 matplotlib==3.0.0
 termcolor
+lz4
+setproctitle
