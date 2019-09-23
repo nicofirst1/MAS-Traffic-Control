@@ -3,6 +3,7 @@ from copy import deepcopy
 # the Experiment class is used for running simulations
 import ray
 from ray.tune import register_env, run_experiments
+from ray.tune.schedulers import AsyncHyperBandScheduler
 
 from FlowMas.utils.parameters import Params
 from FlowMas.utils.general_utils import inflow_random_edges, ppo_default_config
@@ -126,7 +127,7 @@ inflow_random_edges(inflow, **human_inflow)
 net_params = NetParams(
     additional_params=additional_net_params,
     inflows=inflow,
-    osm_path=Params.MAP_DIRS_DICT["rome"] + "/osm_bbox.osm.xml"
+    osm_path=Params.MAP_DIRS_DICT[Params.map] + "/osm_bbox.osm.xml"
 
 )
 
@@ -207,10 +208,10 @@ experiment_params = dict(
     config={**ppo_config},
     checkpoint_freq=Params.checkpoint_freq,
     checkpoint_at_end=True,
-    max_failures=999,
+    max_failures=10,
     stop=Params.stop_conditions,
     local_dir=Params.ray_results_dir,
-
+    #scheduler="AsyncHyperBandScheduler"
 )
 # weird thing the function wats
 experiment_params = {params["exp_tag"]: experiment_params}
