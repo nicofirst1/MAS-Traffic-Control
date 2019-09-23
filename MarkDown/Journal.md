@@ -2,6 +2,7 @@
 
 - [Flow, Sumo, RLlib Installation](https://flow.readthedocs.io/en/latest/flow_setup.html#local-installation-of-flow)
 - [Flow Documentation](https://flow.readthedocs.io/en/latest/)
+- [Flow tutorials](https://github.com/flow-project/flow/tree/master/tutorials)
 - [More Flow documentation and MAS](https://flow-project.github.io/tutorial.html)
 - [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
 - [Ray docs](https://ray.readthedocs.io/en/latest/index.html)
