@@ -1,6 +1,8 @@
 import os
 import shutil
 
+import termcolor
+
 
 def join_paths(path1, path2):
     return os.path.join(path1, path2)
@@ -25,6 +27,14 @@ class Params:
     emission_path_dir = join_paths(DATA_DIR, "emission_path")
     ray_results_dir = join_paths(DATA_DIR, "ray_results")
 
+
+    ##########################
+    # Performance stuff
+    ##########################
+    DEBUG = True
+    N_CPUS = 4 if not DEBUG else 1 # avoiding error 6
+    N_GPUS = 0 if not DEBUG else 0 # avoiding error 6
+
     ##########################
     # Agent  params
     ##########################
@@ -36,7 +46,7 @@ class Params:
     N_ROLLOUTS = 1
 
     # the duration of one episode (during which the RL-agent acquire data).
-    HORIZON = 1500
+    HORIZON = 1500 if not DEBUG else 1 # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> super coop, 0-> selfish)
     coop_weight = 0.7
@@ -54,13 +64,7 @@ class Params:
         training_iteration=200
     )
 
-    discount_rate= 0.998
-    ##########################
-    # Performance stuff
-    ##########################
-    DEBUG = True
-    N_CPUS = 4 if not DEBUG else 1 # avoiding error 6
-    N_GPUS = 0
+    discount_rate = 0.998
 
     ##########################
     # Scenarios and Network
@@ -99,6 +103,7 @@ class Params:
             if var.lower().endswith('dir'):
                 path = getattr(self, var)
                 if not os.path.exists(path):
+                    termcolor.colored(f"Mkdir {path}","yellow")
                     os.makedirs(path)
 
     def empty_dirs(self, to_empty):
