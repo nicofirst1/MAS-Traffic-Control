@@ -48,19 +48,26 @@ We could use a custom router to choose random direction in the grid.
 Check out the [environment tutorial](https://github.com/flow-project/flow/blob/master/tutorials/tutorial08_environments.ipynb)
 for this part. This part covers the Autonomous agents using RL.
 
-Here we need to specify the:
+The custom environments must be placed in the [envs dir](flow/envs/multiagent) and you should add it to the [init](flow/envs/multiagent/__init__.py) file.
+There is already a [customRL Agent](flow/envs/multiagent/customRL.py) which can be modified as you please. 
+
+I advise yuo to use the [third tutorial](FlowMas/Tutorials/3_GridMapCustomRL.py) to implement the agent (remember to set the DEGUB option to true in the 
+[Parameter file](FlowMas/utils/parameters.py) ) and, when you are ready, you can train it on the [simulation](FlowMas/simulation.py). 
+
+For every custom agent the following function must be implemented:
+
 #### Action space (using gym)
 Action space is used to tell the Agent it what can/cannot do. Notice that deceleration and acceleration are considered just one param
 - __Deceleration__: using comfortable deceleration rate at 3.5 m/s^2 as stated [here](http://ijtte.com/uploads/2012-10-01/5ebd8343-9b9c-b1d4IJTTE%20vol2%20no3%20(7).pdf)
 - __Acceleration__: using 10m/s^2 (ferrari acceleration rate), should look into this [wiki link](https://en.wikipedia.org/wiki/G-force#Horizontal) which states that comfortable acceleration for 10 seconds is 20g (200m/s^2) and 10g for 1 minute
-- __Lane_changing__: something
+- __Lane_changing__: todo
 
 #### Observable space
 Define what cars know about each other (turning direction), if you go by neighbors check out *getNeighbors* in the [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
 
 Note that each observation should be scaled 0-1
             
-Observation:
+Current Observation:
 1) agent speed
 2) difference between lead speed and agent
 3) distance from leader
@@ -73,7 +80,7 @@ Observation:
 
 #### Reward
 
-The reward is the sum of the following params:
+The current reward is the sum of the following params:
 
 - __Cooperative__: (system_delay + system_standstill_time) * cooperative_weight
 - __Selfish__: agent_specific_delay
