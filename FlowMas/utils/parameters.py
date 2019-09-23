@@ -53,6 +53,8 @@ class Params:
 
         training_iteration=200
     )
+
+    discount_rate= 0.998
     ##########################
     # Performance stuff
     ##########################
