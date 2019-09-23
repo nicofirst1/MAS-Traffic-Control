@@ -13,14 +13,15 @@ parser : ArgumentParser
 """
 
 import argparse
-from datetime import datetime
-import gym
-import numpy as np
 import os
 import sys
 import time
+from datetime import datetime
 
+import gym
+import numpy as np
 import ray
+
 try:
     from ray.rllib.agents.agent import get_agent_class
 except ImportError:
@@ -32,7 +33,6 @@ from flow.utils.registry import make_create_env
 from flow.utils.rllib import get_flow_params
 from flow.utils.rllib import get_rllib_config
 from flow.utils.rllib import get_rllib_pkl
-
 
 EXAMPLE_USAGE = """
 example usage:
@@ -151,6 +151,21 @@ def visualizer_rllib(args):
         config['horizon'] = args.horizon
         env_params.horizon = args.horizon
 
+    # if the users wants the last checkpoint
+    if args.checkpoint_num == '-1':
+        # get all the dirs in the dir
+        tmp = [elem for elem in os.listdir(result_dir)]
+        # keep the one that has checkpoint_ in them
+        tmp = [elem for elem in tmp if 'checkpoint_' in elem]
+        # remove the checkpoint_ string
+        tmp = [elem.replace('checkpoint_', '') for elem in tmp]
+        # convert to int
+        tmp = [int(elem) for elem in tmp]
+        # get the last one
+        args.checkpoint_num = str(sorted(tmp)[-1])
+
+        del tmp
+
     # create the agent that will be used to compute the actions
     agent = agent_cls(env=env_name, config=config)
     checkpoint = result_dir + '/checkpoint_' + args.checkpoint_num
@@ -215,12 +230,16 @@ def visualizer_rllib(args):
                     if use_lstm:
                         action[agent_id], state_init[agent_id], logits = \
                             agent.compute_action(
-                            state[agent_id], state=state_init[agent_id],
-                            policy_id=policy_map_fn(agent_id))
+                                state[agent_id], state=state_init[agent_id],
+                                policy_id=policy_map_fn(agent_id))
                     else:
                         action[agent_id] = agent.compute_action(
                             state[agent_id], policy_id=policy_map_fn(agent_id))
             else:
+
+                # setting state to None if dict is empty
+                state= state if bool(state) else np.array([])
+
                 action = agent.compute_action(state)
             state, reward, done, _ = env.step(action)
             if multiagent:
@@ -316,7 +335,7 @@ def visualizer_rllib(args):
 
     # if we wanted to save the render, here we create the movie
     if args.save_render:
-        dirs = os.listdir(os.path.expanduser('~')+'/flow_rendering')
+        dirs = os.listdir(os.path.expanduser('~') + '/flow_rendering')
         # Ignore hidden files
         dirs = [d for d in dirs if d[0] != '.']
         dirs.sort(key=lambda date: datetime.strptime(date, "%Y-%m-%d-%H%M%S"))
