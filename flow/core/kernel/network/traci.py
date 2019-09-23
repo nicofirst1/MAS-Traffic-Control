@@ -560,6 +560,10 @@ class TraCIKernelNetwork(BaseKernelNetwork):
         # this removes edges that are not connected to a network (isolated)
         net_cmd += " --remove-edges.isolated"
 
+        # remove warnings from sumo while building net
+        if 'sumo_warnings' in net_params.additional_params.keys():
+            net_cmd+= " --no-warnings "+str(not net_params.additional_params['sumo_warnings'])
+
         subprocess.call(net_cmd, shell=True)
 
         # name of the .net.xml file (located in cfg_path)

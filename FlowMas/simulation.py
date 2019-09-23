@@ -22,8 +22,6 @@ except ImportError:
     from ray.rllib.agents.registry import get_agent_class
 from flow.core.params import InFlows
 
-# Remove traffic lights
-additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
 
 ########################
 #      VEHICLES
@@ -111,6 +109,8 @@ inflow_random_edges(inflow, **human_inflow)
 #  NETWORK
 ########################
 
+additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
+additional_net_params['sumo_warnings']=False
 
 # specify net params
 net_params = NetParams(
