@@ -1,26 +1,19 @@
+
 from copy import deepcopy
 
 # the Experiment class is used for running simulations
 import ray
 from ray.tune import register_env, run_experiments
-from ray.tune.schedulers import AsyncHyperBandScheduler
 
-from FlowMas.utils.parameters import Params
 from FlowMas.utils.general_utils import inflow_random_edges, ppo_default_config
+from FlowMas.utils.parameters import Params
 from flow.controllers import IDMController, RLController
-from flow.controllers.routing_controllers import MinicityRouter, GridRouter
-from flow.core.experiment import Experiment
+from flow.controllers.routing_controllers import GridRouter
 from flow.core.params import EnvParams, InitialConfig, CustomVehicleParams
 from flow.core.params import NetParams
 from flow.core.params import SumoParams
-# all other imports are standard
-from flow.core.params import VehicleParams
-# the base network class
-from flow.envs import TestEnv
-from flow.networks import Network
-from flow.networks.osm_map import OSMap
-from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.envs.multiagent.customRL import ADDITIONAL_ENV_PARAMS
+from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.utils.registry import make_create_env
 
 try:
@@ -29,10 +22,8 @@ except ImportError:
     from ray.rllib.agents.registry import get_agent_class
 from flow.core.params import InFlows
 
-
 # Remove traffic lights
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
-
 
 ########################
 #      VEHICLES
@@ -67,7 +58,6 @@ vehicles.add(
     cooperative_weight=0
 )
 
-
 ########################
 #       ENV PARAM
 ########################
@@ -78,7 +68,6 @@ additional_env_params = deepcopy(ADDITIONAL_ENV_PARAMS)
 
 # initializing env params, since env is just Test there will be no learning, but the procedure is the same
 env_params = EnvParams(additional_params=additional_env_params, horizon=Params.HORIZON, sims_per_step=5, )
-
 
 #######################
 # SUMO + INITIAL CONFIG
@@ -105,14 +94,14 @@ initial_config = InitialConfig(
 ########################
 
 # Adding inflows
-inflow= InFlows()
+inflow = InFlows()
 
-human_inflow= dict(
-                veh_type="human",
-                probability=Params.inflow_prob_human,
-                depart_lane="random",
-                depart_speed="random",
-                begin=5,  # time in seconds to start the inflow
+human_inflow = dict(
+    veh_type="human",
+    probability=Params.inflow_prob_human,
+    depart_lane="random",
+    depart_speed="random",
+    begin=5,  # time in seconds to start the inflow
 )
 
 # adding human inflows
@@ -130,7 +119,6 @@ net_params = NetParams(
     osm_path=Params.MAP_DIRS_DICT[Params.map] + "/osm_bbox.osm.xml"
 
 )
-
 
 ########################
 #       GENERAL PARAM
@@ -157,7 +145,7 @@ params = dict(
     # sumo-related parameters (see flow.core.params.SumoParams)
     sim=SumoParams(
         render=False,  # no renderer will be displayed for training, this is for speed up
-        restart_instance=True, # for performance reasons
+        restart_instance=True,  # for performance reasons
         emission_path=Params.emission_path_dir,
     ),
 
@@ -177,8 +165,6 @@ params = dict(
     initial=initial_config,
 )
 
-
-
 ########################
 #  ENV CREATION
 ########################
@@ -187,7 +173,7 @@ params = dict(
 create_env, gym_name = make_create_env(params=params, version=0)
 
 # get default config for ppo
-ppo_config = ppo_default_config( params)
+ppo_config = ppo_default_config(params)
 
 # Register as rllib env
 register_env(gym_name, create_env)
@@ -211,10 +197,12 @@ experiment_params = dict(
     max_failures=10,
     stop=Params.stop_conditions,
     local_dir=Params.ray_results_dir,
-    #scheduler="AsyncHyperBandScheduler"
+    # scheduler="AsyncHyperBandScheduler"
 )
 # weird thing the function wats
 experiment_params = {params["exp_tag"]: experiment_params}
 
 # running the experiment
-trials = run_experiments(experiment_params)
+trials = run_experiments(experiment_params,
+                         reuse_actors=True,
+                         verbose=1)
