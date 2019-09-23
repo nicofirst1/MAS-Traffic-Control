@@ -7,6 +7,7 @@ from bisect import bisect_left
 from copy import deepcopy
 
 import numpy as np
+import termcolor
 import traci.constants as tc
 from traci.exceptions import FatalTraCIError, TraCIException
 
@@ -167,6 +168,10 @@ class TraCIVehicle(KernelVehicle):
             for veh_id in self.__rl_ids:
                 self.__vehicles[veh_id]["last_lc"] = -float("inf")
                 self.prev_last_lc[veh_id] = -float("inf")
+
+                self.__vehicles[veh_id]["jerk"] = 0
+                self.__vehicles[veh_id]["prev_acceleration"] = 0
+                self.__vehicles[veh_id]['position'] = ()
             self._num_departed.clear()
             self._num_arrived.clear()
             self._departed_ids.clear()
@@ -214,9 +219,15 @@ class TraCIVehicle(KernelVehicle):
                 self.__vehicles[veh_id]["timedelta"] = _time_delta
                 # Custom params
                 self.__vehicles[veh_id]["position"] = self.kernel_api.vehicle.getPosition(veh_id)
-                jerk = self.kernel_api.vehicle.getAccel(veh_id) - self.__vehicles[veh_id]["prev_acceleration"]
-                self.__vehicles[veh_id]["jerk"] = jerk / _time_delta
-                self.__vehicles[veh_id]["prev_acceleration"] = self.kernel_api.vehicle.getAccel(veh_id)
+
+                # add jerk to rl vehicles only
+                if veh_id in self.__rl_ids:
+                    curr_acc=self.kernel_api.vehicle.getAccel(veh_id)
+                    jerk = curr_acc - self.__vehicles[veh_id]["prev_acceleration"]
+                    jerk /= _time_delta
+                    self.__vehicles[veh_id]["jerk"] =jerk
+                    self.__vehicles[veh_id]["prev_acceleration"] = curr_acc
+
             except TypeError:
                 print(traceback.format_exc())
             headway = vehicle_obs.get(veh_id, {}).get(tc.VAR_LEADER, None)
@@ -1084,12 +1095,17 @@ class TraCIVehicle(KernelVehicle):
             # skip if the id is the same as the wanted one
             if id == veh_id: continue
 
+            #fixme: some vehicles have empty pos tuple
+            if len(pos)!=2:
+                termcolor.colored(f"\nPos has length {len(pos)} for veh: {veh_id}\n", "cyan")
+                continue
+
             # estimate distance
             dist = point_dist(p_org, p_i)
 
             # if point_i is close enough ad it to dict
             if dist <= distance:
-                neighbors[id] = pos
+                neighbors[id] = dist
 
         return neighbors
 
