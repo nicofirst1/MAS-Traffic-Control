@@ -58,17 +58,16 @@ class Params:
     ##########################
     # Performance stuff
     ##########################
-
-    N_CPUS = 4
+    DEBUG = True
+    N_CPUS = 4 if not DEBUG else 1 # avoiding error 6
     N_GPUS = 0
-    DEBUG = False
 
     ##########################
     # Scenarios and Network
     ##########################
 
     # the map to be used
-    map = "rome"
+    map = "groningen"
 
     # number of humans in the initial config
     human_vehicle_num = 100
