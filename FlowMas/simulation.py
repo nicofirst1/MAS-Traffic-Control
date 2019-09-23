@@ -205,4 +205,6 @@ experiment_params = {params["exp_tag"]: experiment_params}
 # running the experiment
 trials = run_experiments(experiment_params,
                          reuse_actors=True,
-                         verbose=1)
+                         verbose=1,
+                         raise_on_failed_trial=False, # avoid agent not known error
+                         )
