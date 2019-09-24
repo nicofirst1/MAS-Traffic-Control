@@ -24,7 +24,7 @@ To install the required modules run the following commands:
 
 - Lastly configure packages:
 
-`python setup.py insall` 
+`python setup.py install` 
 
 #
 
