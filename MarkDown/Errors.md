@@ -1,4 +1,3 @@
-
 ## Problems
 This file concerns general errors encountered while writing the software.
 
@@ -129,3 +128,50 @@ ImportError: Could not import tensorflow
 __Solution__: Install tensorflow with
  
  `pip install --upgrade tensorflow`
+ 
+### Error 9
+__Traceback__:
+```
+Traceback (most recent call last):
+  File "simulation.py", line 5, in <module>
+    import ray
+  File "/home/ivopascal/miniconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-linux-x86_64.egg/ray/__init__.py", line 13, in <module>
+    import ray._raylet
+  File "python/ray/_raylet.pyx", line 40, in init ray._raylet
+  File "/home/ivopascal/miniconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-linux-x86_64.egg/ray/utils.py", line 20, in <module>
+    import ray.gcs_utils
+  File "/home/ivopascal/miniconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-linux-x86_64.egg/ray/gcs_utils.py", line 5, in <module>
+    from ray.core.generated.gcs_pb2 import (
+  File "/home/ivopascal/miniconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-linux-x86_64.egg/ray/core/generated/gcs_pb2.py", line 7, in <module>
+    from google.protobuf.internal import enum_type_wrapper
+ModuleNotFoundError: No module named 'google'
+```
+
+__Solution__: Install google api with
+ 
+ 'pip install --upgrade google-api-python-client'
+ 
+ 
+ ### Error 10
+ __Traceback__:
+ ```
+ Traceback (most recent call last):
+  File "simulation.py", line 5, in <module>
+    import ray
+  File "/home/ivopascal/miniconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-linux-x86_64.egg/ray/__init__.py", line 13, in <module>
+    import ray._raylet
+  File "python/ray/_raylet.pyx", line 40, in init ray._raylet
+  File "/home/ivopascal/miniconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-linux-x86_64.egg/ray/utils.py", line 20, in <module>
+    import ray.gcs_utils
+  File "/home/ivopascal/miniconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-linux-x86_64.egg/ray/gcs_utils.py", line 5, in <module>
+    from ray.core.generated.gcs_pb2 import (
+  File "/home/ivopascal/miniconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-linux-x86_64.egg/ray/core/generated/gcs_pb2.py", line 7, in <module>
+    from google.protobuf.internal import enum_type_wrapper
+ModuleNotFoundError: No module named 'google.protobuf'
+```
+
+__Solution__: Install protobuf with
+ 
+ 'pip install protobuff'
+ 
+ 
