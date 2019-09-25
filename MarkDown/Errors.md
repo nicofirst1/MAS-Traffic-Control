@@ -217,4 +217,4 @@ TypeError: exceptions must derive from BaseException
 
 
 __Solution__:
-~/.bashrc
+source ~/.bashrc
