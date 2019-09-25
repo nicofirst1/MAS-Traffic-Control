@@ -175,3 +175,46 @@ __Solution__: Install protobuf with
  'pip install protobuff'
  
  
+### Error 11
+
+__Traceback__:
+```
+Params class initialized
+Tutorials/1_GridMapNoLights.py:60: PendingDeprecationWarning: The class flow.scenarios.traffic_light_grid.TrafficLightGridScenario is deprecated, use flow.networks.traffic_light_grid.TrafficLightGridNetwork instead.
+  traffic_lights=TrafficLightParams())
+/bin/sh: 1: netconvert: not found
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Error during start: [Errno 2] No such file or directory: '/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/grid_tutorial_20190925-1011411569420701.657424.net.xml'
+Retrying in 1 seconds...
+Traceback (most recent call last):
+  File "Tutorials/1_GridMapNoLights.py", line 66, in <module>
+    env = TestEnv(env_params, sumo_params, scenario)
+  File "/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/envs/base.py", line 158, in __init__
+    self.k.network.generate_network(self.network)
+  File "/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/traci.py", line 145, in generate_network
+    connections
+  File "/home/osboxes/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/traci.py", line 521, in generate_net
+    raise error
+TypeError: exceptions must derive from BaseException
+```
+
+
+__Solution__:
+~/.bashrc
