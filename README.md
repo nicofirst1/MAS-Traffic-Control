@@ -13,7 +13,12 @@ To install the required modules run the following commands:
 - Optional: create a custom environment with conda
  
  `conda create --name dmas python=3.6`
+
+
+ `source activate dmas`
  
+ - Install Ray by following [The instructions](https://flow.readthedocs.io/en/latest/flow_setup.html#optional-install-ray-rllib)
+
 - Install SUMO, either by using the [scripts](https://github.com/flow-project/flow/tree/master/scripts) in
   Flow or by using the [SUMO documentation](http://sumo.sourceforge.net/userdoc/Downloads.html) (Remember to
   link the SUMO binaries in your _.bashrc_).
@@ -24,7 +29,7 @@ To install the required modules run the following commands:
 
 - Lastly configure packages:
 
-`python setup.py insall` 
+`python setup.py install` 
 
 #
 
