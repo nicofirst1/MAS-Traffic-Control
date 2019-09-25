@@ -329,15 +329,16 @@ class CustoMultiRL(MultiAgentEnv, Env):
             else:
 
                 # Reward function used to encourage minimization of total delay.
-                cost1 = min_delay(self)
+                cost1 = -min_delay(self)
 
                 # Reward function that penalizes vehicle standstill (refer to all vehicles)
+                # todo: normalize cost2 dividing by number of cars
                 cost2 = penalize_standstill(self)
 
                 # todo: add selfish penalization for current agent being still
 
                 # Calculate the average delay for the current vehicle (Selfishness)
-                cost3 = avg_delay_specified_vehicles(self, rl_id)
+                cost3 = -avg_delay_specified_vehicles(self, rl_id)
 
                 # get the type of the agent (coop or not)
                 rl_type = self.k.vehicle.get_type(rl_id)
@@ -360,8 +361,11 @@ class CustoMultiRL(MultiAgentEnv, Env):
                 # fixme: check if jerk 0 should be better or 1-jerk needed
                 jerk = pow(jerk, 2) / pow(scaling_factor, 2)
 
-                # add the selfish
+                if jerk!=0:
+                    print(f"\n\n\n {'#'*10} JERK IS NOT ZERO {'#'*10}\n\n\n")
 
+                # add the selfish
+                #todo: add baseline reward
                 reward = max(coop_reward + cost3 + jerk, 0)
 
                 if Params.DEBUG:

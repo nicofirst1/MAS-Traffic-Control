@@ -1096,7 +1096,7 @@ class TraCIVehicle(KernelVehicle):
             if id == veh_id: continue
 
             #fixme: some vehicles have empty pos tuple
-            if len(pos)!=2:
+            if len(p_i)!=2:
                 termcolor.colored(f"\nPos has length {len(pos)} for veh: {veh_id}\n", "cyan")
                 continue
 
