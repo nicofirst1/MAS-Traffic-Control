@@ -34,7 +34,8 @@ if [ -z "$bazel" ]; then
     wget https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-linux-x86_64.sh
     chmod +x bazel-0.29.1-installer-linux-x86_64.sh
     ./bazel-0.29.1-installer-linux-x86_64.sh --user
-    
+    rm bazel-0.29.1-installer-linux-x86_64.sh 
+    export PATH="$PATH:$HOME/bin"
 
 fi
 
