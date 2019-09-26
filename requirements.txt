@@ -13,4 +13,3 @@ setproctitle
 wheel
 tensorflow
 cython
-bazel
