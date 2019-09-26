@@ -45,4 +45,4 @@ fi
 # source bash
 source ~/.bashrc 
 
-sh scripts/python_setup.py
+sh scripts/python_setup.sh
