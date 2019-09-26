@@ -10,13 +10,26 @@ between [SUMO](http://sumo.sourceforge.net/userdoc/index.html) and various Reinf
 
 To install the required modules run the following commands:
 
-- Optional: create a custom environment with conda
+- Install [anaconda](https://docs.anaconda.com/anaconda/install/)
+
+- Source the bashrc
+
+ `source ~/.bashrc`
+
+- Create a custom environment with conda
  
  `conda create --name dmas python=3.6`
 
+- Source custom environment: 
 
  `source activate dmas`
+
+ - Install requirements:
+
+ `pip install -r requirements.txt`
  
+- Install bazel [here](https://docs.bazel.build/versions/0.29.1/install.html)
+
  - Install Ray by following [The instructions](https://flow.readthedocs.io/en/latest/flow_setup.html#optional-install-ray-rllib)
 
 - Install SUMO, either by using the [scripts](https://github.com/flow-project/flow/tree/master/scripts) in

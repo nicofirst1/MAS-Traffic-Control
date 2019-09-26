@@ -1,6 +1,6 @@
 
 # update conda
-conda update conda
+conda update conda -y
 
 # create envirnonment
 echo "Creating enviroment..."
@@ -9,7 +9,7 @@ conda create --name dmas python=3.6
 
 # install requirements
 echo "Installing requirements..."
-pip install -r requirements.txt
+pip install -y -r requirements.txt
 
 
 # Install flow develop
