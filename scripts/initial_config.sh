@@ -8,8 +8,7 @@ sudo apt-get dist-upgrade
 # getting packages if not present 
 echo "Installing packages...."
 
-sudo apt-get install git-core
-sudo apt-get install build-essential
+sudo apt-get -y install git-core build-essential curl
 
 
 # check for conda 
@@ -30,35 +29,4 @@ fi
 # source bash
 source ~/.bashrc 
 
-# update conda
-conda update conda
-
-# create envirnonment
-echo "Creating enviroment..."
-
-conda create --name dmas python=3.6
-
-# install requirements
-echo "Installing requirements..."
-pip install -r requirements.txt
-
-
-# Install flow develop
-echo "Installing ray..."
-
-git clone https://github.com/flow-project/ray.git
-python ray/python/setup.py develop
-
-# remove ray 
-rm -rf ray
-
-# call ubuntu install script for sumo 
-echo "Updating..."
-
-sh scripts/setup_sumo_ubuntu1804.sh
-
-# install sumo tools
-pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl
-
-# configure package
-python setup.py install
+sh scripts/python_setup.py

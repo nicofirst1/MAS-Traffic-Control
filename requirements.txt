@@ -10,3 +10,7 @@ matplotlib==3.0.0
 termcolor
 lz4
 setproctitle
+wheel
+tensorflow
+cython
+bazel
