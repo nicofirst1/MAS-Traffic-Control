@@ -1,4 +1,4 @@
-
+source ~/.bashrc
 
 # updating apts
 echo "Updating..."
@@ -8,7 +8,7 @@ sudo apt-get dist-upgrade
 # getting packages if not present 
 echo "Installing packages...."
 
-sudo apt-get -y install git-core build-essential curl pkg-config zip g++ zlib1g-dev unzip python3
+sudo apt-get -y install git-core build-essential curl pkg-config zip g++ zlib1g-dev unzip python3 wget
 
 
 # check for conda 
@@ -31,7 +31,7 @@ if [ -z "$bazel" ]; then
     echo "Bazel not detected, installing..."
 
     # install anaconda
-    curl -O https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-linux-x86_64.sh
+    wget https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-linux-x86_64.sh
     chmod +x bazel-0.29.1-installer-linux-x86_64.sh
     ./bazel-0.29.1-installer-linux-x86_64.sh --user
     
