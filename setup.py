@@ -23,6 +23,5 @@ setup(
     author='Dizzibus',
     install_requires=requirements,
     description='Project for Design of Multi-Agent Systems KIM.DMAS04.2019-2020.1A, University of GroningenOSM ',
-    cmdclass={"build_ext": build_ext},
 
 )
