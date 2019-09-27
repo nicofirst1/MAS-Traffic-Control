@@ -10,7 +10,7 @@ if [ $os = "Darwin" ]; then
 
 elif [ $os = "Linux" ]; then
     # installing for ubuntu
-    sh ./scripts/initial_configs/initial_config_ubutu.sh
+    sh ./scripts/initial_configs/initial_config_ubuntu.sh
 
 else
   echo "This operating system is not supported yet! Please use the installation instruction in $installation_instruction"

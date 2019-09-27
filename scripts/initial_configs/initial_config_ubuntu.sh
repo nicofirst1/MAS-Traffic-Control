@@ -1,4 +1,3 @@
-source ~/.bashrc
 
 # updating apts
 echo "Updating..."
