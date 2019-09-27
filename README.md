@@ -6,12 +6,13 @@ If you wish to learn more about the papers and the project goal refer to [Projec
 
 # Setup
 
-To get the system up and running use:
+To get install the necessary packages use:
 
-```
-sh scripts/initial_config.sh
-python setup.py install
-```
+`sh scripts/initial_config.sh`
+
+Then configure the python package with:
+
+`python setup.py install`
 
 If your OS is not supported or you encounter an error check the [installation file](MarkDown/Installation.md) for more detailed
  installation instructions.
