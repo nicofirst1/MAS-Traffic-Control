@@ -251,3 +251,63 @@ pip install lxml
 ```
 
 
+### Error 12
+
+__Traceback__:
+
+```
+
+Traceback (most recent call last):
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/tune/ray_trial_executor.py", line 225, in start_trial
+    self._start_trial(trial)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/tune/ray_trial_executor.py", line 143, in _start_trial
+    or trial._checkpoint.value is not None)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/tune/ray_trial_executor.py", line 118, in _setup_runner
+    return cls.remote(config=trial.config, logger_creator=logger_creator)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/actor.py", line 282, in remote
+    return self._remote(args=args, kwargs=kwargs)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/actor.py", line 354, in _remote
+    *copy.deepcopy(args), **copy.deepcopy(kwargs))
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/rllib/agents/trainer_template.py", line 90, in __init__
+    Trainer.__init__(self, config, env, logger_creator)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/rllib/agents/trainer.py", line 366, in __init__
+    Trainable.__init__(self, config, logger_creator)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/tune/trainable.py", line 99, in __init__
+    self._setup(copy.deepcopy(self.config))
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/rllib/agents/trainer.py", line 486, in _setup
+    self._init(self.config, self.env_creator)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/rllib/agents/trainer_template.py", line 109, in _init
+    self.config["num_workers"])
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/rllib/agents/trainer.py", line 531, in _make_workers
+    logdir=self.logdir)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/rllib/evaluation/worker_set.py", line 64, in __init__
+    RolloutWorker, env_creator, policy, 0, self._local_config)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/rllib/evaluation/worker_set.py", line 220, in _make_worker
+    _fake_sampler=config.get("_fake_sampler", False))
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/rllib/evaluation/rollout_worker.py", line 274, in __init__
+    self.env = _validate_env(env_creator(env_context))
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/utils/registry.py", line 109, in create_env
+    return gym.envs.make(env_name)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/gym/envs/registration.py", line 156, in make
+    return registry.make(id, **kwargs)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/gym/envs/registration.py", line 101, in make
+    env = spec.make(**kwargs)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/gym/envs/registration.py", line 73, in make
+    env = cls(**_kwargs)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/envs/multiagent/customRL.py", line 38, in __init__
+    super().__init__(env_params, sim_params, network, simulator)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/envs/base.py", line 158, in __init__
+    self.k.network.generate_network(self.network)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/traci.py", line 126, in generate_network
+    self.network.net_params)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/traci.py", line 573, in generate_net_from_osm
+    edges_dict, conn_dict = self._import_edges_from_net(net_params)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/traci.py", line 837, in _import_edges_from_net
+    tree = ElementTree.parse(net_path, parser=parser)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/xml/etree/ElementTree.py", line 1196, in parse
+    tree.parse(source, parser)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/xml/etree/ElementTree.py", line 586, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/simulationRL_20190927-1501231569589283.425456.net.xml'
+```
+
