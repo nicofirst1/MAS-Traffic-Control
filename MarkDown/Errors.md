@@ -218,3 +218,36 @@ TypeError: exceptions must derive from BaseException
 
 __Solution__:
 source ~/.bashrc
+
+
+### Error 11
+
+__Traceback__:
+```
+Traceback (most recent call last):
+  File "FlowMas/simulation.py", line 8, in <module>
+    from FlowMas.utils.general_utils import inflow_random_edges, ppo_default_config
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/FlowMas/utils/general_utils.py", line 7, in <module>
+    from flow.utils.rllib import FlowParamsEncoder
+  File "/Users/giulia/InstallationPackages/flow/flow/utils/rllib.py", line 10, in <module>
+    import flow.envs
+  File "/Users/giulia/InstallationPackages/flow/flow/envs/__init__.py", line 2, in <module>
+    from flow.envs.base import Env
+  File "/Users/giulia/InstallationPackages/flow/flow/envs/base.py", line 22, in <module>
+    from flow.core.util import ensure_dir
+  File "/Users/giulia/InstallationPackages/flow/flow/core/util.py", line 6, in <module>
+    from lxml import etree
+ImportError: dlopen(/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/lxml/etree.cpython-36m-darwin.so, 2): no suitable image found.  Did find:
+	/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/lxml/etree.cpython-36m-darwin.so: unknown file type, first eight bytes: 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+	/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/lxml/etree.cpython-36m-darwin.so: unknown file type, first eight bytes: 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+```
+
+__Solution__:
+As written [here](https://stackoverflow.com/questions/57898440/lxml-error-when-running-sugiyama-py-on-mac):
+
+```
+conda uninstall lxml
+pip install lxml
+```
+
+

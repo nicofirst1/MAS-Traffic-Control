@@ -1,4 +1,3 @@
-ray==0.7.4
 pyglet==1.3.2
 numpy==1.14.0
 scipy==1.1.0
@@ -11,5 +10,3 @@ termcolor
 lz4
 setproctitle
 wheel
-tensorflow
-cython

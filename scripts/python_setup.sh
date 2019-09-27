@@ -60,3 +60,6 @@ pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-p
 cd $CUR_DIR
 # configure package
 python setup.py install
+
+# remove flow from packages
+pip uninstall flow
