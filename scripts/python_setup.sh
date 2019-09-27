@@ -1,47 +1,62 @@
 #!bin/bash
+
+CUR_DIR="$(pwd)"
+
+cd ~
+git clone https://github.com/flow-project/flow.git
+cd flow
+
 # update conda
 conda update conda -y
 
 # create envirnonment
 echo "Creating enviroment..."
 
-conda create --name dmas python=3.6
+# create a conda environment
+conda env create -f environment.yml --name dmas
 
 source activate dmas
 
-# install requirements
-echo "Installing requirements..."
-pip install -r requirements.txt
+# install flow within the environment
+pip install -e .
+
+# call  install script for sumo 
+echo "Installing SUMO..."
+
+os="$(uname)"
+
+if [ $os = "Darwin" ]; then
+    sh scripts/sumo_setup/setup_sumo_macosx.sh
+
+elif [ $os = "Linux" ]
+
+    sh scripts/sumo_setup/setup_sumo_ubuntu1804.sh
+fi
 
 
 # Install flow develop
 echo "Installing ray..."
 
-git clone https://github.com/flow-project/ray.git
-cd ray/python/
-python setup.py develop
-cd ../..
+conda install libgcc
+pip install cython==0.29.0
+
+cd ~
+git clone https://github.com/ray-project/ray.git
+
+# Install Bazel.
+ray/ci/travis/install-bazel.sh
 
 
-# call ubuntu install script for sumo 
-echo "Updating..."
+# Install Ray.
+cd ray/python
+pip install -e . --verbose  # Add --user if you see a permission denied error.
 
-
-os="$(uname)"
-
-
-
-if [ $os = "Darwin" ]; then
-sh scripts/setup_sumo_macosx.sh
-
-else
-
-sh scripts/setup_sumo_ubuntu1804.sh
-fi
 
 
 # install sumo tools
 pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl
 
+
+cd $CUR_DIR
 # configure package
 python setup.py install

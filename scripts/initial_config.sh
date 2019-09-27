@@ -1,50 +1,17 @@
 source ~/.bashrc
 
-# updating apts
-echo "Updating..."
-sudo apt-get update    
-sudo apt-get dist-upgrade 
-
-# getting packages if not present 
-echo "Installing packages...."
-
-sudo apt-get -y install git-core build-essential curl pkg-config zip g++ zlib1g-dev unzip python3 wget
+os="$(uname)"
 
 
-# check for conda 
-conda="$(which conda)"
+if [ $os = "Darwin" ]; then
+# mac system
+    sh scripts/initial_configs/ubuntu_initial_macosx.sh
 
-if [ -z "$conda" ]; then
-    echo "Anaconda not detected, installing..."
-
-    # install anaconda
-    curl -O https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh
-    bash Anaconda3-2019.03-Linux-x86_64.sh 
-    rm Anaconda3-2019.03-Linux-x86_64.sh 
-
+elif [ $os = "Linux" ]
+    # installing for ubuntu
+    sh scripts/initial_configs/ubuntu_initial_config.sh
 fi
-
-# check for bazel 
-bazel="$(which bazel)"
-
-if [ -z "$bazel" ]; then
-    echo "Bazel not detected, installing..."
-
-    # install anaconda
-    wget https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-linux-x86_64.sh
-    chmod +x bazel-0.29.1-installer-linux-x86_64.sh
-    ./bazel-0.29.1-installer-linux-x86_64.sh --user
-    rm bazel-0.29.1-installer-linux-x86_64.sh 
-    export PATH="$PATH:$HOME/bin"
-    echo "~/.bazel/bin/bazel-complete.bash" > ~/.bashrc
-
-fi
-
-
-
-
 
 # source bash
 source ~/.bashrc 
 
-bash scripts/python_setup.sh
