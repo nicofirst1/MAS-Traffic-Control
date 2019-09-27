@@ -2,11 +2,14 @@
 
 CUR_DIR="$(pwd)"
 LIBS_DIR="libs"
+env_name="dmas"
 # create tmp folder
 
 mkdir $LIBS_DIR
 
-if [ ! -d "$LIBS_DIR/flow" ]; then
+env="$(conda env list | grep $env_name)"
+
+if [ ! -d "$LIBS_DIR/flow" ] || [-z $env ]; then
     # install flow if not present
     cd libs
     git clone https://github.com/flow-project/flow.git
@@ -19,9 +22,9 @@ if [ ! -d "$LIBS_DIR/flow" ]; then
     echo "Creating enviroment..."
 
     # create a conda environment
-    conda env create -f environment.yml --name dmas
+    conda env create -f environment.yml --name $env_name
 
-    source activate dmas
+    conda activate dmas
 
     # install flow within the environment
     pip install -e .
