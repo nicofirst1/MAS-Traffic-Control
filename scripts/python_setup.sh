@@ -27,14 +27,9 @@ if [ ! -d "$LIBS_DIR/flow" ] || [ -z $env ]; then
 
     echo "...Conda environment created"
 
-
-
-
-    conda activate dmas
-
 fi
 
-if [ ! $CONDA_DEFAULT_ENV=$env_name ]; then 
+if [ ! $CONDA_DEFAULT_ENV=$env_name ] || [ -z $CONDA_DEFAULT_ENV ] ; then 
 
     echo "Please restart your terminal session and source the conda env with:"
     echo "'conda activate $env_name'"
@@ -42,7 +37,7 @@ if [ ! $CONDA_DEFAULT_ENV=$env_name ]; then
     exit
 fi
 
-cd flow 
+cd $LIBS_DIR/flow 
 # install flow within the environment
 pip install -e .
 
@@ -78,7 +73,7 @@ if [ ! -d "$LIBS_DIR/ray" ]; then
     # Install flow develop
     echo "Installing ray..."
 
-    conda install libgcc
+    conda install -y libgcc
     pip install cython==0.29.0
 
 
@@ -101,6 +96,7 @@ fi
 # install sumo tools
 pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl
 
+export SUMO_HOME="$HOME/sumo_binaries/bin"
 
 cd $CUR_DIR
 # configure package
