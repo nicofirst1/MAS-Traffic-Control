@@ -1,57 +1,76 @@
 #!bin/bash
 
 CUR_DIR="$(pwd)"
+LIBS_DIR="libs"
+# create tmp folder
 
-cd ~
-git clone https://github.com/flow-project/flow.git
-cd flow
+mkdir $LIBS_DIR
 
-# update conda
-conda update conda -y
+if [ ! -d "$LIBS_DIR/flow" ]; then
+    # install flow if not present
+    cd libs
+    git clone https://github.com/flow-project/flow.git
+    cd flow
 
-# create envirnonment
-echo "Creating enviroment..."
+    # update conda
+    conda update conda -y
 
-# create a conda environment
-conda env create -f environment.yml --name dmas
+    # create envirnonment
+    echo "Creating enviroment..."
 
-source activate dmas
+    # create a conda environment
+    conda env create -f environment.yml --name dmas
 
-# install flow within the environment
-pip install -e .
+    source activate dmas
+
+    # install flow within the environment
+    pip install -e .
+
+else 
+    source activate dmas
+fi
 
 # call  install script for sumo 
 echo "Installing SUMO..."
 
-os="$(uname)"
 
-if [ $os = "Darwin" ]; then
-    sh scripts/sumo_setup/setup_sumo_macosx.sh
+if [ ! -d "$HOME/sumo_binaries/bin" ]; then
 
-elif [ $os = "Linux" ]; then
+    os="$(uname)"
 
-    sh scripts/sumo_setup/setup_sumo_ubuntu1804.sh
+    if [ $os = "Darwin" ]; then
+        sh scripts/sumo_setup/setup_sumo_macosx.sh
+
+    elif [ $os = "Linux" ]; then
+
+        sh scripts/sumo_setup/setup_sumo_ubuntu1804.sh
+    fi
+
 fi
 
+cd $CUR_DIR
 
-# Install flow develop
-echo "Installing ray..."
-
-conda install libgcc
-pip install cython==0.29.0
-
-cd ~
-git clone https://github.com/ray-project/ray.git
-
-# Install Bazel.
-ray/ci/travis/install-bazel.sh
+if [ ! -d "$LIBS_DIR/ray" ]; then
 
 
-# Install Ray.
-cd ray/python
-pip install -e . --verbose  # Add --user if you see a permission denied error.
+    # Install flow develop
+    echo "Installing ray..."
+
+    conda install libgcc
+    pip install cython==0.29.0
 
 
+    git clone https://github.com/ray-project/ray.git
+
+    # Install Bazel.
+    ray/ci/travis/install-bazel.sh
+
+
+    # Install Ray.
+    cd ray/python
+    pip install -e . --verbose  # Add --user if you see a permission denied error.
+
+fi
 
 # install sumo tools
 pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl
