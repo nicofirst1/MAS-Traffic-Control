@@ -10,7 +10,7 @@ if [ ! -d "$LIBS_DIR/flow" ]; then
 fi
 env="$(conda env list | grep $env_name)"
 
-if [ ! -d "$LIBS_DIR/flow" ] || [-z $env ]; then
+if [ ! -d "$LIBS_DIR/flow" ] || [ -z $env ]; then
     # install flow if not present
     cd libs
     git clone https://github.com/flow-project/flow.git
