@@ -8,7 +8,10 @@ If you wish to learn more about the papers and the project goal refer to [Projec
 
 To get the system up and running use:
 
-`python setup.py install`
+```
+sh scripts/initial_config.sh
+python setup.py install
+```
 
 If your OS is not supported or you encounter an error check the [installation file](MarkDown/Installation.md) for more detailed
  installation instructions.
