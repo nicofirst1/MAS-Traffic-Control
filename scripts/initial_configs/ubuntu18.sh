@@ -2,16 +2,14 @@
 # updating apts
 echo "Updating..."
 sudo apt-get update    
-sudo apt-get dist-upgrade 
+sudo apt-get -y dist-upgrade 
 
 # getting packages if not present 
 echo "Installing packages...."
 
-sudo apt-get -y install git-core build-essential curl pkg-config zip g++ zlib1g-dev unzip python3 wget psmisc
+sudo apt-get -y install git-core build-essential curl pkg-config zip g++ zlib1g-dev unzip python3-dev wget psmisc
 
 # If you are not using Anaconda, you need the following.
-
-sudo apt-get install python3-dev  # For Python 3.
 
 # check for conda 
 conda="$(which conda)"
