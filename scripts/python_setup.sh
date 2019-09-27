@@ -5,8 +5,9 @@ LIBS_DIR="libs"
 env_name="dmas"
 # create tmp folder
 
-mkdir $LIBS_DIR
-
+if [ ! -d "$LIBS_DIR/flow" ]; then
+    mkdir $LIBS_DIR
+fi
 env="$(conda env list | grep $env_name)"
 
 if [ ! -d "$LIBS_DIR/flow" ] || [-z $env ]; then
@@ -24,17 +25,27 @@ if [ ! -d "$LIBS_DIR/flow" ] || [-z $env ]; then
     # create a conda environment
     conda env create -f environment.yml --name $env_name
 
+    echo "...Conda environment created"
+
+
+
+
     conda activate dmas
 
-    # install flow within the environment
-    pip install -e .
-
-else 
-
-    echo "Flow direcotry detected. Skipping installation"
-
-    source activate dmas
 fi
+
+if [ ! $CONDA_DEFAULT_ENV=$env_name ]; then 
+
+    echo "Please restart your terminal session and source the conda env with:"
+    echo "'conda activate $env_name'"
+    echo "Then run the script again"
+    exit
+fi
+
+cd flow 
+# install flow within the environment
+pip install -e .
+
 
 # call  install script for sumo 
 echo "Installing SUMO..."
