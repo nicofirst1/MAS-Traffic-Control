@@ -28,9 +28,8 @@ To install the required modules run the following commands:
 
  `pip install -r requirements.txt`
  
-- Install bazel [here](https://docs.bazel.build/versions/0.29.1/install.html)
 
- - Install Ray by following [The instructions](https://flow.readthedocs.io/en/latest/flow_setup.html#optional-install-ray-rllib)
+ - Install Ray by following [the instruction on ray](https://ray.readthedocs.io/en/latest/installation.html) and the ones[on flow](https://flow.readthedocs.io/en/latest/flow_setup.html#optional-install-ray-rllib)
 
 - Install SUMO, either by using the [scripts](https://github.com/flow-project/flow/tree/master/scripts) in
   Flow or by using the [SUMO documentation](http://sumo.sourceforge.net/userdoc/Downloads.html) (Remember to
