@@ -29,5 +29,3 @@ fi
 
 # source bash
 source ~/.bashrc 
-
-bash scripts/python_setup.sh
