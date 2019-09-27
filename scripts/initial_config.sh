@@ -36,6 +36,7 @@ if [ -z "$bazel" ]; then
     ./bazel-0.29.1-installer-linux-x86_64.sh --user
     rm bazel-0.29.1-installer-linux-x86_64.sh 
     export PATH="$PATH:$HOME/bin"
+    echo "~/.bazel/bin/bazel-complete.bash" > ~/.bashrc
 
 fi
 
@@ -46,4 +47,4 @@ fi
 # source bash
 source ~/.bashrc 
 
-sh scripts/python_setup.sh
+bash scripts/python_setup.sh
