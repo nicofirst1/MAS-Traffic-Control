@@ -27,6 +27,9 @@ if [ ! -d "$LIBS_DIR/flow" ]; then
     pip install -e .
 
 else 
+
+    echo "Flow direcotry detected. Skipping installation"
+
     source activate dmas
 fi
 
@@ -45,6 +48,11 @@ if [ ! -d "$HOME/sumo_binaries/bin" ]; then
 
         sh scripts/sumo_setup/setup_sumo_ubuntu1804.sh
     fi
+
+else
+
+    echo "SUMO direcotry detected. Skipping installation"
+
 
 fi
 
@@ -69,6 +77,10 @@ if [ ! -d "$LIBS_DIR/ray" ]; then
     # Install Ray.
     cd ray/python
     pip install -e . --verbose  # Add --user if you see a permission denied error.
+
+else
+
+    echo "Ray direcotry detected. Skipping installation"
 
 fi
 
