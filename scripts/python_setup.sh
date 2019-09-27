@@ -28,7 +28,7 @@ os="$(uname)"
 if [ $os = "Darwin" ]; then
     sh scripts/sumo_setup/setup_sumo_macosx.sh
 
-elif [ $os = "Linux" ]
+elif [ $os = "Linux" ]; then
 
     sh scripts/sumo_setup/setup_sumo_ubuntu1804.sh
 fi
