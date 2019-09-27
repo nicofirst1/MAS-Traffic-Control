@@ -1,3 +1,7 @@
+#!/bin/bash 
+# source bash
+. ~/.bashrc
+
 
 # updating apts
 echo "Updating..."
@@ -22,8 +26,10 @@ if [ -z "$conda" ]; then
     bash Anaconda3-2019.03-Linux-x86_64.sh 
     rm Anaconda3-2019.03-Linux-x86_64.sh 
 
+    . ~/anaconda3/bin/activate
+    conda init
 fi
 
 
 # source bash
-source ~/.bashrc 
+. ~/.bashrc
