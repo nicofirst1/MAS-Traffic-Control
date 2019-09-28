@@ -320,3 +320,32 @@ Quitting (on error).
 __Solution__:
 
 Check [this](https://proj.org/install.html) and then [this](https://sourceforge.net/p/sumo/mailman/message/35283626/)
+
+### Error 13
+
+__Traceback__:
+```
+Traceback (most recent call last):
+  File "/Users/giulia/Desktop/dmas/FlowMas/Tutorials/4.5_ImportedScenario.py", line 81, in <module>
+    network=network
+  File "/Users/giulia/Desktop/dmas/flow/envs/base.py", line 158, in __init__
+    self.k.network.generate_network(self.network)
+  File "/Users/giulia/Desktop/dmas/flow/core/kernel/network/traci.py", line 123, in generate_network
+    self.network.net_params)
+  File "/Users/giulia/Desktop/dmas/flow/core/kernel/network/traci.py", line 607, in generate_net_from_template
+    edges_dict, conn_dict = self._import_edges_from_net(net_params)
+  File "/Users/giulia/Desktop/dmas/flow/core/kernel/network/traci.py", line 837, in _import_edges_from_net
+    tree = ElementTree.parse(net_path, parser=parser)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/xml/etree/ElementTree.py", line 1196, in parse
+    tree.parse(source, parser)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/xml/etree/ElementTree.py", line 586, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/giulia/Desktop/dmas/FlowMas/maps/LuSTScenario/scenario/lust.net.xml'
+```
+
+__Solution__: you haven't initialized the LuSTScenario repo, run:
+
+```
+cd FlowMas/maps/
+git clone https://github.com/lcodeca/LuSTScenario
+```
