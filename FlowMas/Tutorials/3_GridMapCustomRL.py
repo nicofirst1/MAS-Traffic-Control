@@ -145,7 +145,7 @@ params = dict(
 create_env, gym_name = make_create_env(params=params, version=0)
 
 # get default config for ppo
-ppo_config = ppo_default_config(HORIZON, params)
+ppo_config = ppo_default_config( params)
 
 # Register as rllib env
 register_env(gym_name, create_env)

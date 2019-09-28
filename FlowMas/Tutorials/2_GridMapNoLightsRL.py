@@ -135,7 +135,7 @@ params = dict(
 create_env, gym_name = make_create_env(params=params, version=0)
 
 # get default config for ppo
-config = ppo_default_config(HORIZON, params)
+config = ppo_default_config(params)
 
 # Register as rllib env
 register_env(gym_name, create_env)
@@ -144,7 +144,7 @@ register_env(gym_name, create_env)
 #  START OF TRAINING
 ########################
 
-ray.init(num_cpus=Params.N_CPUS + 1)
+ray.init(num_cpus=1, local_mode=True )
 
 # defining dictionary for the experiment
 experiment_params = dict(
