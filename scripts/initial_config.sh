@@ -16,4 +16,5 @@ else
   echo "This operating system is not supported yet! Please use the installation instruction in $installation_instruction"
 fi
 
-
+# launching python configuration
+sh ./scripts/python_setup.sh

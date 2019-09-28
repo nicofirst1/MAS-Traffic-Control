@@ -12,6 +12,7 @@ sudo apt-get -y dist-upgrade
 echo "Installing packages...."
 
 sudo apt-get -y install git-core build-essential curl pkg-config zip g++ zlib1g-dev unzip python3-dev wget psmisc
+sudo apt-get -y install libproj-java libproj9 proj proj-data
 
 # If you are not using Anaconda, you need the following.
 

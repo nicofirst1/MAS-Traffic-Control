@@ -41,6 +41,8 @@ cd $LIBS_DIR/flow
 # install flow within the environment
 pip install -e .
 
+# installing other conda libs
+conda install -y  -c conda-forge proj4
 
 # call  install script for sumo 
 echo "Installing SUMO..."
