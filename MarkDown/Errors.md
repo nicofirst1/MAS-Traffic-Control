@@ -310,4 +310,13 @@ Traceback (most recent call last):
     source = open(source, "rb")
 FileNotFoundError: [Errno 2] No such file or directory: '/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/flow/core/kernel/network/debug/cfg/simulationRL_20190927-1501231569589283.425456.net.xml'
 ```
+The error is actually in the netconvert command:
+```
+netconvert --osm-files $HOME/dmas/FlowMas/maps/GroningenOSM/osm_bbox.osm.xml --output-file $HOME/dmas/flow/core/kernel/network/debug/cfg/simulationRL_20190928-0948571569656937.4081762.net.xml --keep-edges.by-vclass passenger --remove-edges.isolated --no-warnings True
+Error: Cannot import network data without PROJ-Library. Please install packages proj before building sumo
+Quitting (on error).
+```
 
+__Solution__:
+
+Check [this](https://proj.org/install.html) and then [this](https://sourceforge.net/p/sumo/mailman/message/35283626/)
