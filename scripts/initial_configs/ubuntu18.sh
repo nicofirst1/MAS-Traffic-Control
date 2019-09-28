@@ -3,8 +3,13 @@
 . ~/.bashrc
 
 
+ if [ $DEBUG_flag ]; then
+        echo "[$DEBUG_id] 2) Ubuntu initial configuration"
+    fi
+
+
 # updating apts
-echo "Updating..."
+echo "Updating apt..."
 sudo apt-get update    
 sudo apt-get -y dist-upgrade 
 
@@ -20,7 +25,11 @@ sudo apt-get -y install libproj-java libproj9 proj proj-data
 conda="$(which conda)"
 
 if [ -z "$conda" ]; then
-    echo "Anaconda not detected, installing..."
+
+    if [ $DEBUG_flag ]; then
+        echo "[$DEBUG_id] 2.5) Anaconda not detected, installing..."
+    fi
+
 
     # install anaconda
     curl -O https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh
