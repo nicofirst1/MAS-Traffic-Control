@@ -221,12 +221,11 @@ class TraCIVehicle(KernelVehicle):
                 self.__vehicles[veh_id]["position"] = self.kernel_api.vehicle.getPosition(veh_id)
 
                 # add jerk to rl vehicles only
-                if veh_id in self.__rl_ids:
-                    curr_acc=self.kernel_api.vehicle.getAccel(veh_id)
-                    jerk = curr_acc - self.__vehicles[veh_id]["prev_acceleration"]
-                    jerk /= _time_delta
-                    self.__vehicles[veh_id]["jerk"] =jerk
-                    self.__vehicles[veh_id]["prev_acceleration"] = curr_acc
+                curr_acc=self.get_acceleration(veh_id)#fixme get car acceleration
+                jerk = curr_acc - self.__vehicles[veh_id]["prev_acceleration"]
+                jerk /= _time_delta
+                self.__vehicles[veh_id]["jerk"] =jerk
+                self.__vehicles[veh_id]["prev_acceleration"] = curr_acc
 
             except TypeError:
                 print(traceback.format_exc())
@@ -1116,7 +1115,7 @@ class TraCIVehicle(KernelVehicle):
         :return: (float) the acceleration in m/s^2
         """
 
-        return self.kernel_api.vehicle.getAccel(veh_id)
+        return self.kernel_api.vehicle._getUniversal(0x72, veh_id)
 
     def get_jerk(self, veh_id):
         """
