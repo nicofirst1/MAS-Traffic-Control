@@ -51,6 +51,9 @@ class Params:
     # the weight for cooperative agents (1-> super coop, 0-> selfish)
     coop_weight = 0.7
 
+    # baseline for reward
+    baseline = 10
+
     ##########################
     #  Training  params
     ##########################
