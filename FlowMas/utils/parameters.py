@@ -65,9 +65,15 @@ class Params:
 
     # frequency of checkpoint
     checkpoint_freq = 20
+    
+    #number of iterations for training
     training_iteration = 600
 
-    training_alg="apex" #PPO
+    # training algorithms
+    implemented_algs=["marwil","ppo"]
+    training_alg=implemented_algs[0]
+
+    # learning rate
     learning_rate=1e-4
 
     # dictionary for stopping conditions
