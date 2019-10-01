@@ -63,14 +63,17 @@ class Params:
     #  Training  params
     ##########################
 
+    # Number of evaluation to perform
+    evaluation_interval=4
+
     # frequency of checkpoint
     checkpoint_freq = 20
-    
+
     #number of iterations for training
     training_iteration = 600
 
     # training algorithms
-    implemented_algs=["marwil","ppo"]
+    implemented_algs=["MARWIL","PPO"]
     training_alg=implemented_algs[0]
 
     # learning rate

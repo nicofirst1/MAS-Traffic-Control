@@ -130,6 +130,7 @@ net_params = NetParams(
 
 # defining a general dictionary containing every configuration ,
 # this will be passed to the gym to make the trainable environment
+
 params = dict(
     # name of the experiment
     exp_tag="simulationRL",
@@ -192,13 +193,13 @@ ray.init(num_cpus=Params.N_CPUS,
          )
 
 exp = Experiment(
-    name="my_experiment_name",
-    run="PPO",  # must be the same as the default config
+    name=f"Sim-{Params.training_alg}",
+    run=Params.training_alg,  # must be the same as the default config
     config=ppo_config,
-    resources_per_trial=Params.trial_resources,
+    #resources_per_trial=Params.trial_resources, #fixme: not working
     stop=Params.stop_conditions,
     local_dir=Params.ray_results_dir,
-    max_failures=200,
+    max_failures=9999,
     checkpoint_freq=Params.checkpoint_freq,
     checkpoint_at_end=True,
 )
