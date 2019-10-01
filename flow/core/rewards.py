@@ -230,7 +230,7 @@ def penalize_standstill(env, gain=1):
     vel = np.array(env.k.vehicle.get_speed(veh_ids))
     num_standstill = len(vel[vel == 0])/len(veh_ids)
     penalty = gain * num_standstill
-    return -penalty
+    return penalty
 
 
 def penalize_near_standstill(env, thresh=0.3, gain=1):
