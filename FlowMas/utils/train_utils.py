@@ -52,6 +52,13 @@ def env_config(config):
     :param config: a config dict
     :return:  updated config dict
 
+    # Set the ray.rllib.* log level for the agent process and its workers.
+    # Should be one of DEBUG, INFO, WARN, or ERROR. The DEBUG level will also
+    # periodically print out summaries of relevant internal dataflow (this is
+    # also printed out once at startup at the INFO level).
+    "log_level": "INFO",
+
+
         # === Environment ===
     # Discount factor of the MDP
     "gamma": 0.99,
@@ -86,6 +93,7 @@ def env_config(config):
     config["train_batch_size"] = Params.HORIZON   # batch size
     config["gamma"] = Params.discount_rate  # discount rate
     config["horizon"] = Params.HORIZON  # rollout horizon
+    config["log_level"] = "WARN"
     # config["rl"] = Params.learning_rate #fixme: giving weird problem
 
     return config
