@@ -211,11 +211,10 @@ pbt_scheduler = PopulationBasedTraining(
     perturbation_interval=Params.training_iteration // 20,  # perturbate a total of 20 times during the training
     hyperparam_mutations={  # fixme: get correct params
         "lr": [1e-3, 5e-4, 1e-4, 5e-5, 1e-5],
-        "alpha": lambda: random.uniform(0.0, 1.0),
     })
 
 trials = run(
-    Experiment,
+    exp,
     reuse_actors=True,
     verbose=1,
     raise_on_failed_trial=False,  # avoid agent not known error
