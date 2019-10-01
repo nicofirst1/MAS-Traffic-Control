@@ -50,8 +50,10 @@ def performance_config(config):
     config["num_workers"]=Params.N_WORKERS
     config["num_gpus"]=Params.N_GPUS
     config["num_cpus_per_worker"]=min(Params.N_CPUS//Params.N_WORKERS,1)
-    config["num_gpus_per_worker"]=Params.N_GPUS//Params.N_WORKERS
+    config["num_gpus_per_worker"]=Params.N_GPUS
     config["num_cpus_for_driver"]=Params.N_CPUS
+    config["log_level"] = "WARN"
+
 
 def eval_config(config):
     """
@@ -120,11 +122,9 @@ def env_config(config):
 
     """
 
-    config["num_workers"] = Params.N_CPUS - 1  # number of parallel workers
     config["train_batch_size"] = Params.HORIZON   # batch size
     config["gamma"] = Params.discount_rate  # discount rate
     config["horizon"] = Params.HORIZON  # rollout horizon
-    config["log_level"] = "WARN"
     # config["rl"] = Params.learning_rate #fixme: giving weird problem
 
     return config
