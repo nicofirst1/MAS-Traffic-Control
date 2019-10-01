@@ -1,12 +1,17 @@
-
+import json
+import random
 from copy import deepcopy
 
 # the Experiment class is used for running simulations
 import ray
-from ray.tune import register_env, run_experiments
+from past.builtins import cmp
+from ray.tune import register_env, run_experiments, run
+from ray.tune.experiment import convert_to_experiment_list, Experiment
+from ray.tune.schedulers import PopulationBasedTraining
 
-from FlowMas.utils.general_utils import inflow_random_edges, ppo_default_config
+from FlowMas.utils.general_utils import inflow_random_edges
 from FlowMas.utils.parameters import Params
+from FlowMas.utils.train_utils import get_default_config
 from flow.controllers import IDMController, RLController
 from flow.controllers.routing_controllers import GridRouter
 from flow.core.params import EnvParams, InitialConfig, CustomVehicleParams
@@ -21,7 +26,6 @@ try:
 except ImportError:
     from ray.rllib.agents.registry import get_agent_class
 from flow.core.params import InFlows
-
 
 ########################
 #      VEHICLES
@@ -110,7 +114,7 @@ inflow_random_edges(inflow, **human_inflow)
 ########################
 
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
-additional_net_params['sumo_warnings']=False
+additional_net_params['sumo_warnings'] = False
 
 # specify net params
 net_params = NetParams(
@@ -173,7 +177,8 @@ params = dict(
 create_env, gym_name = make_create_env(params=params, version=0)
 
 # get default config for ppo
-ppo_config = ppo_default_config(params)
+ppo_config = get_default_config(params)
+ppo_config['env'] = gym_name # add env name to the configs
 
 # Register as rllib env
 register_env(gym_name, create_env)
@@ -186,25 +191,35 @@ ray.init(num_cpus=Params.N_CPUS,
          local_mode=Params.DEBUG,  # use local mode when debugging, remove it for performance increase
          )
 
-# defining dictionary for the experiment
-experiment_params = dict(
-
+exp = Experiment(
+    name="my_experiment_name",
     run="PPO",  # must be the same as the default config
-    env=gym_name,
-    config={**ppo_config},
-    checkpoint_freq=Params.checkpoint_freq,
-    checkpoint_at_end=True,
-    max_failures=200,
+    config=ppo_config,
+    resources_per_trial=Params.trial_resources,
     stop=Params.stop_conditions,
     local_dir=Params.ray_results_dir,
-    # scheduler="AsyncHyperBandScheduler"
+    max_failures=200,
+    checkpoint_freq=Params.checkpoint_freq,
+    checkpoint_at_end=True,
 )
-# weird thing the function wats
-experiment_params = {params["exp_tag"]: experiment_params}
 
-# running the experiment
-trials = run_experiments(experiment_params,
-                         reuse_actors=True,
-                         verbose=1,
-                         raise_on_failed_trial=False, # avoid agent not known error
-                         )
+# defining population scheduler
+pbt_scheduler = PopulationBasedTraining(
+    time_attr='training_iteration',
+    metric='episode_reward_mean',
+    mode='max',
+    perturbation_interval=Params.training_iteration // 20,  # perturbate a total of 20 times during the training
+    hyperparam_mutations={  # fixme: get correct params
+        "lr": [1e-3, 5e-4, 1e-4, 5e-5, 1e-5],
+        "alpha": lambda: random.uniform(0.0, 1.0),
+    })
+
+trials = run(
+    Experiment,
+    reuse_actors=True,
+    verbose=1,
+    raise_on_failed_trial=False,  # avoid agent not known error
+    return_trials=True,
+    scheduler=pbt_scheduler,
+
+)
