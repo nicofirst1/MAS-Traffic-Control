@@ -349,3 +349,37 @@ __Solution__: you haven't initialized the LuSTScenario repo, run:
 cd FlowMas/maps/
 git clone https://github.com/lcodeca/LuSTScenario
 ```
+
+### Error 14
+
+__Traceback__:
+```
+2019-10-01 21:33:26,306	INFO resource_spec.py:205 -- Starting Ray with 2.05 GiB memory available for workers and up to 1.05 GiB for objects. You can adjust these settings with ray.remote(memory=<bytes>, object_store_memory=<bytes>).
+Traceback (most recent call last):
+  File "/Users/giulia/Desktop/dmas/FlowMas/simulation.py", line 192, in <module>
+    local_mode=Params.DEBUG,  # use local mode when debugging, remove it for performance increase
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/worker.py", line 1495, in init
+    head=True, shutdown_at_exit=False, ray_params=ray_params)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/node.py", line 145, in __init__
+    self.start_head_processes()
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/node.py", line 513, in start_head_processes
+    self.start_redis()
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/node.py", line 368, in start_redis
+    include_java=self._ray_params.include_java)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/services.py", line 613, in start_redis
+    stderr_file=redis_stderr_file)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/services.py", line 782, in _start_redis_instance
+    stderr_file=stderr_file)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/services.py", line 400, in start_ray_process
+    stderr=stderr_file)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/subprocess.py", line 729, in __init__
+    restore_signals, start_new_session)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/subprocess.py", line 1364, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+PermissionError: [Errno 13] Permission denied: '/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray-0.7.4-py3.6-macosx-10.7-x86_64.egg/ray/core/src/ray/thirdparty/redis/src/redis-server'
+
+```
+
+__Solution__: Workaround is the ugliest thing you can do...
+
+`sudo chmod -R a+wxr $HOME/anaconda3/envs/dmas/lib/python3.6/site-packages/<your-ray-version>/ray`
