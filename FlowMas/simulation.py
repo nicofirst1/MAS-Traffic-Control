@@ -196,12 +196,12 @@ exp = Experiment(
     name=f"Sim-{Params.training_alg}",
     run=Params.training_alg,  # must be the same as the default config
     config=ppo_config,
-    #resources_per_trial=Params.trial_resources, #fixme: not working
     stop=Params.stop_conditions,
     local_dir=Params.ray_results_dir,
     max_failures=9999,
     checkpoint_freq=Params.checkpoint_freq,
     checkpoint_at_end=True,
+
 )
 
 # defining population scheduler
@@ -221,5 +221,6 @@ trials = run(
     raise_on_failed_trial=False,  # avoid agent not known error
     return_trials=True,
     scheduler=pbt_scheduler,
+
 
 )

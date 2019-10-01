@@ -22,6 +22,37 @@ def simple_analyzer():
     print(all_dataframes)
 
 
+def performance_config(config):
+    """
+
+    :param config:
+    :return:
+
+    # === Resources ===
+    # Number of actors used for parallelism
+    "num_workers": 2,
+    # Number of GPUs to allocate to the trainer process. Note that not all
+    # algorithms can take advantage of trainer GPUs. This can be fractional
+    # (e.g., 0.3 GPUs).
+    "num_gpus": 0,
+    # Number of CPUs to allocate per worker.
+    "num_cpus_per_worker": 1,
+    # Number of GPUs to allocate per worker. This can be fractional.
+    "num_gpus_per_worker": 0,
+    # Any custom resources to allocate per worker.
+    "custom_resources_per_worker": {},
+    # Number of CPUs to allocate for the trainer. Note: this only takes effect
+    # when running in Tune.
+    "num_cpus_for_driver": 1,
+
+    """
+
+    config["num_workers"]=Params.N_WORKERS
+    config["num_gpus"]=Params.N_GPUS
+    config["num_cpus_per_worker"]=min(Params.N_CPUS//Params.N_WORKERS,1)
+    config["num_gpus_per_worker"]=Params.N_GPUS//Params.N_WORKERS
+    config["num_cpus_for_driver"]=Params.N_CPUS
+
 def eval_config(config):
     """
     Setting evaluation specific configuration, independent from model chosen
@@ -223,6 +254,8 @@ def marwil_config(config):
     config["replay_buffer_size"] = 100000
 
     return config
+
+
 
 
 def get_default_config(params):
