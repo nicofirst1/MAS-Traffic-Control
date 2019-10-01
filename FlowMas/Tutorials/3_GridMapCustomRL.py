@@ -4,7 +4,7 @@ import ray
 from ray.tune import register_env, run_experiments
 
 from FlowMas.utils.parameters import Params
-from FlowMas.utils.general_utils import ppo_default_config
+from FlowMas.utils.train_utils import get_default_config
 from flow.controllers import IDMController, RLController
 from flow.controllers.routing_controllers import GridRouter
 from flow.core.params import SumoParams, EnvParams, NetParams, InitialConfig, CustomVehicleParams
@@ -145,7 +145,7 @@ params = dict(
 create_env, gym_name = make_create_env(params=params, version=0)
 
 # get default config for ppo
-ppo_config = ppo_default_config( params)
+ppo_config = get_default_config( params)
 
 # Register as rllib env
 register_env(gym_name, create_env)

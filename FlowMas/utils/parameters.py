@@ -35,6 +35,11 @@ class Params:
     N_CPUS = 4 if not DEBUG else 1 # avoiding error 6
     N_GPUS = 0 if not DEBUG else 0 # avoiding error 6
 
+    trial_resources=dict(
+        cpu= N_CPUS,
+        gpu=N_GPUS,
+    )
+
     ##########################
     # Agent  params
     ##########################
@@ -60,11 +65,15 @@ class Params:
 
     # frequency of checkpoint
     checkpoint_freq = 20
+    training_iteration = 600
+
+    training_alg="apex" #PPO
+    learning_rate=1e-4
 
     # dictionary for stopping conditions
     stop_conditions = dict(
 
-        training_iteration=200
+        training_iteration=training_iteration
     )
 
     discount_rate = 0.998
@@ -90,6 +99,10 @@ class Params:
 
     # probability to spawn a human
     inflow_prob_human = 0.001
+
+    ##########################
+    #    METHODS
+    ##########################
 
     def __init__(self):
         print("Params class initialized")
