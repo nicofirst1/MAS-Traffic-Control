@@ -27,16 +27,15 @@ class Params:
     emission_path_dir = join_paths(DATA_DIR, "emission_path")
     ray_results_dir = join_paths(DATA_DIR, "ray_results")
 
-
     ##########################
     # Performance stuff
     ##########################
-    DEBUG = True
-    N_CPUS = 4 if not DEBUG else 1 # avoiding error 6
-    N_GPUS = 1 if not DEBUG else 0 # avoiding error 6
+    DEBUG = False
+    N_CPUS = 4 if not DEBUG else 1  # avoiding error 6
+    N_GPUS = 1 if not DEBUG else 0  # avoiding error 6
 
-    trial_resources=dict(
-        cpu= N_CPUS,
+    trial_resources = dict(
+        cpu=N_CPUS,
         gpu=N_GPUS,
     )
 
@@ -47,9 +46,8 @@ class Params:
     # minimum distance between vehicle to be considered neighbors (in meters)
     min_neighbors_distance = 50
 
-
     # the duration of one episode in steps.
-    HORIZON = 1500 if not DEBUG else 1 # set to 1 for debug in order to start learning immediately
+    HORIZON = 1500 if not DEBUG else 1  # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> super coop, 0-> selfish)
     coop_weight = 0.7
@@ -62,20 +60,20 @@ class Params:
     ##########################
 
     # Number of evaluation to perform
-    evaluation_interval=4
+    evaluation_interval = 4
 
     # frequency of checkpoint
     checkpoint_freq = 20
 
-    #number of iterations for training
+    # number of iterations for training
     training_iteration = 600
 
     # training algorithms
-    implemented_algs=["MARWIL","PPO"]
-    training_alg=implemented_algs[0]
+    implemented_algs = ["MARWIL", "PPO"]
+    training_alg = implemented_algs[0]
 
     # learning rate
-    learning_rate=1e-4
+    learning_rate = 1e-4
 
     # dictionary for stopping conditions
     stop_conditions = dict(
@@ -113,7 +111,7 @@ class Params:
 
     def __init__(self):
         print("Params class initialized")
-        #self.empty_dirs([self.LOGS_DIR, self.SONG_DIR])
+        # self.empty_dirs([self.LOGS_DIR, self.SONG_DIR])
         self.initialize_dirs()
 
     def initialize_dirs(self):
@@ -126,7 +124,7 @@ class Params:
             if var.lower().endswith('dir'):
                 path = getattr(self, var)
                 if not os.path.exists(path):
-                    termcolor.colored(f"Mkdir {path}","yellow")
+                    termcolor.colored(f"Mkdir {path}", "yellow")
                     os.makedirs(path)
 
     def empty_dirs(self, to_empty):
