@@ -96,3 +96,35 @@ inside your conda envs, for example mine is in:
 #### Related papers
 - [Reward function for accelerated learning](http://www.sci.brooklyn.cuny.edu/~sklar/teaching/boston-college/s01/mc375/ml94.pdf)
 - [1Safe, Efficient, and Comfortable Velocity Controlbased on Reinforcement Learning forAutonomous Driving](https://arxiv.org/pdf/1902.00089.pdf)
+
+### Training
+
+- Use gpu support []
+- Print debug infos and training progress []
+
+
+## Research 
+This section will be about research topics we will add to the project. For every issue we will address a paper with a brief description of 
+how the issue can be addressed as well as a reference to the paper itself.
+
+
+### Algorithm for training
+For this kind of issue take a look at the [ray's tune](https://ray.readthedocs.io/en/latest/tune.html#getting-started) framework,
+which is the one we're using right now.
+Currently using PPO.
+
+### RL Agent
+This subsection is dedicated to the RL agent functions
+
+#### Action space
+Action space is continuous since we're using acceleration as output.
+
+#### Observation space
+Something
+
+#### Reward function
+Ideas
+
+#### Clip action
+Pro and cons of the ‘clip action’ function
+
