@@ -83,7 +83,7 @@ def env_config(config):
     """
 
     config["num_workers"] = Params.N_CPUS - 1  # number of parallel workers
-    config["train_batch_size"] = Params.HORIZON * Params.N_ROLLOUTS  # batch size
+    config["train_batch_size"] = Params.HORIZON   # batch size
     config["gamma"] = Params.discount_rate  # discount rate
     config["horizon"] = Params.HORIZON  # rollout horizon
     # config["rl"] = Params.learning_rate #fixme: giving weird problem

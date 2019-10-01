@@ -33,7 +33,7 @@ class Params:
     ##########################
     DEBUG = True
     N_CPUS = 4 if not DEBUG else 1 # avoiding error 6
-    N_GPUS = 0 if not DEBUG else 0 # avoiding error 6
+    N_GPUS = 1 if not DEBUG else 0 # avoiding error 6
 
     trial_resources=dict(
         cpu= N_CPUS,
@@ -47,10 +47,8 @@ class Params:
     # minimum distance between vehicle to be considered neighbors (in meters)
     min_neighbors_distance = 50
 
-    # number of rollouts per training iteration
-    N_ROLLOUTS = 1
 
-    # the duration of one episode (during which the RL-agent acquire data).
+    # the duration of one episode in steps.
     HORIZON = 1500 if not DEBUG else 1 # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> super coop, 0-> selfish)

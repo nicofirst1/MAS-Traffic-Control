@@ -209,9 +209,9 @@ pbt_scheduler = PopulationBasedTraining(
     time_attr='training_iteration',
     metric='episode_reward_mean',
     mode='max',
-    perturbation_interval=Params.training_iteration // 20,  # perturbate a total of 20 times during the training
+    perturbation_interval=Params.training_iteration // 100,  # perturbate a total of N times during the training
     hyperparam_mutations={  # fixme: get correct params
-        "lr": [1e-3, 5e-4, 1e-4, 5e-5, 1e-5],
+        "lr": [1e-4],
     })
 
 trials = run(
