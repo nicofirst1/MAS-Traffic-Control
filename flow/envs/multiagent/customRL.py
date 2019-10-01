@@ -287,6 +287,8 @@ class CustoMultiRL(MultiAgentEnv, Env):
         if rl_actions is None:
             return None
 
+        #fixme: findout why the accel is close to zero before clipping
+
         # clip according to the action space requirements
         if isinstance(self.action_space, Box):
             for key, action in rl_actions.items():
