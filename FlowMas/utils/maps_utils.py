@@ -90,20 +90,6 @@ def import_template(map_name, net=True, vtype=False, rou=False):
                         os.path.join(Params.MAP_DIRS_DICT["lust"], "scenario/DUARoutes/local.2.rou.xml")]
             })
 
-    elif "monaco" in map_name.lower():  # fixme
-
-        if net:
-            template.update({"net": os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/most.net.xml")})
-        if vtype:
-            template.update({"vtype": os.path.join(Params.MAP_DIRS_DICT["monaco"], "/scenario/in/add/basic.vType.xml")})
-        if rou:
-            template.update({
-                "rou": [os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.buses.flows.xml"),
-                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.commercial.rou.xml"),
-                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.highway.flows.xml"),
-                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.pedestrian.rou.xml"),
-                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.special.rou.xml"),
-                        os.path.join(Params.MAP_DIRS_DICT["monaco"], "scenario/in/route/most.trains.flows.xml"), ]
-            })
-
+    else:
+        raise NotImplementedError(f"{map_name} not implemented")
     return template
