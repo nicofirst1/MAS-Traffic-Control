@@ -222,12 +222,7 @@ class TraCIVehicle(KernelVehicle):
 
                 # add jerk to rl vehicles only
                 curr_acc=self.get_acceleration(veh_id)
-                #fixme: find out why some cars have no "prev_acceleration"
-                if "prev_acceleration" not in self.__vehicles[veh_id].keys():
-                    jerk=0
-                    print(f"\n\n {10*'#'}\n{10*'#'} prev_acceleration not in vehicle {10*'#'}\nvehicles= {self.__vehicles[veh_id]}\n{10*'#'}\n{10*'#'}")
-                else:
-                    jerk = curr_acc - self.__vehicles[veh_id]["prev_acceleration"]
+                jerk = curr_acc - self.__vehicles[veh_id]["prev_acceleration"]
                 jerk /= _time_delta
                 self.__vehicles[veh_id]["jerk"] =jerk
                 self.__vehicles[veh_id]["prev_acceleration"] = curr_acc
@@ -356,6 +351,11 @@ class TraCIVehicle(KernelVehicle):
         lc_mode = self.type_parameters[veh_type][
             "lane_change_params"].lane_change_mode
         self.kernel_api.vehicle.setLaneChangeMode(veh_id, lc_mode)
+
+        # custom params initialization
+        self.__vehicles[veh_id]["jerk"] = 0
+        self.__vehicles[veh_id]["prev_acceleration"] = 0
+        self.__vehicles[veh_id]['position'] = ()
 
         # get initial state info
         self.__sumo_obs[veh_id] = dict()
