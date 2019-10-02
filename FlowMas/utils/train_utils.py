@@ -1,6 +1,8 @@
 import json
 import os
+from collections import Counter
 import termcolor
+import json
 from ray import tune
 from ray.rllib.agents.registry import get_agent_class
 from ray.tune import Analysis, Trainable
@@ -65,6 +67,27 @@ def performance_config(config):
     return config
 
 
+def env_infos(info):
+    info=info.get("env").envs[0]
+    msg=""
+
+    env_params=info.env_params
+    msg+="Running env with:\n"
+    msg+=f"Horizion : { env_params.horizon}\n"
+    ap=json.dumps(env_params.additional_params, sort_keys = True, indent = 4)
+    msg+=f"Additional params : {ap}\n"
+
+    initial_ids=info.initial_ids
+    initial_ids=[elem.rsplit('_',1)[0] for elem in initial_ids]
+    initial_ids=Counter(initial_ids)
+    initial_ids=json.dumps(initial_ids, sort_keys = True, indent = 4)
+
+    msg+=f"Cars number : {initial_ids}\n"
+
+    return msg
+
+
+
 def eval_config(config):
     """
     Setting evaluation specific configuration, independent from model chosen
@@ -113,6 +136,9 @@ def eval_config(config):
     train_color = "yellow"
 
     def on_episode_step(info):
+        #todo: log min reward, max reward, mean reward, split for kind of agent
+        # todo: get mean dealy, standstill, mean jerk (?)
+        #todo: get action min/max/mean
         def log(msg):
             msg=termcolor.colored(msg, step_color)
             print(msg)
@@ -128,6 +154,7 @@ def eval_config(config):
 
         hashs = 20 * "#"
         msg = f"\n{hashs}\n EPISODE STARTED \n{hashs}\n"
+        msg+=env_infos(info)
 
         log(msg)
 
@@ -136,12 +163,12 @@ def eval_config(config):
             msg=termcolor.colored(msg, end_color)
             print(msg)
 
-        episode = info["episode"]
-        pole_angle = np.mean(episode.user_data["pole_angles"])
-        log("episode {} ended with length {} and pole angles {}".format(
-            episode.episode_id, episode.length, pole_angle))
-        episode.custom_metrics["pole_angle"] = pole_angle
+        hashs = 20 * "#"
+        msg = f"\n{hashs}\n EPISODE END \n{hashs}\n"
+        log(msg)
 
+
+    @tune.function
     def on_train_result(info):
         def log(msg):
             msg=termcolor.colored(msg, train_color)
@@ -149,12 +176,12 @@ def eval_config(config):
 
 
         log("trainer.train() result: {} -> {} episodes".format(
-            info["trainer"].__name__, info["result"]["episodes_this_iter"]))
+            info["trainer"], info["result"]["episodes_this_iter"]))
 
-    config["callbacks"]["on_episode_step"] = on_episode_step
-    config["callbacks"]["on_episode_start"] = on_episode_start
+    config["callbacks"]["on_episode_step"] = tune.function(on_episode_step)
+    config["callbacks"]["on_episode_start"] = tune.function(on_episode_start)
     config["callbacks"]["on_episode_end"] = tune.function(on_episode_end)
-    config["callbacks"]["on_train_result"] = tune.function(on_train_result)
+    config["callbacks"]["on_train_result"] = on_train_result
 
     return config
 
@@ -201,7 +228,7 @@ def env_config(config):
     config["train_batch_size"] = Params.HORIZON  # batch size
     config["gamma"] = Params.discount_rate  # discount rate
     config["horizon"] = Params.HORIZON  # rollout horizon
-    # config["rl"] = Params.learning_rate #fixme: giving weird problem
+    config["lr"] = Params.learning_rate #fixme: giving weird problem
 
     return config
 
@@ -411,6 +438,7 @@ def get_default_config(params):
 
     # apply alg-free changes
     config = env_config(config)
+    config = eval_config(config)
     config = model_config(config)
     config = flow_config(params, config)
     config = performance_config(config)
