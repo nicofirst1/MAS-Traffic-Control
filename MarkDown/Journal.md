@@ -16,6 +16,7 @@
 - Update README.md to include the activation of the env, and the approval of uninstalling flow
 - Update README.md to include running the goal simulation.py
 - Expand README.md to specify an appropriate OS (Ubuntu 18.04)
+- Expand README.md to include installation of git and navigation to the folder
 
 ## Starting
 
