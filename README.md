@@ -8,20 +8,30 @@ If you wish to learn more about the papers and the project goal refer to [Projec
 
 To get install the necessary packages use:
 
-`sh scripts/initial_config.sh`
+`bash scripts/initial_config.sh`
+
+Note that the previous will install both _git_ and _anaconda_. If you encounter any error regarding one of the two please install them separately.
 
 Then configure the python package with:
 
 `python setup.py install`
 
-If your OS is not supported or you encounter an error check the [installation file](MarkDown/Installation.md) for more detailed
- installation instructions.
+Supported OS:
+
+- Ubuntu 18.04 LTS
+- macOSX Mojave
+
+If your OS is not supported or you encounter an error check the [installation file](MarkDown/Installation.md) for more detailed installation instructions.
 
 #
 
 Once you are done you can run the first Tutorial with:
 
 `python FlowMas/Tutorials/1_GridMapNoLights.py`
+
+or directly run the simulatio with:
+
+`python FlowMas/simulation.py`
 
 ## Repo structure
 
