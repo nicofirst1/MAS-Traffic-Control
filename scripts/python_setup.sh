@@ -14,6 +14,7 @@ fi
 if [ ! -d "$LIBS_DIR/flow" ]; then
     mkdir $LIBS_DIR
 fi
+
 env="$(conda env list | grep $env_name)"
 
 if [ ! -d "$LIBS_DIR/flow" ] || [ -z $env ]; then
@@ -45,9 +46,11 @@ if [ ! -d "$LIBS_DIR/flow" ] || [ -z $env ]; then
     echo "...Conda environment created"
 
 fi
-    if [ $DEBUG_flag ]; then
-        echo "[$DEBUG_id] 3.3) Donw with flow"
-    fi
+
+
+if [ $DEBUG_flag ]; then
+    echo "[$DEBUG_id] 3.3) Donw with flow"
+fi
 
 
 if [ ! $CONDA_DEFAULT_ENV=$env_name ] || [ -z $CONDA_DEFAULT_ENV ] ; then 
@@ -68,34 +71,28 @@ cd $LIBS_DIR/flow
 pip install -e .
 
 # installing other conda libs
-conda install -y  -c conda-forge proj4
+# fixme: not working
+#conda install -y  -c conda-forge proj4
 
 # call  install script for sumo 
 echo "Installing SUMO..."
 
 
-if [ ! -d "$HOME/sumo_binaries/bin" ]; then
 
-    if [ $DEBUG_flag ]; then
-        echo "[$DEBUG_id] 3.5) Installing sumo"
-    fi
-
-    os="$(uname)"
-
-    if [ $os = "Darwin" ]; then
-        sh scripts/sumo_setup/setup_sumo_macosx.sh
-
-    elif [ $os = "Linux" ]; then
-
-        sh scripts/sumo_setup/setup_sumo_ubuntu1804.sh
-    fi
-
-else
-
-    echo "SUMO direcotry detected. Skipping installation"
-
-
+if [ $DEBUG_flag ]; then
+    echo "[$DEBUG_id] 3.5) Installing sumo"
 fi
+
+os="$(uname)"
+
+if [ $os = "Darwin" ]; then
+    sh scripts/sumo_setup/setup_sumo_osx.sh
+
+elif [ $os = "Linux" ]; then
+
+    sh scripts/sumo_setup/setup_sumo_ubuntu1804.sh
+fi
+
 
 if [ $DEBUG_flag ]; then
         echo "[$DEBUG_id] 3.6) Done with sumo"
