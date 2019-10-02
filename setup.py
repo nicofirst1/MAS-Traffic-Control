@@ -18,7 +18,7 @@ setup(
     version='1.0',
     packages=find_packages(),
     license='MIT',
-    url='https://gitlab.com/nicofirst1/dmas',
+    url='https://gitlab.com/nicofirst1/mas_traffic',
     include_package_data=True,
     author='Dizzibus',
     install_requires=requirements,
