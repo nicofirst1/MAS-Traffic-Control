@@ -25,3 +25,5 @@ FlowMas/data/
 *.bat
 
 dmas.egg-info/
+
+libs/
