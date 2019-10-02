@@ -12,11 +12,12 @@
 
 # TODO
 
-- Change echo for "conda activate dmas" to support "source activate dmas"
+- Change echo for "conda activate dmas" to support "source activate dmas" [X]
 - Update README.md to include the activation of the env, and the approval of uninstalling flow
 - Update README.md to include running the goal simulation.py
-- Expand README.md to specify an appropriate OS (Ubuntu 18.04)
-- Expand README.md to include installation of git and navigation to the folder
+- Expand README.md to specify an appropriate OS (Ubuntu 18.04) [X]
+- Expand README.md to include installation of git and navigation to the folder [X]
+- Use flow original repo and override files with shell
 
 ## Starting
 
@@ -111,6 +112,25 @@ inside your conda envs, for example mine is in:
 
 - Use gpu support []
 - Print debug infos and training progress []
+
+#### Evaluation
+The evaluation functions are in the [train_utils.py](FlowMas/utils/train_utils.py).
+
+##### on_episode_step
+
+- Reward: min, max, mean; split for kind of agent
+- Delay: mean, max, min, standstill (mean jerk ?)
+- Actions :
+    - Acceleration: mean/max/min
+    
+##### on_episode_end
+
+- Same as step
+
+##### on_episode_start
+
+- Env params [x]
+
 
 
 ## Research 
