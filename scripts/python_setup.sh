@@ -24,7 +24,7 @@ if [ ! -d "$LIBS_DIR/flow" ] || [ -z $env ]; then
 
 
     # install flow if not present
-    cd libs
+    cd $LIBS_DIR
     git clone https://github.com/flow-project/flow.git
     cd flow
 
@@ -53,7 +53,7 @@ fi
 if [ ! $CONDA_DEFAULT_ENV=$env_name ] || [ -z $CONDA_DEFAULT_ENV ] ; then 
 
     echo "Please restart your terminal session and source the conda env with:"
-    echo "'conda activate $env_name'"
+    echo "'source activate $env_name'"
     echo "Then run the script again"
     exit
 fi
@@ -115,7 +115,7 @@ if [ ! -d "$LIBS_DIR/ray" ]; then
     conda install -y libgcc
     pip install cython==0.29.0
 
-
+    cd $LIBS_DIR
     git clone https://github.com/ray-project/ray.git
 
 
