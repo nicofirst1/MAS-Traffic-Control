@@ -10,11 +10,17 @@ To get install the necessary packages use:
 
 `bash scripts/initial_config.sh`
 
-Note that the previous will install both _git_ and _anaconda_. If you encounter any error regarding one of the two please install them separately.
+Note that the previous will install both _git_ and _anaconda_. If you encounter any error regarding one of the two please install them separately and rerun the script.
 
-Then configure the python package with:
+Then configure the python package with (ensure that your conda environment is dmas):
 
 `python setup.py install`
+
+If you encounter an error that says SUMO_HOME is not defined:
+
+Run the appropriate sumo install script in scripts/sumo_setup
+`source ~/.bashrc`
+`conda activate dmas`
 
 Supported OS:
 
