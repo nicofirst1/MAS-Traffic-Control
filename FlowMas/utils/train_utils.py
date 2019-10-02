@@ -1,6 +1,7 @@
 import json
 import os
-
+import termcolor
+from ray import tune
 from ray.rllib.agents.registry import get_agent_class
 from ray.tune import Analysis, Trainable
 import numpy as np
@@ -28,6 +29,12 @@ def performance_config(config):
     :param config:
     :return:
 
+    # Set the ray.rllib.* log level for the agent process and its workers.
+    # Should be one of DEBUG, INFO, WARN, or ERROR. The DEBUG level will also
+    # periodically print out summaries of relevant internal dataflow (this is
+    # also printed out once at startup at the INFO level).
+    "log_level": "INFO",
+
     # === Resources ===
     # Number of actors used for parallelism
     "num_workers": 2,
@@ -47,12 +54,15 @@ def performance_config(config):
 
     """
 
-    config["num_workers"]=Params.N_WORKERS
-    config["num_gpus"]=Params.N_GPUS
-    config["num_cpus_per_worker"]=min(Params.N_CPUS//Params.N_WORKERS,1)
-    config["num_gpus_per_worker"]=Params.N_GPUS
-    config["num_cpus_for_driver"]=Params.N_CPUS
-    config["log_level"] = "WARN"
+    if not Params.DEBUG:
+        config["num_workers"] = Params.N_WORKERS
+    config["num_gpus"] = Params.N_GPUS
+    # config["num_cpus_per_worker"]=min(Params.N_CPUS//Params.N_WORKERS,1)
+    # config["num_gpus_per_worker"]=Params.N_GPUS
+    # config["num_cpus_for_driver"]=Params.N_CPUS
+    config["log_level"] = "WARNING"
+
+    return config
 
 
 def eval_config(config):
@@ -61,6 +71,26 @@ def eval_config(config):
 
     :param config: a config dict
     :return:  updated config dict
+
+    Check this https://ray.readthedocs.io/en/latest/rllib-training.html#specifying-parameters
+
+    # Callbacks that will be run during various phases of training. These all
+    # take a single "info" dict as an argument. For episode callbacks, custom
+    # metrics can be attached to the episode by updating the episode object's
+    # custom metrics dict (see examples/custom_metrics_and_callbacks.py). You
+    # may also mutate the passed in batch data in your callback.
+    "callbacks": {
+        "on_episode_start": None,     # arg: {"env": .., "episode": ...}
+        "on_episode_step": None,      # arg: {"env": .., "episode": ...}
+        "on_episode_end": None,       # arg: {"env": .., "episode": ...}
+        "on_sample_end": None,        # arg: {"samples": .., "worker": ...}
+        "on_train_result": None,      # arg: {"trainer": ..., "result": ...}
+        "on_postprocess_traj": None,  # arg: {
+                                      #   "agent_id": ..., "episode": ...,
+                                      #   "pre_batch": (before processing),
+                                      #   "post_batch": (after processing),
+                                      #   "all_pre_batches": (other agent ids),
+                                      # }
 
       # === Evaluation ===
     # Evaluate with every `evaluation_interval` training iterations.
@@ -76,6 +106,56 @@ def eval_config(config):
     "evaluation_config": {},
     """
 
+    # avaiable colors : red, green, yellow, blue, magenta, cyan, white.
+    step_color = "cyan"
+    start_color = "green"
+    end_color = "green"
+    train_color = "yellow"
+
+    def on_episode_step(info):
+        def log(msg):
+            msg=termcolor.colored(msg, step_color)
+            print(msg)
+
+
+        log(info)
+
+    def on_episode_start(info):
+        def log(msg):
+            msg=termcolor.colored(msg, start_color)
+            print(msg)
+
+
+        hashs = 20 * "#"
+        msg = f"\n{hashs}\n EPISODE STARTED \n{hashs}\n"
+
+        log(msg)
+
+    def on_episode_end(info):
+        def log(msg):
+            msg=termcolor.colored(msg, end_color)
+            print(msg)
+
+        episode = info["episode"]
+        pole_angle = np.mean(episode.user_data["pole_angles"])
+        log("episode {} ended with length {} and pole angles {}".format(
+            episode.episode_id, episode.length, pole_angle))
+        episode.custom_metrics["pole_angle"] = pole_angle
+
+    def on_train_result(info):
+        def log(msg):
+            msg=termcolor.colored(msg, train_color)
+            print(msg)
+
+
+        log("trainer.train() result: {} -> {} episodes".format(
+            info["trainer"].__name__, info["result"]["episodes_this_iter"]))
+
+    config["callbacks"]["on_episode_step"] = on_episode_step
+    config["callbacks"]["on_episode_start"] = on_episode_start
+    config["callbacks"]["on_episode_end"] = tune.function(on_episode_end)
+    config["callbacks"]["on_train_result"] = tune.function(on_train_result)
+
     return config
 
 
@@ -85,11 +165,7 @@ def env_config(config):
     :param config: a config dict
     :return:  updated config dict
 
-    # Set the ray.rllib.* log level for the agent process and its workers.
-    # Should be one of DEBUG, INFO, WARN, or ERROR. The DEBUG level will also
-    # periodically print out summaries of relevant internal dataflow (this is
-    # also printed out once at startup at the INFO level).
-    "log_level": "INFO",
+
 
 
         # === Environment ===
@@ -122,7 +198,7 @@ def env_config(config):
 
     """
 
-    config["train_batch_size"] = Params.HORIZON   # batch size
+    config["train_batch_size"] = Params.HORIZON  # batch size
     config["gamma"] = Params.discount_rate  # discount rate
     config["horizon"] = Params.HORIZON  # rollout horizon
     # config["rl"] = Params.learning_rate #fixme: giving weird problem
@@ -255,7 +331,72 @@ def marwil_config(config):
 
     return config
 
+def maddpg_config(config):
+    """
+    Return a dict representing the config file of a standard MARWIL algorithm in rrlib
 
+    :return:(dict)
+
+
+
+    # === Model ===
+    # Apply a state preprocessor with spec given by the "model" config option
+    # (like other RL algorithms). This is mostly useful if you have a weird
+    # observation shape, like an image. Disabled by default.
+    "use_state_preprocessor": False,
+    # Postprocess the policy network model output with these hidden layers. If
+    # use_state_preprocessor is False, then these will be the *only* hidden
+    # layers in the network.
+    "actor_hiddens": [64, 64],
+    # Hidden layers activation of the postprocessing stage of the policy
+    # network
+    "actor_hidden_activation": "relu",
+    # Postprocess the critic network model output with these hidden layers;
+    # again, if use_state_preprocessor is True, then the state will be
+    # preprocessed by the model specified with the "model" config option first.
+    "critic_hiddens": [64, 64],
+    # Hidden layers activation of the postprocessing state of the critic.
+    "critic_hidden_activation": "relu",
+    # N-step Q learning
+    "n_step": 1,
+    # Algorithm for good policies
+    "good_policy": "maddpg",
+    # Algorithm for adversary policies
+    "adv_policy": "maddpg",
+
+    # === Optimization ===
+    # Learning rate for the critic (Q-function) optimizer.
+    "critic_lr": 1e-2,
+    # Learning rate for the actor (policy) optimizer.
+    "actor_lr": 1e-2,
+    # Update the target network every `target_network_update_freq` steps.
+    "target_network_update_freq": 0,
+    # Update the target by \tau * policy + (1-\tau) * target_policy
+    "tau": 0.01,
+    # Weights for feature regularization for the actor
+    "actor_feature_reg": 0.001,
+    # If not None, clip gradients during optimization at this value
+    "grad_norm_clipping": 0.5,
+    # How many steps of the model to sample before learning starts.
+    "learning_starts": 1024 * 25,
+    # Update the replay buffer with this many samples at once. Note that this
+    # setting applies per-worker if num_workers > 1.
+    "sample_batch_size": 100,
+    # Size of a batched sampled from replay buffer for training. Note that
+    # if async_updates is set, then each worker returns gradients for a
+    # batch of this size.
+    "train_batch_size": 1024,
+    # Number of env steps to optimize for before returning
+    "timesteps_per_iteration": 0,
+
+
+
+
+    """
+
+    #todo
+
+    return config
 
 
 def get_default_config(params):
@@ -272,6 +413,7 @@ def get_default_config(params):
     config = env_config(config)
     config = model_config(config)
     config = flow_config(params, config)
+    config = performance_config(config)
 
     if Params.training_alg == "PPO":
         config = ppo_config(config)
@@ -279,8 +421,11 @@ def get_default_config(params):
     elif Params.training_alg == "MARWIL":
         config = marwil_config(config)
 
+
+    elif Params.training_alg == "MADDPG":
+        config = maddpg_config(config)
+
     else:
         raise NotImplementedError(f"{Params.training_alg} has not been implemented")
 
     return config
-
