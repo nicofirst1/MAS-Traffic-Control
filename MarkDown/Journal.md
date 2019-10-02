@@ -291,3 +291,18 @@ Ideas
 
 #### Clip action
 Pro and cons of the ‘clip action’ function
+
+### Continuous action space RL 
+####Common way: Actor-Critic Methods [Link](http://incompleteideas.net/book/first/ebook/node66.html)
+natural extension of the idea of reinforcement comparison methods to TD learning and to the full reinforcement learning problem
+
+#### Paper Found 
+[Application of the self-Organising Map to Reinforcement Learning](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.92.9850&rep=rep1&type=pdf)
+
+
+[Deep Reinforcement Learning in Continuous Action Spaces: a Case Study in the Game of Simulated Curling](http://proceedings.mlr.press/v80/lee18b/lee18b.pdf)
+
+Section4 provides information for continous action space.  
+
+
+
