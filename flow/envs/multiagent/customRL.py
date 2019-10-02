@@ -193,14 +193,13 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
         # clear all vehicles from the network and the vehicles class
         if self.simulator == 'traci':
-            for veh_id in self.k.kernel_api.vehicle.getIDList():  # FIXME: hack
+            for veh_id in self.k.kernel_api.vehicle.getIDList():
                 try:
                     self.k.vehicle.remove(veh_id)
                 except (FatalTraCIError, TraCIException):
                     print(traceback.format_exc())
 
         # clear all vehicles from the network and the vehicles class
-        # FIXME (ev, ak) this is weird and shouldn't be necessary
         for veh_id in list(self.k.vehicle.get_ids()):
             # do not try to remove the vehicles from the network in the first
             # step after initializing the network, as there will be no vehicles
@@ -229,7 +228,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
                 # now and then reintroduce it
                 self.k.vehicle.remove(veh_id)
                 if self.simulator == 'traci':
-                    self.k.kernel_api.vehicle.remove(veh_id)  # FIXME: hack
+                    self.k.kernel_api.vehicle.remove(veh_id)
                 self.k.vehicle.add(
                     veh_id=veh_id,
                     type_id=type_id,
