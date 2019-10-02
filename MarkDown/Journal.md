@@ -12,6 +12,12 @@
 
 # TODO
 
+- Change echo for "conda activate dmas" to support "source activate dmas"
+- Update README.md to include the activation of the env, and the approval of uninstalling flow
+- Update README.md to include running the goal simulation.py
+- Expand README.md to specify an appropriate OS (Ubuntu 18.04)
+- Expand README.md to include installation of git and navigation to the folder
+
 ## Starting
 
 1. Install [Flow **dependencies**, Sumo, RLlib](https://flow.readthedocs.io/en/latest/flow_setup.html#local-installation-of-flow)
