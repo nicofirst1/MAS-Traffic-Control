@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 from copy import deepcopy
 
@@ -178,8 +179,8 @@ params = dict(
 create_env, gym_name = make_create_env(params=params, version=0)
 
 # get default config for ppo
-ppo_config = get_default_config(params)
-ppo_config['env'] = gym_name # add env name to the configs
+config = get_default_config(params)
+config['env'] = gym_name # add env name to the configs
 
 # Register as rllib env
 register_env(gym_name, create_env)
@@ -187,15 +188,18 @@ register_env(gym_name, create_env)
 ########################
 #  START OF TRAINING
 ########################
+
+# initialize ray with performance params
 ray.init(num_cpus=Params.N_CPUS,
          num_gpus=Params.N_GPUS,
          local_mode=Params.DEBUG,  # use local mode when debugging, remove it for performance increase
          )
 
+# initialize experiment
 exp = Experiment(
     name=f"Sim-{Params.training_alg}",
     run=Params.training_alg,  # must be the same as the default config
-    config=ppo_config,
+    config=config,
     stop=Params.stop_conditions,
     local_dir=Params.ray_results_dir,
     max_failures=9999,
@@ -214,13 +218,14 @@ pbt_scheduler = PopulationBasedTraining(
         "lr": [1e-4],
     })
 
+# run the experiment
 trials = run(
     exp,
-    reuse_actors=True,
-    verbose=1,
+    reuse_actors=True, # performance improvement
+    verbose=2,
     raise_on_failed_trial=False,  # avoid agent not known error
     return_trials=True,
-    scheduler=pbt_scheduler,
+    #scheduler=pbt_scheduler,
 
 
 )
