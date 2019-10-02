@@ -70,7 +70,7 @@ class Params:
     training_iteration = 600
 
     # training algorithms
-    implemented_algs = ["MARWIL", "PPO"]
+    implemented_algs = ["MARWIL","MADDPG", "PPO"] # see journal, research section
     training_alg = implemented_algs[0]
 
     # learning rate
