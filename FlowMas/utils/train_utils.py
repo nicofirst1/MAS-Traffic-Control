@@ -92,6 +92,7 @@ def eval_config(config):
     """
     Setting evaluation specific configuration, independent from model chosen
 
+    :type config: object
     :param config: a config dict
     :return:  updated config dict
 
@@ -137,13 +138,15 @@ def eval_config(config):
 
     def on_episode_step(info):
         #todo: log min reward, max reward, mean reward, split for kind of agent
-        # todo: get mean dealy, standstill, mean jerk (?)
+        #todo: get mean dealy, standstill, mean jerk (?)
         #todo: get action min/max/mean
         def log(msg):
-            msg=termcolor.colored(msg, step_color)
+            msg=termcolor.colored(msg, step_color) 
             print(msg)
 
-
+        episode = info["episode"]
+        pole_angle = abs(episode.last_observation_for()[2])
+        episode.user_data["pole_angles"].append(pole_angle)
         log(info)
 
     def on_episode_start(info):
@@ -155,6 +158,10 @@ def eval_config(config):
         hashs = 20 * "#"
         msg = f"\n{hashs}\n EPISODE STARTED \n{hashs}\n"
         msg+=env_infos(info)
+        print(info.keys)
+        episode = info["episode"]
+        print("episode {} started".format(episode.episode_id))
+        episode.user_data["pole_angles"] = []
 
         log(msg)
 
@@ -165,6 +172,11 @@ def eval_config(config):
 
         hashs = 20 * "#"
         msg = f"\n{hashs}\n EPISODE END \n{hashs}\n"
+        episode = info["episode"]
+        pole_angle = np.mean(episode.user_data["pole_angles"])
+        print("episode {} ended with length {} and pole angles {}".format(
+            episode.episode_id, episode.length, pole_angle))
+        episode.custom_metrics["pole_angle"] = pole_angle
         log(msg)
 
 
