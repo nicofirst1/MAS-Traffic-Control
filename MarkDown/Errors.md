@@ -383,3 +383,28 @@ PermissionError: [Errno 13] Permission denied: '/Users/giulia/anaconda3/envs/dma
 __Solution__: Workaround is the ugliest thing you can do...
 
 `sudo chmod -R a+wxr $HOME/anaconda3/envs/dmas/lib/python3.6/site-packages/<your-ray-version>/ray`
+
+### ERROR15 
+__Traceback__:
+```
+2019-10-02 22:51:59,908    ERROR worker.py:1719 -- Possible unhandled error from worker: ray_RolloutWorker:sample() (pid=30767, host=Admins-MacBook-Pro.local)
+  File "/Users/kenichifurusawa/anaconda2/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/rollout_worker.py", line 469, in sample
+    batches = [self.input_reader.next()]
+  File "/Users/kenichifurusawa/anaconda2/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/sampler.py", line 56, in next
+    batches = [self.get_data()]
+  File "/Users/kenichifurusawa/anaconda2/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/sampler.py", line 99, in get_data
+    item = next(self.rollout_provider)
+  File "/Users/kenichifurusawa/anaconda2/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/sampler.py", line 319, in _env_runner
+    soft_horizon, no_done_at_end)
+  File "/Users/kenichifurusawa/anaconda2/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/sampler.py", line 461, in _process_observations
+    outputs.append(episode.batch_builder.build_and_reset(episode))
+  File "/Users/kenichifurusawa/anaconda2/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/sample_batch_builder.py", line 202, in build_and_reset
+    self.postprocess_batch_so_far(episode)
+  File "/Users/kenichifurusawa/anaconda2/envs/dmas/lib/python3.6/site-packages/ray/rllib/evaluation/sample_batch_builder.py", line 156, in postprocess_batch_so_far
+    pre_batch, other_batches, episode)
+  File "/Users/kenichifurusawa/anaconda2/envs/dmas/lib/python3.6/site-packages/ray/rllib/agents/marwil/marwil_policy.py", line 76, in postprocess_trajectory
+    sample_batch[SampleBatch.DONES][-1])
+NotImplementedError: ("last done mask in a batch should be True. For now, we only support reading experience batches produced with batch_mode='complete_episodes'.", 59, False)
+
+```
+__Solution__:  Looking for one... 
