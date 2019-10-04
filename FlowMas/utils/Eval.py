@@ -1,0 +1,184 @@
+import itertools
+import json
+from collections import Counter
+
+import numpy as np
+import termcolor
+from ray import tune
+
+# avaiable colors : red, green, yellow, blue, magenta, cyan, white.
+step_color = "cyan"
+start_color = "green"
+end_color = "green"
+train_color = "yellow"
+
+
+def configure_callbacks(config):
+    config["callbacks"]["on_episode_step"] = on_episode_step
+    config["callbacks"]["on_episode_start"] = on_episode_start
+    config["callbacks"]["on_episode_end"] = on_episode_end
+    config["callbacks"]["on_train_result"] = on_train_result
+
+    return config
+
+
+def reward_print(info):
+    """
+    Prints rewards for step, both split and not.
+    :param info:
+    :return: (string)
+    """
+
+    # get the episode from the infos
+    info = info.get("episode")
+    # convert history to normal dict
+    reward_history = dict(info._agent_reward_history)
+    rewards = {}
+
+    # return if zero length
+    if len(reward_history) == 0:
+        return ""
+
+    # for every id:list in the history of rewards
+    for k, v in reward_history.items():
+        # split the name to get the type of agent
+        new_k = k.rsplit("_", 1)[0]
+
+        if new_k not in rewards.keys():
+            rewards[new_k] = []
+
+        # add history to list
+        rewards[new_k] += v
+
+    # convert to numpy array
+    rewards = {k: np.array(v) for k, v in rewards.items()}
+
+    msg = multi_info_split(rewards, "Rewards")
+    return msg
+
+
+def multi_info_split(info, title):
+    # split reward by type of agent
+    split_info = {k: dict(
+        mean=np.mean(v),
+        max=np.max(v),
+        min=np.min(v)
+
+    ) for k, v in info.items()}
+
+    # add name to dict
+    split_info.update(name=f"Split {title}")
+
+    # concat every list
+    total_info = list(itertools.chain.from_iterable(info.values()))
+    # do the same as before
+    total_info = dict(
+        name=f"Total {title}",
+        mean=np.mean(total_info),
+        max=np.max(total_info),
+        min=np.min(total_info)
+
+    )
+
+    # make it printable
+    msg = print_title(title + " START")
+    msg += json.dumps(split_info, indent=4) + "\n"
+    msg += json.dumps(total_info, indent=4) + "\n"
+    msg = print_title(title + " END")
+
+    return msg
+
+
+def delay_print(info):
+    """
+    Prints info about vehicle delays both split and total
+    :param info:
+    :return:
+    """
+
+    # get agent types
+    delay = info["env"].envs[0].k.vehicle.get_rl_types()
+    delay = {k: np.array([]) for k in delay}
+
+    # get delays for every type of rl agent
+    for t in delay.keys():
+        delay[t] = np.concatenate((delay[t], info["env"].envs[0].k.vehicle.get_delay(t)))
+    # get delays for every vehicle in the system
+    delay["all"] = info["env"].envs[0].k.vehicle.get_delay("all")
+
+    msg = multi_info_split(delay, "Delays")
+
+    return msg
+
+
+def print_title(title, hash_num=10):
+    """
+    Print the title
+    :param title: string
+    :param hash_num: number of hashs
+    :return: string
+    """
+
+    hashs = hash_num * "#"
+    return f"\n{hashs}\n {title} \n{hashs}\n"
+
+
+@tune.function
+def on_episode_step(info):
+    """
+    On step function for debugging and traning
+    :param info:
+    :return:
+    """
+    # todo: get mean dealy, standstill, mean jerk (?)
+    # todo: get action min/max/mean
+
+    # get reward infos
+    msg = reward_print(info) + "\n"
+    msg += delay_print(info) + "\n"
+
+    log(msg, color=step_color)
+
+
+@tune.function
+def on_episode_start(info):
+    msg = print_title("EPISODE STARTED", hash_num=20)
+    msg += env_infos(info)
+
+    log(msg, color=start_color)
+
+
+@tune.function
+def on_episode_end(info):
+    msg = print_title("EPISODE END", hash_num=20)
+    log(msg, color=end_color)
+
+
+@tune.function
+def on_train_result(info):
+    log("trainer.train() result: {} -> {} episodes".format(
+        info["trainer"], info["result"]["episodes_this_iter"]))
+
+
+def env_infos(info):
+    info = info.get("env").envs[0]
+    msg = ""
+
+    env_params = info.env_params
+    msg += "Running env with:\n"
+    msg += f"Horizion : {env_params.horizon}\n"
+    ap = json.dumps(env_params.additional_params, sort_keys=True, indent=4)
+    msg += f"Additional params : {ap}\n"
+
+    initial_ids = info.initial_ids
+    initial_ids = [elem.rsplit('_', 1)[0] for elem in initial_ids]
+    initial_ids = Counter(initial_ids)
+    initial_ids = json.dumps(initial_ids, sort_keys=True, indent=4)
+
+    msg += f"Cars number : {initial_ids}\n"
+
+    return msg
+
+
+def log(msg, color="white"):
+    termcolor.cprint(msg, color)
