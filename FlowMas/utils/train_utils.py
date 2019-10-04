@@ -1,12 +1,9 @@
 import json
-import os
-from collections import Counter
-import termcolor
-import json
-from ray import tune
+
 from ray.rllib.agents.registry import get_agent_class
-from ray.tune import Analysis, Trainable
-import numpy as np
+from ray.tune import Analysis
+
+from FlowMas.utils.Eval import  configure_callbacks
 from FlowMas.utils.parameters import Params
 from flow.utils.rllib import FlowParamsEncoder
 
@@ -67,27 +64,6 @@ def performance_config(config):
     return config
 
 
-def env_infos(info):
-    info=info.get("env").envs[0]
-    msg=""
-
-    env_params=info.env_params
-    msg+="Running env with:\n"
-    msg+=f"Horizion : { env_params.horizon}\n"
-    ap=json.dumps(env_params.additional_params, sort_keys = True, indent = 4)
-    msg+=f"Additional params : {ap}\n"
-
-    initial_ids=info.initial_ids
-    initial_ids=[elem.rsplit('_',1)[0] for elem in initial_ids]
-    initial_ids=Counter(initial_ids)
-    initial_ids=json.dumps(initial_ids, sort_keys = True, indent = 4)
-
-    msg+=f"Cars number : {initial_ids}\n"
-
-    return msg
-
-
-
 def eval_config(config):
     """
     Setting evaluation specific configuration, independent from model chosen
@@ -129,59 +105,8 @@ def eval_config(config):
     "evaluation_config": {},
     """
 
-    # avaiable colors : red, green, yellow, blue, magenta, cyan, white.
-    step_color = "cyan"
-    start_color = "green"
-    end_color = "green"
-    train_color = "yellow"
 
-    def on_episode_step(info):
-        #todo: log min reward, max reward, mean reward, split for kind of agent
-        # todo: get mean dealy, standstill, mean jerk (?)
-        #todo: get action min/max/mean
-        def log(msg):
-            msg=termcolor.colored(msg, step_color)
-            print(msg)
-
-
-        log(info)
-
-    def on_episode_start(info):
-        def log(msg):
-            msg=termcolor.colored(msg, start_color)
-            print(msg)
-
-
-        hashs = 20 * "#"
-        msg = f"\n{hashs}\n EPISODE STARTED \n{hashs}\n"
-        msg+=env_infos(info)
-
-        log(msg)
-
-    def on_episode_end(info):
-        def log(msg):
-            msg=termcolor.colored(msg, end_color)
-            print(msg)
-
-        hashs = 20 * "#"
-        msg = f"\n{hashs}\n EPISODE END \n{hashs}\n"
-        log(msg)
-
-
-    @tune.function
-    def on_train_result(info):
-        def log(msg):
-            msg=termcolor.colored(msg, train_color)
-            print(msg)
-
-
-        log("trainer.train() result: {} -> {} episodes".format(
-            info["trainer"], info["result"]["episodes_this_iter"]))
-
-    config["callbacks"]["on_episode_step"] = tune.function(on_episode_step)
-    config["callbacks"]["on_episode_start"] = tune.function(on_episode_start)
-    config["callbacks"]["on_episode_end"] = tune.function(on_episode_end)
-    config["callbacks"]["on_train_result"] = on_train_result
+    config = configure_callbacks(config)
 
     return config
 
@@ -228,7 +153,7 @@ def env_config(config):
     config["train_batch_size"] = Params.HORIZON  # batch size
     config["gamma"] = Params.discount_rate  # discount rate
     config["horizon"] = Params.HORIZON  # rollout horizon
-    config["lr"] = Params.learning_rate #fixme: giving weird problem
+    config["lr"] = Params.learning_rate  # fixme: giving weird problem
 
     return config
 
@@ -358,6 +283,7 @@ def marwil_config(config):
 
     return config
 
+
 def maddpg_config(config):
     """
     Return a dict representing the config file of a standard MARWIL algorithm in rrlib
@@ -421,7 +347,7 @@ def maddpg_config(config):
 
     """
 
-    #todo
+    # todo
 
     return config
 
