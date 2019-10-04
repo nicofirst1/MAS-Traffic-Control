@@ -1130,3 +1130,31 @@ class TraCIVehicle(KernelVehicle):
         """
 
         return self.__vehicles[veh_id]["jerk"]
+
+
+    def get_rl_types(self):
+        """
+        Return a list of types for the rl agents
+        :return: list of strings
+        """
+
+        return set([elem.rsplit("_",1)[0] for elem in self.get_rl_ids() ])
+
+    def get_delay(self,veh_type):
+        """
+        Get the total delay for the specified vehicle type
+        :param veh_type: vehicle name, or substring or all
+        :return: np arrray of velocities
+        """
+
+        if veh_type=="all":
+            ids=self.get_ids()
+        else:
+            ids=[elem for elem in self.get_rl_ids() if veh_type in elem]
+
+        vel = np.array(self.get_speed(ids))
+
+        vel = vel[vel >= -1e-6]
+
+        return vel
+
