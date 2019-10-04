@@ -3,7 +3,7 @@ import json
 from ray.rllib.agents.registry import get_agent_class
 from ray.tune import Analysis
 
-from FlowMas.utils.Eval import  configure_callbacks
+from FlowMas.utils.Eval import configure_callbacks
 from FlowMas.utils.parameters import Params
 from flow.utils.rllib import FlowParamsEncoder
 
@@ -68,6 +68,7 @@ def eval_config(config):
     """
     Setting evaluation specific configuration, independent from model chosen
 
+    :type config: object
     :param config: a config dict
     :return:  updated config dict
 
@@ -104,7 +105,6 @@ def eval_config(config):
     # and to disable exploration by computing deterministic actions
     "evaluation_config": {},
     """
-
 
     config = configure_callbacks(config)
 
