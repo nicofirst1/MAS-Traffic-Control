@@ -118,8 +118,8 @@ The evaluation functions are in the [train_utils.py](FlowMas/utils/train_utils.p
 
 ##### on_episode_step
 
-- Reward: min, max, mean; split for kind of agent
-- Delay: mean, max, min, standstill (mean jerk ?)
+- Reward: min, max, mean; split for kind of agent [X]
+- Delay: mean, max, min, standstill (mean jerk ?) [X]
 - Actions :
     - Acceleration: mean/max/min
     
