@@ -26,6 +26,7 @@ class Params:
     DATA_DIR = join_paths(WORKING_DIR, "data")
     emission_path_dir = join_paths(DATA_DIR, "emission_path")
     ray_results_dir = join_paths(DATA_DIR, "ray_results")
+    eval_info_dir=join_paths(DATA_DIR, "eval_infos")
 
     ##########################
     # Performance stuff
@@ -48,7 +49,7 @@ class Params:
     min_neighbors_distance = 50
 
     # the duration of one episode in steps.
-    HORIZON = 1500 if not DEBUG else 1  # set to 1 for debug in order to start learning immediately
+    HORIZON = 700 if not DEBUG else 3  # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> super coop, 0-> selfish)
     coop_weight = 1
@@ -60,6 +61,9 @@ class Params:
     #  Training  params
     ##########################
 
+    # number fo units for model
+    num_units=64
+
     # Number of evaluation to perform
     evaluation_interval = 4
 
@@ -68,10 +72,11 @@ class Params:
 
     # number of iterations for training
     training_iteration = 600
+    episode_num=100
 
     # training algorithms
     implemented_algs = ["MARWIL","contrib/MADDPG", "PPO"] # see journal, research section
-    training_alg = implemented_algs[0]
+    training_alg = implemented_algs[1]
 
     # learning rate
     learning_rate = 1e-4
@@ -79,7 +84,8 @@ class Params:
     # dictionary for stopping conditions
     stop_conditions = dict(
 
-        training_iteration=training_iteration
+        training_iteration=training_iteration,
+        episodes_total= episode_num,
     )
 
     discount_rate = 0.998
@@ -95,8 +101,9 @@ class Params:
     human_vehicle_num = 100
 
     # number of selfish/coop rl agents in the initial conf
-    selfish_rl_vehicle_num = 70
-    coop_rl_vehicle_num = 150
+    selfish_rl_vehicle_num = 3
+    coop_rl_vehicle_num = 5
+    num_agents=coop_rl_vehicle_num+selfish_rl_vehicle_num
 
     # INFLOW PARAMS
 

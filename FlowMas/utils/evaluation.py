@@ -1,16 +1,55 @@
+from datetime import datetime
 import itertools
 import json
 from collections import Counter
+import os
 
 import numpy as np
 import termcolor
 from ray import tune
 
 # avaiable colors : red, green, yellow, blue, magenta, cyan, white.
+from FlowMas.utils.parameters import Params
+
 step_color = "cyan"
 start_color = "green"
 end_color = "green"
 train_color = "yellow"
+
+
+class Memory:
+
+    def __init__(self):
+        self.rewards = []
+        self.delays = []
+        self.window = 10
+
+    def add_reward(self, reward):
+        self.rewards.append(reward)
+
+    def add_delay(self, delay):
+        self.delays.append(delay)
+
+
+mem = Memory()
+
+
+
+class CustomStdOut(object):
+    def _log_result(self, result):
+        if result["training_iteration"] % 50 == 0:
+            try:
+                print("steps: {}, episodes: {}, mean episode reward: {}, agent episode reward: {}, time: {}".format(
+                    result["timesteps_total"],
+                    result["episodes_total"],
+                    result["episode_reward_mean"],
+                    result["policy_reward_mean"],
+                    round(result["time_total_s"] - self.cur_time, 3)
+                ))
+            except:
+                pass
+
+            self.cur_time = result["time_total_s"]
 
 
 def configure_callbacks(config):
@@ -22,7 +61,39 @@ def configure_callbacks(config):
     return config
 
 
-def reward_print(info):
+###########################
+# INFO GETTING
+###########################
+
+def get_delay_info(info):
+    """
+    Prints info about vehicle delays both split and total
+    :param info:
+    :return:
+    """
+
+    # get agent types
+    delay = info["env"].envs[0].k.vehicle.get_rl_types()
+    delay = {k: np.array([]) for k in delay}
+
+    # get delays for every type of rl agent
+    for t in delay.keys():
+        delay[t] = np.concatenate((delay[t], info["env"].envs[0].k.vehicle.get_delay(t)))
+    # get delays for every vehicle in the system
+    delay["all"] = info["env"].envs[0].k.vehicle.get_delay("all")
+
+    # skip if everything is zero (first iter)
+    if not any(list(itertools.chain.from_iterable(delay.values()))):
+        return []
+
+    infos = multi_info_split(delay, "Delays")
+
+    mem.add_reward(infos)
+
+    return infos
+
+
+def get_reward_info(info):
     """
     Prints rewards for step, both split and not.
     :param info:
@@ -37,7 +108,7 @@ def reward_print(info):
 
     # return if zero length
     if len(reward_history) == 0:
-        return ""
+        return []
 
     # for every id:list in the history of rewards
     for k, v in reward_history.items():
@@ -53,8 +124,11 @@ def reward_print(info):
     # convert to numpy array
     rewards = {k: np.array(v) for k, v in rewards.items()}
 
-    msg = multi_info_split(rewards, "Rewards")
-    return msg
+    infos = multi_info_split(rewards, "Rewards")
+
+    mem.add_reward(infos)
+
+    return infos
 
 
 def multi_info_split(info, title):
@@ -80,87 +154,10 @@ def multi_info_split(info, title):
 
     )
 
-    # make it printable
-    msg = print_title(title + " START")
-    msg += json.dumps(split_info, indent=4) + "\n"
-    msg += json.dumps(total_info, indent=4) + "\n"
-    msg += print_title(title + " END")
-
-    return msg
+    return split_info, total_info
 
 
-def delay_print(info):
-    """
-    Prints info about vehicle delays both split and total
-    :param info:
-    :return:
-    """
-
-    # get agent types
-    delay = info["env"].envs[0].k.vehicle.get_rl_types()
-    delay = {k: np.array([]) for k in delay}
-
-    # get delays for every type of rl agent
-    for t in delay.keys():
-        delay[t] = np.concatenate((delay[t], info["env"].envs[0].k.vehicle.get_delay(t)))
-    # get delays for every vehicle in the system
-    delay["all"] = info["env"].envs[0].k.vehicle.get_delay("all")
-
-    msg = multi_info_split(delay, "Delays")
-
-    return msg
-
-
-def print_title(title, hash_num=10):
-    """
-    Print the title
-    :param title: string
-    :param hash_num: number of hashs
-    :return: string
-    """
-
-    hashs = hash_num * "#"
-    return f"\n{hashs}\n {title} \n{hashs}\n"
-
-
-@tune.function
-def on_episode_step(info):
-    """
-    On step function for debugging and traning
-    :param info:
-    :return:
-    """
-    # todo: get mean dealy, standstill, mean jerk (?)
-    # todo: get action min/max/mean
-
-    # get reward infos
-    msg = reward_print(info) + "\n"
-    msg += delay_print(info) + "\n"
-
-    log(msg, color=step_color)
-
-
-@tune.function
-def on_episode_start(info):
-    msg = print_title("EPISODE STARTED", hash_num=20)
-    msg += env_infos(info)
-
-    log(msg, color=start_color)
-
-
-@tune.function
-def on_episode_end(info):
-    msg = print_title("EPISODE END", hash_num=20)
-    log(msg, color=end_color)
-
-
-@tune.function
-def on_train_result(info):
-    log("trainer.train() result: {} -> {} episodes".format(
-        info["trainer"], info["result"]["episodes_this_iter"]))
-
-
-def env_infos(info):
+def get_env_infos(info):
     info = info.get("env").envs[0]
     msg = ""
 
@@ -180,5 +177,105 @@ def env_infos(info):
     return msg
 
 
+###########################
+# PRINT FUNCTIONS
+###########################
+
+def print_title(title, hash_num=10):
+    """
+    Print the title
+    :param title: string
+    :param hash_num: number of hashs
+    :return: string
+    """
+
+    hashs = hash_num * "#"
+    return f"\n{hashs}\n {title} \n{hashs}\n"
+
+
 def log(msg, color="white"):
     termcolor.cprint(msg, color)
+
+
+def dict_print(dicts, title, indent=4):
+    """
+    Print list of dictionaries
+    :param dicts: list of dicts
+    :param title: string
+    :param indent:
+    :return:
+    """
+    msg = print_title(title + " START")
+
+    for d in dicts:
+        # make it printable
+        msg += json.dumps(d, indent=indent) + "\n"
+
+    msg += print_title(title + " END")
+
+    return msg
+
+
+###########################
+# TUNE FUNCTIONS
+###########################
+@tune.function
+def on_episode_step(info):
+    """
+    On step function for debugging and traning
+    :param info:
+    :return:
+    """
+    # todo: mean jerk (?)
+    # todo: get action min/max/mean
+
+    # get reward infos
+    rewards = get_reward_info(info)
+    delays = get_delay_info(info)
+
+    msg = ""
+
+    if len(rewards) != 0:
+        msg += dict_print(rewards, "Rewards")
+        info["episode"].user_data["rewards"]["split"].append(rewards[0])
+        info["episode"].user_data["rewards"]["total"].append(rewards[1])
+
+    if len(delays) != 0:
+        msg += dict_print(delays, "Delays")
+        info["episode"].user_data["delays"]["split"].append(rewards[0])
+        info["episode"].user_data["delays"]["total"].append(rewards[1])
+
+    log(msg, color=step_color)
+
+
+@tune.function
+def on_episode_start(info):
+    msg = print_title("EPISODE STARTED", hash_num=20)
+    msg += get_env_infos(info)
+
+    info["episode"].user_data["rewards"] = dict(
+        split=[],
+        total=[]
+    )
+
+    info["episode"].user_data["delays"] = dict(
+        split=[],
+        total=[]
+    )
+
+    log(msg, color=start_color)
+
+
+@tune.function
+def on_episode_end(info):
+    msg = print_title("EPISODE END", hash_num=20)
+    log(msg, color=end_color)
+
+    episode = info["episode"]
+    episode.custom_metrics = episode.user_data
+
+
+@tune.function
+def on_train_result(info):
+    log("trainer.train() result: {} -> {} episodes".format(
+        info["trainer"], info["result"]["episodes_this_iter"]))

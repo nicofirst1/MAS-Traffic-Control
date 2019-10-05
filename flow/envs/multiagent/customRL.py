@@ -37,6 +37,14 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
         super().__init__(env_params, sim_params, network, simulator)
 
+        self.observation_space_dict=Box(low=(-sys.maxsize - 1), high=self.k.vehicle.num_vehicles, shape=(8,), dtype=np.float32)
+        self.action_space_dict=Box(
+            low=-np.abs(self.env_params.additional_params['max_decel']),
+            high=self.env_params.additional_params['max_accel'],
+            shape=(1,),  # (4,),
+            dtype=np.float32)
+
+
     def step(self, rl_actions):
         """Advance the environment by one step.
 
@@ -127,10 +135,16 @@ class CustoMultiRL(MultiAgentEnv, Env):
         states = self.get_state()
         done = {key: key in self.k.vehicle.get_arrived_ids()
                 for key in states.keys()}
+
+
         if crash:
             done['__all__'] = True
         else:
             done['__all__'] = False
+
+        if self.step_counter==self.env_params.horizon:
+            done['__all__'] = True
+
         infos = {key: {} for key in states.keys()}
 
         # compute the reward
@@ -384,11 +398,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
         """
 
         # The action space is just the de/acceleration
-        return Box(
-            low=-np.abs(self.env_params.additional_params['max_decel']),
-            high=self.env_params.additional_params['max_accel'],
-            shape=(1,),  # (4,),
-            dtype=np.float32)
+        return self.action_space_dict
 
     @property
     def observation_space(self):
@@ -401,7 +411,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
             space
         """
         #fixme: get lowest value right (-max_speed?)
-        return Box(low=(-sys.maxsize - 1), high=self.k.vehicle.num_vehicles, shape=(8,), dtype=np.float32)
+        return self.observation_space_dict
 
     def get_state(self):
         """Return the state of the simulation as perceived by the RL agent.

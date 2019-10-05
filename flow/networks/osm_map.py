@@ -10,6 +10,8 @@ from lxml import etree
 from collections import defaultdict
 
 # default sumo probability value  TODO (ak): remove
+from flow.networks import Network
+
 DEFAULT_PROBABILITY = 0
 # default sumo vehicle length value (in meters) TODO (ak): remove
 DEFAULT_LENGTH = 5
@@ -17,7 +19,7 @@ DEFAULT_LENGTH = 5
 DEFAULT_VCLASS = 0
 
 
-class OSMap(object):
+class OSMap(Network):
     """Base network class.
 
     Initializes a new network. Networks are used to specify features of
@@ -306,87 +308,6 @@ class OSMap(object):
     >>> []
     """
 
-    def __init__(self,
-                 name,
-                 vehicles,
-                 net_params,
-                 initial_config=InitialConfig(),
-                 traffic_lights=TrafficLightParams()):
-        """Instantiate the base network class.
-
-        Attributes
-        ----------
-        name : str
-            A tag associated with the network
-        vehicles : flow.core.params.VehicleParams
-            see flow/core/params.py
-        net_params : flow.core.params.NetParams
-            see flow/core/params.py
-        initial_config : flow.core.params.InitialConfig
-            see flow/core/params.py
-        traffic_lights : flow.core.params.TrafficLightParams
-            see flow/core/params.py
-        """
-        self.orig_name = name  # To avoid repeated concatenation upon reset
-        self.name = name + time.strftime('_%Y%m%d-%H%M%S') + str(time.time())
-
-        self.vehicles = vehicles
-        self.net_params = net_params
-        self.initial_config = initial_config
-        self.traffic_lights = traffic_lights
-
-        # specify routes vehicles can take
-        self.routes = self.specify_routes(net_params)
-
-        if net_params.template is None and net_params.osm_path is None:
-            # specify the attributes of the nodes
-            self.nodes = self.specify_nodes(net_params)
-            # collect the attributes of each edge
-            self.edges = self.specify_edges(net_params)
-            # specify the types attributes (default is None)
-            self.types = self.specify_types(net_params)
-            # specify the connection attributes (default is None)
-            self.connections = self.specify_connections(net_params)
-
-        # this is to be used if file paths other than the the network geometry
-        # file is specified
-        elif type(net_params.template) is dict:
-            if 'rou' in net_params.template:
-                veh, rou = self._vehicle_infos(net_params.template['rou'])
-
-                vtypes = self._vehicle_type(net_params.template.get('vtype'))
-                cf = self._get_cf_params(vtypes)
-                lc = self._get_lc_params(vtypes)
-
-                # add the vehicle types to the VehicleParams object
-                for t in vtypes:
-                    vehicles.add(veh_id=t, car_following_params=cf[t],
-                                 lane_change_params=lc[t], num_vehicles=0)
-
-                # add the routes of the vehicles that will be departed later
-                # under the name of the vehicle. This will later be identified
-                # by k.vehicles._add_departed
-                self.routes = rou
-
-                # vehicles to be added with different departure times
-                self.template_vehicles = veh
-
-            self.types = None
-            self.nodes = None
-            self.edges = None
-            self.connections = None
-
-        # osm_path or template as type str
-        else:
-            self.nodes = None
-            self.edges = None
-            self.types = None
-            self.connections = None
-
-        # optional parameters, used to get positions from some global reference
-        self.edge_starts = self.specify_edge_starts()
-        self.internal_edge_starts = self.specify_internal_edge_starts()
-        self.intersection_edge_starts = []  # this will be deprecated
 
     # TODO: convert to property
     def specify_edge_starts(self):

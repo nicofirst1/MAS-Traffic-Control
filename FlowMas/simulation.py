@@ -18,7 +18,8 @@ from flow.controllers.routing_controllers import GridRouter
 from flow.core.params import EnvParams, InitialConfig, CustomVehicleParams
 from flow.core.params import NetParams
 from flow.core.params import SumoParams
-from flow.envs.multiagent.customRL import ADDITIONAL_ENV_PARAMS
+from flow.envs.multiagent.customRL import ADDITIONAL_ENV_PARAMS, CustoMultiRL
+from flow.networks import OSMap
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.utils.registry import make_create_env
 
@@ -79,10 +80,10 @@ env_params = EnvParams(additional_params=additional_env_params, horizon=Params.H
 
 # the simulation parameters
 sim_params = SumoParams(
-    render=True,
+    render=False,
     show_radius=True,  # show a circle on top of RL agents
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
-    emission_path=Params.DATA_DIR,
+    emission_path=Params.emission_path_dir,
     restart_instance=True,
 )
 
@@ -149,11 +150,7 @@ params = dict(
     simulator='traci',
 
     # sumo-related parameters (see flow.core.params.SumoParams)
-    sim=SumoParams(
-        render=False,  # no renderer will be displayed for training, this is for speed up
-        restart_instance=True,  # for performance reasons
-        emission_path=Params.emission_path_dir,
-    ),
+    sim=sim_params,
 
     # environment related parameters (see flow.core.params.EnvParams)
     env=env_params,
@@ -178,8 +175,16 @@ params = dict(
 # define new trainable enviroment
 create_env, gym_name = make_create_env(params=params, version=0)
 
+env = CustoMultiRL(env_params, sim_params, OSMap(
+    Params.map,
+    vehicles,
+    net_params,
+    initial_config=InitialConfig(),
+)
+)
+
 # get default config for ppo
-config = get_default_config(params)
+config = get_default_config(params, env)
 config['env'] = gym_name # add env name to the configs
 
 # Register as rllib env
@@ -221,7 +226,7 @@ pbt_scheduler = PopulationBasedTraining(
 # run the experiment
 trials = run(
     exp,
-    reuse_actors=False, # performance improvement
+    reuse_actors=False, 
     verbose=2,
     raise_on_failed_trial=True,  # avoid agent not known error
     return_trials=True,

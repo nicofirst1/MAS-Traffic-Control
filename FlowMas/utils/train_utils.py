@@ -1,5 +1,6 @@
 import json
 
+import ray
 from ray.rllib.agents.registry import get_agent_class
 from ray.tune import Analysis
 
@@ -59,7 +60,7 @@ def performance_config(config):
     # config["num_cpus_per_worker"]=min(Params.N_CPUS//Params.N_WORKERS,1)
     # config["num_gpus_per_worker"]=Params.N_GPUS
     # config["num_cpus_for_driver"]=Params.N_CPUS
-    config["log_level"] = "WARNING"
+    config["log_level"] = "DEBUG"
 
     return config
 
@@ -166,6 +167,7 @@ def flow_config(params, config):
     :return:
     """
     # save the flow params for replay
+
     flow_json = json.dumps(params, cls=FlowParamsEncoder, sort_keys=True,
                            indent=4)  # generating a string version of flow_params
     config['env_config']['flow_params'] = flow_json  # adding the flow_params to config dict
@@ -284,7 +286,7 @@ def marwil_config(config):
     return config
 
 
-def maddpg_config(config):
+def maddpg_config(config, env):
     """
     Return a dict representing the config file of a standard MARWIL algorithm in rrlib
 
@@ -356,13 +358,29 @@ def maddpg_config(config):
 
     """
 
-    config['agent_id']=1
-    # todo
+    policies = {
+                    "pol1": (None,env.observation_space_dict,
+                             env.action_space_dict, {
+                                 "agent_id": 0,
+                                 "use_local_critic": "maddpg",
+                             }),
+                    "pol2": (None, env.observation_space_dict,
+                             env.action_space_dict, {
+                                 "agent_id": 1,
+                                 "use_local_critic": "maddpg",
+                             }),
+                }
+
+    # config['agent_id']=1
+    config['multiagent'] = {
+        "policies": policies,
+        "policy_mapping_fn": ray.tune.function(lambda x: "pol1" if x == 0 else "pol2")
+    }
 
     return config
 
 
-def get_default_config(params):
+def get_default_config(params, env):
     """
     Return the default configuration for a specific type of algorithm
     :param params: (dict)  general dictionary containing every configuration parameter (env, netwrok, inflow ...)
@@ -387,7 +405,7 @@ def get_default_config(params):
 
 
     elif Params.training_alg == "contrib/MADDPG":
-        config = maddpg_config(config)
+        config = maddpg_config(config, env)
 
     else:
         raise NotImplementedError(f"{Params.training_alg} has not been implemented")
