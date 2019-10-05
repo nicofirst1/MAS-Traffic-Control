@@ -51,7 +51,7 @@ class Params:
     HORIZON = 1500 if not DEBUG else 1  # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> super coop, 0-> selfish)
-    coop_weight = 0.7
+    coop_weight = 1
 
     # baseline for reward
     baseline = 10
@@ -70,7 +70,7 @@ class Params:
     training_iteration = 600
 
     # training algorithms
-    implemented_algs = ["MARWIL","MADDPG", "PPO"] # see journal, research section
+    implemented_algs = ["MARWIL","contrib/MADDPG", "PPO"] # see journal, research section
     training_alg = implemented_algs[0]
 
     # learning rate
