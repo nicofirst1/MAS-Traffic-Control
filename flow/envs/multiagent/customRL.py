@@ -142,8 +142,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
         else:
             done['__all__'] = False
 
-        if self.step_counter==self.env_params.horizon:
-            done['__all__'] = True
+       
 
         infos = {key: {} for key in states.keys()}
 
