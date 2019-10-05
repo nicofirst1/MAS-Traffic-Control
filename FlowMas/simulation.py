@@ -221,9 +221,9 @@ pbt_scheduler = PopulationBasedTraining(
 # run the experiment
 trials = run(
     exp,
-    reuse_actors=True, # performance improvement
+    reuse_actors=False, # performance improvement
     verbose=2,
-    raise_on_failed_trial=False,  # avoid agent not known error
+    raise_on_failed_trial=True,  # avoid agent not known error
     return_trials=True,
     #scheduler=pbt_scheduler,
 

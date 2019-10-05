@@ -84,7 +84,7 @@ def multi_info_split(info, title):
     msg = print_title(title + " START")
     msg += json.dumps(split_info, indent=4) + "\n"
     msg += json.dumps(total_info, indent=4) + "\n"
-    msg = print_title(title + " END")
+    msg += print_title(title + " END")
 
     return msg
 
