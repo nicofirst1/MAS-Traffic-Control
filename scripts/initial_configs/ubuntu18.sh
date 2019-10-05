@@ -40,6 +40,8 @@ if [ -z "$conda" ]; then
     conda init
 fi
 
+# installing stble baseline
+sudo apt-get install -y cmake libopenmpi-dev python3-dev zlib1g-dev
 
 # source bash
 . ~/.bashrc

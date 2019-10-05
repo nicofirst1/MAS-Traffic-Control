@@ -166,3 +166,6 @@ fi
 
 # remove flow from packages
 pip uninstall flow
+
+# instlaling stable baseline
+pip install stable-baselines

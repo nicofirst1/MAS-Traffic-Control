@@ -52,6 +52,8 @@ pip install -e . --verbose  # Add --user if you see a permission denied error.
 
 ```
 
+- Install baseline following [this](https://stable-baselines.readthedocs.io/en/master/guide/install.html)
+
 - Install sumotools: 
 
 `pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl`

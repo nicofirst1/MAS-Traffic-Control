@@ -21,5 +21,5 @@ brew update
 brew install wget
 brew install proj
 
-
+brew install cmake openmpi
 bash scripts/python_setup.sh
