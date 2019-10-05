@@ -3,7 +3,7 @@ import json
 from ray.rllib.agents.registry import get_agent_class
 from ray.tune import Analysis
 
-from FlowMas.utils.Eval import configure_callbacks
+from FlowMas.utils.evaluation import configure_callbacks
 from FlowMas.utils.parameters import Params
 from flow.utils.rllib import FlowParamsEncoder
 
@@ -290,7 +290,17 @@ def maddpg_config(config):
 
     :return:(dict)
 
+    # === Settings for each individual policy ===
+    # ID of the agent controlled by this policy
+    "agent_id": None,
+    # Use a local critic for this policy.
+    "use_local_critic": False,
 
+    # === Evaluation ===
+    # Evaluation interval
+    "evaluation_interval": None,
+    # Number of episodes to run per evaluation period.
+    "evaluation_num_episodes": 10,
 
     # === Model ===
     # Apply a state preprocessor with spec given by the "model" config option
@@ -344,9 +354,9 @@ def maddpg_config(config):
 
 
 
-
     """
 
+    config['agent_id']=1
     # todo
 
     return config
@@ -376,7 +386,7 @@ def get_default_config(params):
         config = marwil_config(config)
 
 
-    elif Params.training_alg == "MADDPG":
+    elif Params.training_alg == "contrib/MADDPG":
         config = maddpg_config(config)
 
     else:
