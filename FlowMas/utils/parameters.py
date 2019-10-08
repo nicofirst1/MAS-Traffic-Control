@@ -32,8 +32,11 @@ class Params:
     # Performance stuff
     ##########################
     DEBUG = False
-    N_CPUS = 4 if not DEBUG else 1  # avoiding error 6
-    N_GPUS = 1 if not DEBUG else 0  # avoiding error 6
+
+    N_CPUS = multiprocessing.cpu_count() if not DEBUG else 1  # avoiding error 6
+    local_device_protos = device_lib.list_local_devices()
+    gpus=len([x.name for x in local_device_protos if x.device_type == 'GPU'])
+    N_GPUS = gpus if not DEBUG else 0  # avoiding error 6
     N_WORKERS= max(N_CPUS-1,1)
 
     trial_resources = dict(
