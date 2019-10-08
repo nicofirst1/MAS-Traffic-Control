@@ -156,4 +156,3 @@ class Params:
                 continue
 
 
-Params()

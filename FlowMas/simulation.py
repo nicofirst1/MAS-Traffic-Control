@@ -33,6 +33,7 @@ from flow.core.params import InFlows
 #      VEHICLES
 ########################
 
+Params()
 
 # vehicle params to take care of all the vehicles
 vehicles = CustomVehicleParams()
