@@ -409,3 +409,25 @@ NotImplementedError: ("last done mask in a batch should be True. For now, we onl
 
 ```
 __Solution__:  Looking for one... 
+
+
+### Error 16
+
+__Traceback__:
+```
+No routes specified, defaulting to single edge routes.
+Loading configuration... done.
+Traceback (most recent call last):
+  File "FlowMas/simulation.py", line 187, in <module>
+    config = get_default_config(params, env)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/dmas-1.0-py3.6.egg/FlowMas/utils/train_utils.py", line 391, in get_default_config
+    config = get_agent_class(Params.training_alg)._default_config.copy()
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray/rllib/agents/registry.py", line 122, in get_agent_class
+    return _get_agent_class(alg)
+  File "/Users/giulia/anaconda3/envs/dmas/lib/python3.6/site-packages/ray/rllib/agents/registry.py", line 146, in _get_agent_class
+    raise Exception(("Unknown algorithm {}.").format(alg))
+Exception: Unknown algorithm contrib/MADDPG.
+```
+
+__Solution__:  update rllib :
+`pip install --upgrade ray`
