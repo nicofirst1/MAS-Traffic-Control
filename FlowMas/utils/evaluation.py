@@ -325,6 +325,8 @@ def on_episode_end(info):
     tmp={k:np.mean(v) for k,v in tmp.items()}
     custom.update(tmp)
 
+    episode.custom_metrics=custom
+
 
 
 

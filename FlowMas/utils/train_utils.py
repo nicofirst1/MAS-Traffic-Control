@@ -346,8 +346,11 @@ def maddpg_config(config, env):
 
     """
 
+
+
+    # todo: split for selfhish and coop agents
     policies = {
-                    "pol1": (None,env.observation_space_dict,
+                    "pol1": (None, env.observation_space_dict,
                              env.action_space_dict, {
                                  "agent_id": 0,
                                  "use_local_critic": "maddpg",
@@ -355,19 +358,19 @@ def maddpg_config(config, env):
                     "pol2": (None, env.observation_space_dict,
                              env.action_space_dict, {
                                  "agent_id": 1,
-                                 "use_local_critic": "maddpg",
+                                 "use_local_critic": "dpg",
                              }),
                 }
 
     # config['agent_id']=1
     config['multiagent'] = {
         "policies": policies,
-        "policy_mapping_fn": ray.tune.function(lambda x: "pol1" if x == 0 else "pol2")
+        "policy_mapping_fn": ray.tune.function(lambda x: "pol1")
     }
 
     return config
 
- 
+
 def get_default_config(params, env):
     """
     Return the default configuration for a specific type of algorithm
