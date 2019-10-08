@@ -365,7 +365,7 @@ def maddpg_config(config, env):
     # config['agent_id']=1
     config['multiagent'] = {
         "policies": policies,
-        "policy_mapping_fn": ray.tune.function(lambda x: "pol1")
+        "policy_mapping_fn": lambda x: "pol1"
     }
 
     return config
