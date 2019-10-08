@@ -90,7 +90,7 @@ sim_params = SumoParams(
 # setting initial configuration files
 initial_config = InitialConfig(
     shuffle=True,
-    perturbation=50.0,
+    perturbation=50.0,#todo: put in param
 )
 
 #######################
