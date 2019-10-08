@@ -23,6 +23,7 @@ class Memory:
         self.rewards = []
         self.delays = []
         self.window = 10
+        print("Memory class initialized")
 
     def add_reward(self, reward):
         self.rewards.append(reward)
@@ -219,7 +220,7 @@ def dict_print(dicts, title, indent=4):
 ###########################
 # TUNE FUNCTIONS
 ###########################
-@tune.function
+
 def on_episode_step(info):
     """
     On step function for debugging and traning
@@ -236,46 +237,101 @@ def on_episode_step(info):
     msg = ""
 
     if len(rewards) != 0:
-        msg += dict_print(rewards, "Rewards")
-        info["episode"].user_data["rewards"]["split"].append(rewards[0])
-        info["episode"].user_data["rewards"]["total"].append(rewards[1])
+        #msg += dict_print(rewards, "Rewards")
+        info["episode"].user_data["rewards"].append(rewards)
+
 
     if len(delays) != 0:
-        msg += dict_print(delays, "Delays")
-        info["episode"].user_data["delays"]["split"].append(rewards[0])
-        info["episode"].user_data["delays"]["total"].append(rewards[1])
+        #msg += dict_print(delays, "Delays")
+        info["episode"].user_data["delays"].append(delays)
 
     log(msg, color=step_color)
 
 
-@tune.function
 def on_episode_start(info):
-    msg = print_title("EPISODE STARTED", hash_num=20)
+    msg = print_title("EPISODE STARTED", hash_num=60)
     msg += get_env_infos(info)
 
-    info["episode"].user_data["rewards"] = dict(
-        split=[],
-        total=[]
-    )
-
-    info["episode"].user_data["delays"] = dict(
-        split=[],
-        total=[]
-    )
+    info["episode"].user_data["rewards"] = []
+    info["episode"].user_data["delays"] = []
 
     log(msg, color=start_color)
 
+def outer_split(to_split,name):
+    prov={}
 
-@tune.function
+    for elem in to_split:
+
+        for k,v in elem.items():
+
+            if k=="name":continue
+
+            for k2,v2 in v.items():
+
+                new_k="/".join([name,k,k2])
+                if new_k not in prov.keys():
+                    prov[new_k] =[]
+
+                prov[new_k].append(v2)
+
+    return prov
+
+def inner_split(to_split, title):
+    prov={}
+
+    for elem in to_split:
+
+        for k2, v2 in elem.items():
+            if k2=="name":continue
+
+            new_k = "/".join([title, k2])
+            if new_k not in prov.keys():
+                prov[new_k] = []
+
+            prov[new_k].append(v2)
+
+    return prov
+
 def on_episode_end(info):
-    msg = print_title("EPISODE END", hash_num=20)
-    log(msg, color=end_color)
+
 
     episode = info["episode"]
-    episode.custom_metrics = episode.user_data
+
+    msg = print_title("EPISODE END", hash_num=60)
+
+    delays = episode.user_data["delays"]
+    rewards = episode.user_data["rewards"]
+
+    delays_split = [elem[0] for elem in delays]
+    delays_total = [elem[1] for elem in delays]
+
+    rewards_split = [elem[0] for elem in rewards]
+    rewards_total = [elem[1] for elem in rewards]
+
+    custom =episode.custom_metrics
+    tmp=outer_split(delays_split, "Delays/Split")
+    tmp={k:np.mean(v) for k,v in tmp.items()}
+    custom.update(tmp)
+
+    tmp=outer_split(rewards_split, "Rewards/Split")
+    tmp={k:np.mean(v) for k,v in tmp.items()}
+    custom.update(tmp)
+
+    tmp=inner_split(delays_total, "Delays/Total")
+    tmp={k:np.mean(v) for k,v in tmp.items()}
+    custom.update(tmp)
+
+    tmp=inner_split(rewards_total, "Rewards/Total")
+    tmp={k:np.mean(v) for k,v in tmp.items()}
+    custom.update(tmp)
 
 
-@tune.function
+
+
+    log(msg, color=end_color)
+
+
+
 def on_train_result(info):
     log("trainer.train() result: {} -> {} episodes".format(
         info["trainer"], info["result"]["episodes_this_iter"]))
