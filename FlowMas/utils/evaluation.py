@@ -245,7 +245,7 @@ def on_episode_step(info):
         #msg += dict_print(delays, "Delays")
         info["episode"].user_data["delays"].append(delays)
 
-    log(msg, color=step_color)
+    #log(msg, color=step_color)
 
 
 def on_episode_start(info):
