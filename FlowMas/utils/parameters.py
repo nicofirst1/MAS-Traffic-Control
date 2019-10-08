@@ -54,7 +54,7 @@ class Params:
     min_neighbors_distance = 50
 
     # the duration of one episode in steps.
-    HORIZON = 700 if not DEBUG else 3  # set to 1 for debug in order to start learning immediately
+    HORIZON = 4000 if not DEBUG else 3  # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> super coop, 0-> selfish)
     coop_weight = 1
@@ -81,7 +81,7 @@ class Params:
 
     # training algorithms
     implemented_algs = ["MARWIL","contrib/MADDPG", "PPO"] # see journal, research section
-    training_alg = implemented_algs[1]
+    training_alg = implemented_algs[2]
 
     # learning rate
     learning_rate = 1e-4
