@@ -1131,7 +1131,6 @@ class TraCIVehicle(KernelVehicle):
 
         return self.__vehicles[veh_id]["jerk"]
 
-
     def get_rl_types(self):
         """
         Return a list of types for the rl agents
