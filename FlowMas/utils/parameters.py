@@ -76,8 +76,8 @@ class Params:
     checkpoint_freq = 20
 
     # number of iterations for training
-    training_iteration = 600
-    episode_num=100
+    training_iteration = 600 if not DEBUG else 6
+    episode_num=9999 if not DEBUG else 2
 
     # training algorithms
     implemented_algs = ["MARWIL","contrib/MADDPG", "PPO"] # see journal, research section
