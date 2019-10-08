@@ -319,7 +319,8 @@ Quitting (on error).
 
 __Solution__:
 
-Check [this](https://proj.org/install.html) and then [this](https://sourceforge.net/p/sumo/mailman/message/35283626/)
+Do [this](https://proj.org/install.html) and reinstall the sumo library from [their website](https://github.com/eclipse/sumo)
+ and build it
 
 ### Error 13
 
