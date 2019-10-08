@@ -28,9 +28,11 @@ cd flow
 
  `pip install -e .`
  
- 
-- Install SUMO, either by using the [scripts](https://github.com/flow-project/flow/tree/master/scripts) in
-  Flow or by using the [SUMO documentation](http://sumo.sourceforge.net/userdoc/Downloads.html) (Remember to
+- Install cproj with :
+
+`conda install -c conda-forge proj`
+
+- Install SUMO by using the [SUMO documentation](http://sumo.sourceforge.net/userdoc/Downloads.html) (Remember to
   link the SUMO binaries in your _.bashrc_).
 
  - Install Ray by following [the instruction on ray](https://ray.readthedocs.io/en/latest/installation.html) and the 
