@@ -9,18 +9,6 @@ from FlowMas.utils.parameters import Params
 from flow.utils.rllib import FlowParamsEncoder
 
 
-def simple_analyzer():
-    analysis = Analysis(Params.ray_results_dir)
-    df = analysis.dataframe()
-
-    # Get a dataframe for the max accuracy seen for each trial
-    df = analysis.dataframe(metric="mean_accuracy", mode="max")
-
-    # Get a dict mapping {trial logdir -> dataframes} for all trials in the experiment.
-    all_dataframes = analysis.trial_dataframes
-
-    print(df)
-    print(all_dataframes)
 
 
 def performance_config(config):
@@ -60,7 +48,7 @@ def performance_config(config):
     # config["num_cpus_per_worker"]=min(Params.N_CPUS//Params.N_WORKERS,1)
     # config["num_gpus_per_worker"]=Params.N_GPUS
     # config["num_cpus_for_driver"]=Params.N_CPUS
-    config["log_level"] = "DEBUG"
+    config["log_level"] = "WARNING"
 
     return config
 
