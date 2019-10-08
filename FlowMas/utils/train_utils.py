@@ -367,7 +367,7 @@ def maddpg_config(config, env):
 
     return config
 
-
+ 
 def get_default_config(params, env):
     """
     Return the default configuration for a specific type of algorithm
