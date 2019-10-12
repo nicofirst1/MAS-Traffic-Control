@@ -173,8 +173,10 @@ check_env(){
   if [ -z $env ]; then
 
     echo "No conda environment detected!"
-    echo "Run 'conda create -name $env_name python=3.6'"
-    echo "The source it and relaunch the script"
+    echo "Run:"
+    echo "conda create -n $env_name python=3.6"
+    echo "Source it with:"
+    echo "conda activate $env_name"
     exit 1
 
   fi
