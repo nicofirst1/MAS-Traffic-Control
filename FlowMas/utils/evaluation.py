@@ -238,12 +238,14 @@ def on_episode_step(info):
 
     if len(rewards) != 0:
         #msg += dict_print(rewards, "Rewards")
-        info["episode"].user_data["rewards"].append(rewards)
+        info["episode"].user_data["rewards"]["split"].append(rewards[0])
+        info["episode"].user_data["rewards"]["total"].append(rewards[1])
 
 
     if len(delays) != 0:
         #msg += dict_print(delays, "Delays")
-        info["episode"].user_data["delays"].append(delays)
+        info["episode"].user_data["delays"]["split"].append(delays[0])
+        info["episode"].user_data["delays"]["total"].append(delays[1])
 
     #log(msg, color=step_color)
 
@@ -252,8 +254,14 @@ def on_episode_start(info):
     msg = print_title("EPISODE STARTED", hash_num=60)
     msg += get_env_infos(info)
 
-    info["episode"].user_data["rewards"] = []
-    info["episode"].user_data["delays"] = []
+    info["episode"].user_data["rewards"] = dict(
+        total=[],
+        split=[],
+    )
+    info["episode"].user_data["delays"] =dict(
+        total=[],
+        split=[],
+    )
 
     log(msg, color=start_color)
 
@@ -302,26 +310,27 @@ def on_episode_end(info):
     delays = episode.user_data["delays"]
     rewards = episode.user_data["rewards"]
 
-    delays_split = [elem[0] for elem in delays]
-    delays_total = [elem[1] for elem in delays]
+    delay_total=delays['total']
+    delay_split=delays['split']
 
-    rewards_split = [elem[0] for elem in rewards]
-    rewards_total = [elem[1] for elem in rewards]
+    reward_total = rewards['total']
+    reward_split = rewards['split']
+
 
     custom =episode.custom_metrics
-    tmp=outer_split(delays_split, "Delays/Split")
+    tmp=outer_split(delay_split, "Delays/Split")
     tmp={k:np.mean(v) for k,v in tmp.items()}
     custom.update(tmp)
 
-    tmp=outer_split(rewards_split, "Rewards/Split")
+    tmp=outer_split(reward_split, "Rewards/Split")
     tmp={k:np.mean(v) for k,v in tmp.items()}
     custom.update(tmp)
 
-    tmp=inner_split(delays_total, "Delays/Total")
+    tmp=inner_split(delay_total, "Delays/Total")
     tmp={k:np.mean(v) for k,v in tmp.items()}
     custom.update(tmp)
 
-    tmp=inner_split(rewards_total, "Rewards/Total")
+    tmp=inner_split(reward_total, "Rewards/Total")
     tmp={k:np.mean(v) for k,v in tmp.items()}
     custom.update(tmp)
 
