@@ -1,13 +1,9 @@
-import json
-import logging
-import random
 from copy import deepcopy
 
 # the Experiment class is used for running simulations
 import ray
-from past.builtins import cmp
-from ray.tune import register_env, run_experiments, run
-from ray.tune.experiment import convert_to_experiment_list, Experiment
+from ray.tune import register_env, run
+from ray.tune.experiment import Experiment
 from ray.tune.schedulers import PopulationBasedTraining
 
 from FlowMas.utils.general_utils import inflow_random_edges
@@ -86,12 +82,13 @@ sim_params = SumoParams(
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
     emission_path=Params.emission_path_dir,
     restart_instance=True,
+   # port=8873,
 )
 
 # setting initial configuration files
 initial_config = InitialConfig(
     shuffle=True,
-    perturbation=50.0,#todo: put in param
+    perturbation=50.0,  # todo: put in param
 )
 
 #######################
@@ -182,11 +179,11 @@ env = CustoMultiRL(env_params, sim_params, OSMap(
     net_params,
     initial_config=InitialConfig(),
 )
-)
+                   )
 
 # get default config for ppo
 config = get_default_config(params, env)
-config['env'] = gym_name # add env name to the configs
+config['env'] = gym_name  # add env name to the configs
 
 # Register as rllib env
 register_env(gym_name, create_env)
@@ -227,11 +224,10 @@ pbt_scheduler = PopulationBasedTraining(
 # run the experiment
 trials = run(
     exp,
-    reuse_actors=False, 
+    reuse_actors=False,
     verbose=2,
     raise_on_failed_trial=True,  # avoid agent not known error
     return_trials=True,
-    #scheduler=pbt_scheduler,
-
+    # scheduler=pbt_scheduler,
 
 )
