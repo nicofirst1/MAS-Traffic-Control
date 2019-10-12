@@ -3,7 +3,7 @@ python_install(){
 
   check_env
 
-  flow_requirements
+  #flow_requirements
 
 
   if [ ! $CONDA_DEFAULT_ENV = $env_name ] || [ -z $CONDA_DEFAULT_ENV ] ; then
@@ -21,30 +21,25 @@ python_install(){
   ray_installation
 
 
+  conda install --file requirements.txt
 
-# install sumo tools
-pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl
-
-
-if [ $DEBUG_flag ]; then
-    echo "[$DEBUG_id] 3.9) Done with sumo tools, configuring setup "
-fi
+  # install sumo tools
+  pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl
 
 
-cd $CUR_DIR
-# configure package
-python setup.py install
-
-if [ $DEBUG_flag ]; then
-    echo "[$DEBUG_id] 4) Uninstalling flow package "
-fi
+  if [ $DEBUG_flag ]; then
+      echo "[$DEBUG_id] 3.9) Done with sumo tools, configuring setup "
+  fi
 
 
-# remove flow from packages
-pip uninstall flow
+  cd $CUR_DIR
+  # configure package
+  python setup.py install
 
-# instlaling stable baseline
-pip install stable-baselines
+
+
+  # instlaling stable baseline
+  pip install stable-baselines
 
 }
 
@@ -52,50 +47,52 @@ ray_installation(){
 
 
 
-if [ ! -d "$LIBS_DIR/ray" ]; then
+  if [ ! -d "$LIBS_DIR/ray" ]; then
 
-    if [ $DEBUG_flag ]; then
-        echo "[$DEBUG_id] 3.7) Installing ray"
-    fi
+      if [ $DEBUG_flag ]; then
+          echo "[$DEBUG_id] 3.7) Installing ray"
+      fi
 
-    # Install flow develop
-    echo "Installing ray..."
+      # Install flow develop
+      echo "Installing ray..."
 
-    conda install -y libgcc
-    pip install cython==0.29.0
+      conda install -y libgcc
+      pip install cython==0.29.0
 
-    cd $LIBS_DIR
-    git clone https://github.com/ray-project/ray.git
-
-
-    if [ $DEBUG_flag ]; then
-        echo "[$DEBUG_id] 3.71) Installing bazel"
-    fi
-
-    # Install Bazel.
-    ray/ci/travis/install-bazel.sh
-
-    if [ $DEBUG_flag ]; then
-        echo "[$DEBUG_id] 3.72) Done with bazel, installing pip devel "
-    fi
-
-    # Install Ray.
-    cd ray/python
-    pip install -e . --verbose  # Add --user if you see a permission denied error.
-
-    if [ $DEBUG_flag ]; then
-        echo "[$DEBUG_id] 3.73) Done with  pip devel "
-    fi
-else
-
-    echo "Ray direcotry detected. Skipping installation"
-
-fi
+      cd $LIBS_DIR
+      git clone https://github.com/ray-project/ray/tree/releases/0.7.6
 
 
-if [ $DEBUG_flag ]; then
-    echo "[$DEBUG_id] 3.8) Done with ray, installin sumo tools "
-fi
+      if [ $DEBUG_flag ]; then
+          echo "[$DEBUG_id] 3.71) Installing bazel"
+      fi
+
+      # Install Bazel.
+      ray/ci/travis/install-bazel.sh
+
+      if [ $DEBUG_flag ]; then
+          echo "[$DEBUG_id] 3.72) Done with bazel, installing pip devel "
+      fi
+
+      # Install Ray.
+      cd ray/python
+      pip install -e . --verbose  # Add --user if you see a permission denied error.
+
+      if [ $DEBUG_flag ]; then
+          echo "[$DEBUG_id] 3.73) Done with  pip devel "
+      fi
+  else
+
+      echo "Ray direcotry detected. Skipping installation"
+
+  fi
+
+
+  if [ $DEBUG_flag ]; then
+      echo "[$DEBUG_id] 3.8) Done with ray, installin sumo tools "
+  fi
+
+  cd $CUR_DIR
 
 }
 
