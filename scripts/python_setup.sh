@@ -66,7 +66,8 @@ ray_installation(){
       pip install cython==0.29.0
 
       cd $LIBS_DIR
-      git clone https://github.com/ray-project/ray/tree/releases/0.7.6
+      git clone https://github.com/ray-project/ray.git
+      git checkout releases/0.7.6
 
 
       if [ $DEBUG_flag ]; then
