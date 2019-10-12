@@ -1,9 +1,9 @@
 import argparse
+import inspect
 import json
 import multiprocessing
 import os
 import shutil
-import inspect
 import sys
 
 import termcolor
@@ -45,7 +45,7 @@ class Params:
     # 2 : same as 1 + verobse ray level 2
     # 3 : same as 2 + print at each time step
     # 4 : same as 3 + verbose for sumo
-    verbose=2
+    verbose = 2
 
     # get max number of cpu available
     n_cpus = multiprocessing.cpu_count() if not debug else 1  # avoiding error 6
@@ -97,7 +97,7 @@ class Params:
 
     # training algorithms
     implemented_algs = ["MARWIL", "contrib/MADDPG", "PPO"]  # see journal, research section
-    training_alg = implemented_algs[2]
+    training_alg = implemented_algs[1]
 
     # learning rate
     learning_rate = 1e-4
@@ -159,13 +159,10 @@ class Params:
                 "--" + k.lower(), type=type(v), default=v,
             )
 
-
-        args=parser.parse_args()
+        args = parser.parse_args()
         # setting args
         for k, v in vars(args).items():
             self.__setattr__(k, v)
-
-
 
     def __init__(self):
         print("Params class initialized")
@@ -199,19 +196,19 @@ class Params:
         """
 
         # initializing print message
-        hashes=f"\n{20*'#'}\n"
-        msg=f"{hashes} PARAMETER START {hashes}"
+        hashes = f"\n{20 * '#'}\n"
+        msg = f"{hashes} PARAMETER START {hashes}"
 
         # get the attributes ad dict
         attributes = self.__get_attributes()
         # dump using jason
         attributes = json.dumps(attributes, indent=4, sort_keys=True)
 
-        msg+=attributes
-        msg+=f"{hashes} PARAMETER END {hashes}"
+        msg += attributes
+        msg += f"{hashes} PARAMETER END {hashes}"
 
-        color="yellow"
-        msg=termcolor.colored(msg,color=color)
+        color = "yellow"
+        msg = termcolor.colored(msg, color=color)
 
         # print them to given out
         print(msg, file=stdout)
@@ -248,5 +245,3 @@ class Params:
                         print(e)
             except Exception:
                 continue
-
-

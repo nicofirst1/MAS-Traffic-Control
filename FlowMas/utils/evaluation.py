@@ -1,12 +1,9 @@
-from datetime import datetime
 import itertools
 import json
 from collections import Counter
-import os
 
 import numpy as np
 import termcolor
-from ray import tune
 
 # avaiable colors : red, green, yellow, blue, magenta, cyan, white.
 from FlowMas.utils.parameters import Params
@@ -33,7 +30,6 @@ class Memory:
 
 
 mem = Memory()
-
 
 
 class CustomStdOut(object):
@@ -237,14 +233,13 @@ def on_episode_step(info):
     msg = ""
 
     if len(rewards) != 0:
-        if Params.verbose>=3:
+        if Params.verbose >= 3:
             msg += dict_print(rewards, "Rewards")
         info["episode"].user_data["rewards"]["split"].append(rewards[0])
         info["episode"].user_data["rewards"]["total"].append(rewards[1])
 
-
     if len(delays) != 0:
-        if Params.verbose>=3:
+        if Params.verbose >= 3:
             msg += dict_print(delays, "Delays")
 
         info["episode"].user_data["delays"]["split"].append(delays[0])
@@ -262,39 +257,41 @@ def on_episode_start(info):
         total=[],
         split=[],
     )
-    info["episode"].user_data["delays"] =dict(
+    info["episode"].user_data["delays"] = dict(
         total=[],
         split=[],
     )
 
     log(msg, color=start_color)
 
-def outer_split(to_split,name):
-    prov={}
+
+def outer_split(to_split, name):
+    prov = {}
 
     for elem in to_split:
 
-        for k,v in elem.items():
+        for k, v in elem.items():
 
-            if k=="name":continue
+            if k == "name": continue
 
-            for k2,v2 in v.items():
+            for k2, v2 in v.items():
 
-                new_k="/".join([name,k,k2])
+                new_k = "/".join([name, k, k2])
                 if new_k not in prov.keys():
-                    prov[new_k] =[]
+                    prov[new_k] = []
 
                 prov[new_k].append(v2)
 
     return prov
 
+
 def inner_split(to_split, title):
-    prov={}
+    prov = {}
 
     for elem in to_split:
 
         for k2, v2 in elem.items():
-            if k2=="name":continue
+            if k2 == "name": continue
 
             new_k = "/".join([title, k2])
             if new_k not in prov.keys():
@@ -304,9 +301,8 @@ def inner_split(to_split, title):
 
     return prov
 
+
 def on_episode_end(info):
-
-
     episode = info["episode"]
 
     msg = print_title("EPISODE END", hash_num=60)
@@ -314,37 +310,32 @@ def on_episode_end(info):
     delays = episode.user_data["delays"]
     rewards = episode.user_data["rewards"]
 
-    delay_total=delays['total']
-    delay_split=delays['split']
+    delay_total = delays['total']
+    delay_split = delays['split']
 
     reward_total = rewards['total']
     reward_split = rewards['split']
 
-
-    custom =episode.custom_metrics
-    tmp=outer_split(delay_split, "Delays/Split")
-    tmp={k:np.mean(v) for k,v in tmp.items()}
+    custom = episode.custom_metrics
+    tmp = outer_split(delay_split, "Delays/Split")
+    tmp = {k: np.mean(v) for k, v in tmp.items()}
     custom.update(tmp)
 
-    tmp=outer_split(reward_split, "Rewards/Split")
-    tmp={k:np.mean(v) for k,v in tmp.items()}
+    tmp = outer_split(reward_split, "Rewards/Split")
+    tmp = {k: np.mean(v) for k, v in tmp.items()}
     custom.update(tmp)
 
-    tmp=inner_split(delay_total, "Delays/Total")
-    tmp={k:np.mean(v) for k,v in tmp.items()}
+    tmp = inner_split(delay_total, "Delays/Total")
+    tmp = {k: np.mean(v) for k, v in tmp.items()}
     custom.update(tmp)
 
-    tmp=inner_split(reward_total, "Rewards/Total")
-    tmp={k:np.mean(v) for k,v in tmp.items()}
+    tmp = inner_split(reward_total, "Rewards/Total")
+    tmp = {k: np.mean(v) for k, v in tmp.items()}
     custom.update(tmp)
 
-    episode.custom_metrics=custom
-
-
-
+    episode.custom_metrics = custom
 
     log(msg, color=end_color)
-
 
 
 def on_train_result(info):

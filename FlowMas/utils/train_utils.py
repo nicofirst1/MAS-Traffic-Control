@@ -1,14 +1,10 @@
 import json
 
-import ray
 from ray.rllib.agents.registry import get_agent_class
-from ray.tune import Analysis
 
 from FlowMas.utils.evaluation import configure_callbacks
 from FlowMas.utils.parameters import Params
 from flow.utils.rllib import FlowParamsEncoder
-
-
 
 
 def performance_config(config):
@@ -287,12 +283,11 @@ def ppo_config(config):
 
     config["use_gae"] = True  # using generalized advantage estimation
     config["lambda"] = 0.97
-    config["sample_batch_size"]=200
+    config["sample_batch_size"] = 200
     config["sgd_minibatch_size"] = min(16 * 1024, config["train_batch_size"])  # stochastic gradient descent
     config["kl_target"] = 0.02  # target KL divergence
     config["num_sgd_iter"] = 10  # number of SGD iterations
-    config["batch_mode"]="complete_episodes"
-
+    config["batch_mode"] = "complete_episodes"
 
     return config
 
@@ -396,21 +391,19 @@ def maddpg_config(config, env):
 
     """
 
-
-
     # todo: split for selfhish and coop agents
     policies = {
-                    "pol1": (None, env.observation_space_dict,
-                             env.action_space_dict, {
-                                 "agent_id": 0,
-                                 "use_local_critic": "maddpg",
-                             }),
-                    "pol2": (None, env.observation_space_dict,
-                             env.action_space_dict, {
-                                 "agent_id": 1,
-                                 "use_local_critic": "dpg",
-                             }),
-                }
+        "pol1": (None, env.observation_space_dict,
+                 env.action_space_dict, {
+                     "agent_id": 0,
+                     "use_local_critic": "maddpg",
+                 }),
+        "pol2": (None, env.observation_space_dict,
+                 env.action_space_dict, {
+                     "agent_id": 1,
+                     "use_local_critic": "dpg",
+                 }),
+    }
 
     # config['agent_id']=1
     config['multiagent'] = {

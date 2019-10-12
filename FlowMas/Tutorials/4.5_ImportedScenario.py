@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+from FlowMas.utils.maps_utils import import_template
 # the Experiment class is used for running simulations
 from FlowMas.utils.parameters import Params
 from flow.controllers import IDMController
@@ -14,7 +15,6 @@ from flow.core.params import VehicleParams
 from flow.envs import TestEnv
 from flow.networks import Network
 from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
-from FlowMas.utils.maps_utils import import_template
 
 try:
     from ray.rllib.agents.agent import get_agent_class

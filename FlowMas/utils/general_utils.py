@@ -1,11 +1,7 @@
 # number of parallel workers
-import json
 
-from ray.rllib.agents.registry import get_agent_class
-
-from FlowMas.utils.parameters import Params
-from flow.utils.rllib import FlowParamsEncoder
 from FlowMas.utils.maps_utils import get_edges
+from FlowMas.utils.parameters import Params
 
 
 def inflow_random_edges(inflow, **kwargs):
@@ -36,4 +32,3 @@ def inflow_random_edges(inflow, **kwargs):
             edge=edge,
             **kwargs,
         )
-

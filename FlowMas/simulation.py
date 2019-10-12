@@ -82,7 +82,7 @@ sim_params = SumoParams(
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
     emission_path=Params.emission_path_dir,
     restart_instance=True,
-   # port=8873,
+    # port=8873,
 )
 
 # setting initial configuration files

@@ -144,7 +144,7 @@ register_env(gym_name, create_env)
 #  START OF TRAINING
 ########################
 
-ray.init(num_cpus=1, local_mode=True )
+ray.init(num_cpus=1, local_mode=True)
 
 # defining dictionary for the experiment
 experiment_params = dict(

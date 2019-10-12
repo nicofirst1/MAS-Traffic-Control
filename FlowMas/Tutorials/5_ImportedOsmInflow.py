@@ -1,8 +1,8 @@
 from copy import deepcopy
 
+from FlowMas.utils.general_utils import inflow_random_edges
 # the Experiment class is used for running simulations
 from FlowMas.utils.parameters import Params
-from FlowMas.utils.general_utils import inflow_random_edges
 from flow.controllers import IDMController
 from flow.controllers.routing_controllers import MinicityRouter
 from flow.core.experiment import Experiment
@@ -22,11 +22,8 @@ except ImportError:
     from ray.rllib.agents.registry import get_agent_class
 from flow.core.params import InFlows
 
-
 # Remove traffic lights
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
-
-
 
 # Adding human vehicles
 vehicles = VehicleParams()
@@ -65,14 +62,14 @@ initial_config = InitialConfig(
 )
 
 # Adding inflows
-inflow= InFlows()
+inflow = InFlows()
 
-human_inflow= dict(
-                veh_type="human",
-                probability=0.001,
-                depart_lane="random",
-                depart_speed="random",
-                begin=5,  # time in seconds to start the inflow
+human_inflow = dict(
+    veh_type="human",
+    probability=0.001,
+    depart_lane="random",
+    depart_speed="random",
+    begin=5,  # time in seconds to start the inflow
 )
 
 # adding human inflows
@@ -93,7 +90,6 @@ network = Network(
     vehicles=vehicles,
     initial_config=initial_config,
 )
-
 
 # create the environment
 env = TestEnv(

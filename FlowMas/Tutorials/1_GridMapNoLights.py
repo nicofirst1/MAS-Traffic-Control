@@ -1,4 +1,3 @@
-
 # the scenario name
 from copy import deepcopy
 
@@ -30,7 +29,7 @@ vehicles.add("human",
 ##############################
 
 # Setting grid measures
-additional_net_params= deepcopy(ADDITIONAL_NET_PARAMS)
+additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
 additional_net_params['grid_array']['inner_length'] = 500
 additional_net_params['grid_array']['long_length'] = 500
 additional_net_params['grid_array']['short_length'] = 500
@@ -47,7 +46,7 @@ initial_config = InitialConfig(spacing="custom", perturbation=1)
 
 sumo_params = SumoParams(sim_step=0.1, render=True, emission_path=Params.DATA_DIR)
 
-additional_env_params= deepcopy(ADDITIONAL_ENV_PARAMS)
+additional_env_params = deepcopy(ADDITIONAL_ENV_PARAMS)
 env_params = EnvParams(additional_params=additional_env_params)
 
 ##############################
