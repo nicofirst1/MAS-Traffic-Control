@@ -13,7 +13,7 @@ setup(
     url='https://gitlab.com/nicofirst1/mas_traffic',
     include_package_data=True,
     author='Nicolo Brandizzi',
-    install_requires=requirements,
+    #install_requires=requirements,
     description='Project for Design of Multi-Agent Systems KIM.DMAS04.2019-2020.1A, University of GroningenOSM ',
 
 )
