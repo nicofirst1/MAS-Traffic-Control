@@ -39,9 +39,16 @@ Once you are done you can run the first Tutorial with:
 
 For training you can use 
 
-`python FlowMas/simulation.py`
+`python FlowMas/simulation.py {args}`
 
 The training results will be saved in the [ray_result dir](FlowMas/data/ray_results). 
+
+To get a list of possible arguments run 
+
+`python FlowMas/simulation.py --help`
+
+A complete list of attributes will be then printed. Notice that each attribute is documented in the [param class](FlowMas/utils/parameters.py)
+
 
 ## Visualizing results
 
