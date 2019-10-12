@@ -114,6 +114,8 @@ fi
 
 os="$(uname)"
 
+cd $LIBS_DIR
+
 if [ $os = "Darwin" ]; then
     sh scripts/sumo_setup/setup_sumo_osx.sh
 
