@@ -153,7 +153,7 @@ register_env(gym_name, create_env)
 ########################
 #  START OF TRAINING
 ########################
-ray.init(num_cpus=Params.N_CPUS, local_mode=Params.DEBUG)  # use local mode when debugging, remove it for performance increase
+ray.init(num_cpus=Params.n_cpus, local_mode=Params.debug)  # use local mode when debugging, remove it for performance increase
 
 # defining dictionary for the experiment
 experiment_params = dict(

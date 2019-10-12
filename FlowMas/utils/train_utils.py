@@ -42,8 +42,8 @@ def performance_config(config):
 
     """
 
-    config["num_workers"] = Params.N_WORKERS
-    config["num_gpus"] = Params.N_GPUS
+    config["num_workers"] = Params.n_workers
+    config["num_gpus"] = Params.n_gpus
     # config["num_cpus_per_worker"]=min(Params.N_CPUS//Params.N_WORKERS,1)
     # config["num_gpus_per_worker"]=Params.N_GPUS
     # config["num_cpus_for_driver"]=Params.N_CPUS
@@ -138,9 +138,9 @@ def env_config(config):
 
     """
 
-    config["train_batch_size"] = Params.HORIZON  # batch size
+    config["train_batch_size"] = Params.horizon  # batch size
     config["gamma"] = Params.discount_rate  # discount rate
-    config["horizon"] = Params.HORIZON  # rollout horizon
+    config["horizon"] = Params.horizon  # rollout horizon
     config["lr"] = Params.learning_rate  # fixme: giving weird problem
 
     return config
@@ -316,7 +316,7 @@ def marwil_config(config):
     config["batch_mode"] = "complete_episodes"
 
     # Number of timesteps collected for each SGD round
-    config["train_batch_size"] = Params.HORIZON
+    config["train_batch_size"] = Params.horizon
 
     # Number of steps max to keep in the batch replay buffer
     config["replay_buffer_size"] = 100000

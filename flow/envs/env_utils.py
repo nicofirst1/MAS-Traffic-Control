@@ -86,7 +86,7 @@ def neighbors_observation(vehicle_api, rl_id, max_speed, max_accel,sim_step):
     mean_acc/=max_accel
     mean_acc*=sim_step
 
-    if mean_speed>1 or mean_acc>1 and Params.DEBUG:
+    if mean_speed>1 or mean_acc>1 and Params.debug:
         termcolor.colored(f"Speed/acceleration not scaled!\nSpeed={mean_speed}, Acc={mean_acc}","cyan")
 
     return np.array([

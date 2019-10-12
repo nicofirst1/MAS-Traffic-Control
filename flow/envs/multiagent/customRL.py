@@ -381,7 +381,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
                 # maximum penalization can be 4
                 reward = max(Params.baseline -coop_reward - cost3 - jerk , 0)
 
-                if Params.DEBUG:
+                if Params.debug:
                     termcolor.colored(f"\nReward for agent {rl_id} is : {reward}","yellow")
 
             rewards[rl_id] = reward

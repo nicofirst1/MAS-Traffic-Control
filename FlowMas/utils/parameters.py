@@ -1,6 +1,10 @@
+import argparse
+import json
 import multiprocessing
 import os
 import shutil
+import inspect
+import sys
 
 import termcolor
 from tensorflow.python.client import device_lib
@@ -28,22 +32,21 @@ class Params:
     DATA_DIR = join_paths(WORKING_DIR, "data")
     emission_path_dir = join_paths(DATA_DIR, "emission_path")
     ray_results_dir = join_paths(DATA_DIR, "ray_results")
-    eval_info_dir=join_paths(DATA_DIR, "eval_infos")
+    eval_info_dir = join_paths(DATA_DIR, "eval_infos")
 
     ##########################
     # Performance stuff
     ##########################
-    DEBUG = False
+    debug = True
 
-    N_CPUS = multiprocessing.cpu_count() if not DEBUG else 1  # avoiding error 6
-    local_device_protos = device_lib.list_local_devices()
-    gpus=len([x.name for x in local_device_protos if x.device_type == 'GPU'])
-    N_GPUS = gpus if not DEBUG else 0  # avoiding error 6
-    N_WORKERS= max(N_CPUS-1,1)
+    n_cpus = multiprocessing.cpu_count() if not debug else 1  # avoiding error 6
+    gpus = len([x.name for x in device_lib.list_local_devices() if x.device_type == 'GPU'])
+    n_gpus = gpus if not debug else 0  # avoiding error 6
+    n_workers = max(n_cpus - 1, 1)
 
     trial_resources = dict(
-        cpu=N_CPUS,
-        gpu=N_GPUS,
+        cpu=n_cpus,
+        gpu=n_gpus,
     )
 
     ##########################
@@ -54,7 +57,7 @@ class Params:
     min_neighbors_distance = 50
 
     # the duration of one episode in steps.
-    HORIZON = 4000 if not DEBUG else 3  # set to 1 for debug in order to start learning immediately
+    horizon = 4000 if not debug else 10  # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> super coop, 0-> selfish)
     coop_weight = 1
@@ -67,7 +70,7 @@ class Params:
     ##########################
 
     # number fo units for model
-    num_units=64
+    num_units = 64
 
     # Number of evaluation to perform
     evaluation_interval = 4
@@ -76,11 +79,11 @@ class Params:
     checkpoint_freq = 20
 
     # number of iterations for training
-    training_iteration = 600 if not DEBUG else 6
-    episode_num=9999 if not DEBUG else 2
+    training_iteration = 600 if not debug else 10
+    episode_num = 9999 if not debug else 5
 
     # training algorithms
-    implemented_algs = ["MARWIL","contrib/MADDPG", "PPO"] # see journal, research section
+    implemented_algs = ["MARWIL", "contrib/MADDPG", "PPO"]  # see journal, research section
     training_alg = implemented_algs[2]
 
     # learning rate
@@ -90,7 +93,7 @@ class Params:
     stop_conditions = dict(
 
         training_iteration=training_iteration,
-        episodes_total= episode_num,
+        episodes_total=episode_num,
     )
 
     discount_rate = 0.998
@@ -108,7 +111,7 @@ class Params:
     # number of selfish/coop rl agents in the initial conf
     selfish_rl_vehicle_num = 3
     coop_rl_vehicle_num = 5
-    num_agents=coop_rl_vehicle_num+selfish_rl_vehicle_num
+    num_agents = coop_rl_vehicle_num + selfish_rl_vehicle_num
 
     # INFLOW PARAMS
 
@@ -122,12 +125,71 @@ class Params:
     #    METHODS
     ##########################
 
+    def __parse_args(self):
+        """
+        Use argparse to change the default values in the param class
+        """
+
+        EXAMPLE_USAGE = "python FlowMas/simulation.py {args}"
+
+        att = self.__get_attributes()
+
+        """Create the parser to capture CLI arguments."""
+        parser = argparse.ArgumentParser(
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            description='[Flow] Evaluates a reinforcement learning agent '
+                        'given a checkpoint.',
+            epilog=EXAMPLE_USAGE)
+
+        # for every attribute add an arg instance
+        for k, v in att.items():
+            parser.add_argument(
+                "--" + k.lower(), type=type(v), default=v,
+
+            )
+
+        for k, v in vars(parser.parse_args()).items():
+            self.__setattr__(k, v)
+
     def __init__(self):
         print("Params class initialized")
-        # self.empty_dirs([self.LOGS_DIR, self.SONG_DIR])
-        self.initialize_dirs()
+        self.__initialize_dirs()
 
-    def initialize_dirs(self):
+        # change values based on argparse
+        self.__parse_args()
+        self.__log_params()
+
+    def __get_attributes(self):
+        """
+        Get a dictionary for every attribute that does not have "filter_str" in it
+        :return:
+        """
+
+        # get every attribute
+        attributes = inspect.getmembers(self)
+        # filter based on double underscore
+        filter_str = "__"
+        attributes = [elem for elem in attributes if filter_str not in elem[0]]
+        # convert to dict
+        attributes = dict(attributes)
+
+        return attributes
+
+    def __log_params(self, stdout=sys.stdout):
+        """
+        Prints attributes as key value on given output
+        :param stdout: the output for printing, default stdout
+        :return:
+        """
+
+        # get the attributes ad dict
+        attributes = self.__get_attributes()
+        # dump using jason
+        attributes = json.dumps(attributes, indent=4, sort_keys=True)
+        # print them to given out
+        print(attributes, file=stdout)
+
+    def __initialize_dirs(self):
         """
         Initialize all the directories  listed above
         :return:
@@ -140,7 +202,7 @@ class Params:
                     termcolor.colored(f"Mkdir {path}", "yellow")
                     os.makedirs(path)
 
-    def empty_dirs(self, to_empty):
+    def __empty_dirs(self, to_empty):
         """
         Empty all the dirs in to_empty
         :return:
@@ -161,3 +223,4 @@ class Params:
                 continue
 
 
+Params()

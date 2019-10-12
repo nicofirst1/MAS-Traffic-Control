@@ -68,7 +68,7 @@ additional_env_params = deepcopy(ADDITIONAL_ENV_PARAMS)
 
 
 # initializing env params, since env is just Test there will be no learning, but the procedure is the same
-env_params = EnvParams(additional_params=additional_env_params, horizon=Params.HORIZON, sims_per_step=5, )
+env_params = EnvParams(additional_params=additional_env_params, horizon=Params.horizon, sims_per_step=5, )
 
 #######################
 # SUMO + INITIAL CONFIG
@@ -193,9 +193,9 @@ register_env(gym_name, create_env)
 ########################
 
 # initialize ray with performance params
-ray.init(num_cpus=Params.N_CPUS,
-         num_gpus=Params.N_GPUS,
-         local_mode=Params.DEBUG,  # use local mode when debugging, remove it for performance increase
+ray.init(num_cpus=Params.n_cpus,
+         num_gpus=Params.n_gpus,
+         local_mode=Params.debug,  # use local mode when debugging, remove it for performance increase
          )
 
 # initialize experiment
