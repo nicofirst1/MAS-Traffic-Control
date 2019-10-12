@@ -18,6 +18,8 @@ echo "Installing packages...."
 
 sudo apt-get -y install git-core build-essential curl pkg-config zip g++ zlib1g-dev unzip python3-dev wget psmisc
 sudo apt-get -y install libproj-java libproj9 proj proj-data
+# installing stble baseline
+sudo apt-get install -y cmake libopenmpi-dev python3-dev zlib1g-dev
 
 # If you are not using Anaconda, you need the following.
 
@@ -36,12 +38,9 @@ if [ -z "$conda" ]; then
     bash Anaconda3-2019.03-Linux-x86_64.sh 
     rm Anaconda3-2019.03-Linux-x86_64.sh 
 
-    . ~/anaconda3/bin/activate
-    conda init
+    echo "Conda installed... please exit the terminal and relaunch the scripts "
+    exit 0
+
+
 fi
 
-# installing stble baseline
-sudo apt-get install -y cmake libopenmpi-dev python3-dev zlib1g-dev
-
-# source bash
-. ~/.bashrc

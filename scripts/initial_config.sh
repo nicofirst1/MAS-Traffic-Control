@@ -28,5 +28,21 @@ else
   echo "This operating system is not supported yet! Please use the installation instruction in $installation_instruction"
 fi
 
+# declare variables
+CUR_DIR="$(pwd)"
+LIBS_DIR="libs"
+env_name="dmas"
+
+
+if [ $DEBUG_flag ]; then
+    echo "[$DEBUG_id] 3) Python setup"
+fi
+
+# create tmp folder
+if [ ! -d "$LIBS_DIR/flow" ]; then
+    mkdir $LIBS_DIR
+fi
+
+source ./scripts/python_setup.sh
 # launching python configuration
-sh ./scripts/python_setup.sh
+python_install
