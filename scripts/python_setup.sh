@@ -41,7 +41,7 @@ if [ ! -d "$LIBS_DIR/flow" ] || [ -z $env ]; then
 
 
     # create a conda environment
-    conda env create -f environment.yml --name $env_name
+    pip install -e .
 
     echo "...Conda environment created"
 
