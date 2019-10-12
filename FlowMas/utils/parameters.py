@@ -37,7 +37,7 @@ class Params:
     ##########################
     # Performance stuff
     ##########################
-    debug = True
+    debug = False
 
     # level of verbosity
     # 0 : print start/end of episode
