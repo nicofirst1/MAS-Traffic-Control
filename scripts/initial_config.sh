@@ -3,6 +3,7 @@
 
 export DEBUG_flag=1
 export DEBUG_id="debug101"
+source ./scripts/python_setup.sh
 
 os="$(uname)"
 installation_instruction="MarkDown/Installation.md"
@@ -28,10 +29,6 @@ else
   echo "This operating system is not supported yet! Please use the installation instruction in $installation_instruction"
 fi
 
-# declare variables
-CUR_DIR="$(pwd)"
-LIBS_DIR="libs"
-env_name="dmas"
 
 
 if [ $DEBUG_flag ]; then
@@ -43,6 +40,5 @@ if [ ! -d "$LIBS_DIR/flow" ]; then
     mkdir $LIBS_DIR
 fi
 
-source ./scripts/python_setup.sh
 # launching python configuration
 python_install

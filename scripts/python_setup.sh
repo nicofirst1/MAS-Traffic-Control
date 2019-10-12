@@ -1,3 +1,9 @@
+# declare variables
+CUR_DIR="$(pwd)"
+LIBS_DIR="libs"
+env_name="dmas"
+
+
 
 python_install(){
 
