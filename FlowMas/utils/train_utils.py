@@ -42,8 +42,7 @@ def performance_config(config):
 
     """
 
-    if not Params.DEBUG:
-        config["num_workers"] = Params.N_WORKERS
+    config["num_workers"] = Params.N_WORKERS
     config["num_gpus"] = Params.N_GPUS
     # config["num_cpus_per_worker"]=min(Params.N_CPUS//Params.N_WORKERS,1)
     # config["num_gpus_per_worker"]=Params.N_GPUS
