@@ -39,9 +39,22 @@ class Params:
     ##########################
     debug = True
 
+    # level of verbosity
+    # 0 : print start/end of episode
+    # 1 : same as 0 + verobse ray level 1
+    # 2 : same as 1 + verobse ray level 2
+    # 3 : same as 2 + print at each time step
+    # 4 : same as 3 + verbose for sumo
+    verbose=2
+
+    # get max number of cpu available
     n_cpus = multiprocessing.cpu_count() if not debug else 1  # avoiding error 6
+
+    # get number og tensorflow recognizable gpus
     gpus = len([x.name for x in device_lib.list_local_devices() if x.device_type == 'GPU'])
     n_gpus = gpus if not debug else 0  # avoiding error 6
+
+    # set the number of workers
     n_workers = max(n_cpus - 1, 1)
 
     trial_resources = dict(

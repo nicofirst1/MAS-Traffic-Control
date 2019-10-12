@@ -237,17 +237,21 @@ def on_episode_step(info):
     msg = ""
 
     if len(rewards) != 0:
-        #msg += dict_print(rewards, "Rewards")
+        if Params.verbose>=3:
+            msg += dict_print(rewards, "Rewards")
         info["episode"].user_data["rewards"]["split"].append(rewards[0])
         info["episode"].user_data["rewards"]["total"].append(rewards[1])
 
 
     if len(delays) != 0:
-        #msg += dict_print(delays, "Delays")
+        if Params.verbose>=3:
+            msg += dict_print(delays, "Delays")
+
         info["episode"].user_data["delays"]["split"].append(delays[0])
         info["episode"].user_data["delays"]["total"].append(delays[1])
 
-    #log(msg, color=step_color)
+    if Params.verbose >= 3:
+        log(msg, color=step_color)
 
 
 def on_episode_start(info):

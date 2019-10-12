@@ -114,7 +114,11 @@ inflow_random_edges(inflow, **human_inflow)
 ########################
 
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
-additional_net_params['sumo_warnings'] = False
+
+if Params.verbose >= 4:
+    additional_net_params['sumo_warnings'] = True
+else:
+    additional_net_params['sumo_warnings'] = False
 
 # specify net params
 net_params = NetParams(
@@ -225,7 +229,7 @@ pbt_scheduler = PopulationBasedTraining(
 trials = run(
     exp,
     reuse_actors=False,
-    verbose=2,
+    verbose=Params.verbose,
     raise_on_failed_trial=True,  # avoid agent not known error
     return_trials=True,
     # scheduler=pbt_scheduler,
