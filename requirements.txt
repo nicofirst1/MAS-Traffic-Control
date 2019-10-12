@@ -67,7 +67,6 @@ pytest==5.2.1
 python-dateutil==2.8.0
 pytz==2019.3
 PyYAML==5.1.2
--e git+https://github.com/ray-project/ray.git@1a8ac3db462eeb4ca2d41eb01594f136b5ab5f86#egg=ray&subdirectory=python
 redis==3.3.8
 requests==2.22.0
 s3transfer==0.1.13
