@@ -29,15 +29,45 @@ Supported OS:
 
 If your OS is not supported or you encounter an error check the [installation file](MarkDown/Installation.md) for more detailed installation instructions.
 
-#
+## Running
 
 Once you are done you can run the first Tutorial with:
 
 `python FlowMas/Tutorials/1_GridMapNoLights.py`
 
-or directly run the simulatio with:
+## Training
+
+For training you can use 
 
 `python FlowMas/simulation.py`
+
+The training results will be saved in the [ray_result dir](FlowMas/data/ray_results). 
+
+## Visualizing results
+
+Once you have trained your agents you can use the [flow visualization framework](https://github.com/flow-project/flow/blob/master/tutorials/tutorial04_visualize.ipynb)
+to visualize your results. Use :
+
+`tensorboard --logdir=FlowMas/data/ray_results`
+
+To use tensorboard visualization, this will display __every__ training you have in the [ray_result dir](FlowMas/data/ray_results).
+If you rather use [matplotlib](https://matplotlib.org/) you can use the following command:
+
+`python flow/visualize/plot_ray_results.py FlowMas/data/ray_results/experiment_dir/progress.csv`
+
+where _experiment_dir_ is the directory containing thetraining instance you would like to visualize. This will show a list of 
+possible parameter to visualize. To plot them simply add them to the command as:
+
+`python flow/visualize/plot_ray_results.py FlowMas/data/ray_results/experiment_dir/progress.csv episode_reward_max episode_reward_mean`
+
+Moreover, for visualizing the SUMO gui with your trained agent use:
+
+`python flow/visualize/visualizer_rllib.py FlowMas/data/ray_results/experiment_dir/result/directory 1`
+
+
+
+
+
 
 ## Repo structure
 
