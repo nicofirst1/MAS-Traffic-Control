@@ -150,19 +150,22 @@ class Params:
         """Create the parser to capture CLI arguments."""
         parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
-            description='[Flow] Evaluates a reinforcement learning agent '
-                        'given a checkpoint.',
+            description="Starts the trainig for a custom agent",
             epilog=EXAMPLE_USAGE)
 
         # for every attribute add an arg instance
         for k, v in att.items():
             parser.add_argument(
                 "--" + k.lower(), type=type(v), default=v,
-
             )
 
-        for k, v in vars(parser.parse_args()).items():
+
+        args=parser.parse_args()
+        # setting args
+        for k, v in vars(args).items():
             self.__setattr__(k, v)
+
+
 
     def __init__(self):
         print("Params class initialized")
@@ -195,12 +198,23 @@ class Params:
         :return:
         """
 
+        # initializing print message
+        hashes=f"\n{20*'#'}\n"
+        msg=f"{hashes} PARAMETER START {hashes}"
+
         # get the attributes ad dict
         attributes = self.__get_attributes()
         # dump using jason
         attributes = json.dumps(attributes, indent=4, sort_keys=True)
+
+        msg+=attributes
+        msg+=f"{hashes} PARAMETER END {hashes}"
+
+        color="yellow"
+        msg=termcolor.colored(msg,color=color)
+
         # print them to given out
-        print(attributes, file=stdout)
+        print(msg, file=stdout)
 
     def __initialize_dirs(self):
         """
@@ -236,4 +250,3 @@ class Params:
                 continue
 
 
-Params()
