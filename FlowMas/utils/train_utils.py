@@ -39,9 +39,12 @@ def performance_config(config):
     """
 
     config["num_workers"] = Params.n_workers
-    config["num_gpus"] = Params.n_gpus
-    # config["num_cpus_per_worker"]=min(Params.N_CPUS//Params.N_WORKERS,1)
-    # config["num_gpus_per_worker"]=Params.N_GPUS
+    if  Params.n_workers==1:
+        config["num_cpus_per_worker"]=Params.n_cpus-1
+        config["num_gpus_per_worker"]=Params.n_gpus
+    else:
+            config["num_gpus"] = Params.n_gpus
+
     # config["num_cpus_for_driver"]=Params.N_CPUS
     config["log_level"] = "WARNING"
 
@@ -391,8 +394,8 @@ def maddpg_config(config, env):
 
     """
 
-    config["sample_batch_size"]=Params.sample_batch_size//Params.n_workers
-
+    config["sample_batch_size"]=Params.sample_batch_size//Params.n_workers +1
+    config["evaluation_num_episodes"]=Params.evaluation_num_episodes
     # get different policies for coop and selfish agents
     policies = {
         "coop": (None, env.observation_space_dict,
