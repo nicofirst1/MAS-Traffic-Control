@@ -122,8 +122,8 @@ class Params:
     human_vehicle_num = 100
 
     # number of selfish/coop rl agents in the initial conf
-    selfish_rl_vehicle_num = 3
-    coop_rl_vehicle_num = 5
+    selfish_rl_vehicle_num = 60
+    coop_rl_vehicle_num = 120
     num_agents = coop_rl_vehicle_num + selfish_rl_vehicle_num
 
     # INFLOW PARAMS
