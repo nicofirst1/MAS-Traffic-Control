@@ -90,9 +90,15 @@ class Params:
 
     evaluation_num_episodes=10 if not debug else 2
 
+
+    ##############
+    # Batches size
+    ##############
     # size for learning batch, note that this value will be divided by the number of workers so to have at most
     # 'sample_batch_size' for the entire training
     sample_batch_size=100 if not debug else 10
+    train_batch_size= 512 if not debug else 20
+    learning_starts = train_batch_size * 15 if not debug else train_batch_size
 
     # number of iterations for training
     training_iteration = 600 if not debug else 10

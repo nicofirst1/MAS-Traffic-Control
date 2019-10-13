@@ -394,8 +394,11 @@ def maddpg_config(config, env):
 
     """
 
-    config["sample_batch_size"]=Params.sample_batch_size//Params.n_workers +1
+    config["sample_batch_size"]=Params.sample_batch_size//Params.n_workers
     config["evaluation_num_episodes"]=Params.evaluation_num_episodes
+    config["train_batch_size"]=Params.train_batch_size//Params.n_workers
+    config["learning_starts"]=Params.learning_starts//Params.n_workers
+
     # get different policies for coop and selfish agents
     policies = {
         "coop": (None, env.observation_space_dict,
