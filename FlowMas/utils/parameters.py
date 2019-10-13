@@ -23,8 +23,6 @@ class Params:
 
     MAP_DIRS_DICT = dict(
 
-        lust=join_paths(WORKING_DIR, "maps/LuSTScenario"),
-        monaco=join_paths(WORKING_DIR, "maps/MoSTScenario"),
         rome=join_paths(WORKING_DIR, "maps/RomeOSM"),
         groningen=join_paths(WORKING_DIR, "maps/GroningenOSM"),
     )
@@ -32,7 +30,6 @@ class Params:
     DATA_DIR = join_paths(WORKING_DIR, "data")
     emission_path_dir = join_paths(DATA_DIR, "emission_path")
     ray_results_dir = join_paths(DATA_DIR, "ray_results")
-    eval_info_dir = join_paths(DATA_DIR, "eval_infos")
 
     ##########################
     # Performance stuff
@@ -91,6 +88,10 @@ class Params:
     # frequency of checkpoint
     checkpoint_freq = 20
 
+    # size for learning batch, note that this value will be divided by the number of workers so to have at most
+    # 'sample_batch_size' for the entire training
+    sample_batch_size=100 if not debug else 10
+
     # number of iterations for training
     training_iteration = 600 if not debug else 10
     episode_num = 9999 if not debug else 5
@@ -122,8 +123,8 @@ class Params:
     human_vehicle_num = 100
 
     # number of selfish/coop rl agents in the initial conf
-    selfish_rl_vehicle_num = 60
-    coop_rl_vehicle_num = 120
+    selfish_rl_vehicle_num = 60 if not debug else 3
+    coop_rl_vehicle_num = 120 if not debug else 6
     num_agents = coop_rl_vehicle_num + selfish_rl_vehicle_num
 
     # INFLOW PARAMS
@@ -145,7 +146,7 @@ class Params:
 
         EXAMPLE_USAGE = "python FlowMas/simulation.py {args}"
 
-        att = self.__get_attributes()
+        att = self.get_attributes__()
 
         """Create the parser to capture CLI arguments."""
         parser = argparse.ArgumentParser(
@@ -172,7 +173,7 @@ class Params:
         self.__parse_args()
         self.__log_params()
 
-    def __get_attributes(self):
+    def get_attributes__(self):
         """
         Get a dictionary for every attribute that does not have "filter_str" in it
         :return:
@@ -200,7 +201,7 @@ class Params:
         msg = f"{hashes} PARAMETER START {hashes}"
 
         # get the attributes ad dict
-        attributes = self.__get_attributes()
+        attributes = self.get_attributes__()
         # dump using jason
         attributes = json.dumps(attributes, indent=4, sort_keys=True)
 
