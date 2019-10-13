@@ -27,7 +27,7 @@ python_install(){
   ray_installation
 
 
-  conda install --file requirements.txt
+  pip install -r requirements.txt
 
   # install sumo tools
   pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl
@@ -83,7 +83,7 @@ ray_installation(){
 
       # Install Ray.
       cd ray/python
-      pip install -e . --verbose  # Add --user if you see a permission denied error.
+      pip setup.py install  --verbose  # Add --user if you see a permission denied error.
 
       if [ $DEBUG_flag ]; then
           echo "[$DEBUG_id] 3.73) Done with  pip devel "
