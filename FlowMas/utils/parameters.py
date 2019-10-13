@@ -51,7 +51,7 @@ class Params:
     n_cpus = multiprocessing.cpu_count() if not debug else 1  # avoiding error 6
 
     # get number og tensorflow recognizable gpus
-    gpus = len([x.name for x in device_lib.list_local_devices() if x.device_type == 'GPU'])
+    gpus = len([x.name for x in device_lib.list_local_devices() if  'GPU' in x.device_type ])
     n_gpus = gpus if not debug else 0  # avoiding error 6
 
     # set the number of workers
