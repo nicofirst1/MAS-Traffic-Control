@@ -52,7 +52,7 @@ class Params:
     n_gpus = gpus if not debug else 0  # avoiding error 6
 
     # set the number of workers
-    n_workers = max(n_cpus - 1, 1)
+    n_workers =1
 
     trial_resources = dict(
         cpu=n_cpus,
@@ -87,6 +87,8 @@ class Params:
 
     # frequency of checkpoint
     checkpoint_freq = 20
+
+    evaluation_num_episodes=10 if not debug else 2
 
     # size for learning batch, note that this value will be divided by the number of workers so to have at most
     # 'sample_batch_size' for the entire training
