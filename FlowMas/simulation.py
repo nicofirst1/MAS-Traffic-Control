@@ -4,8 +4,10 @@ from copy import deepcopy
 import ray
 from ray.tune import register_env, run
 from ray.tune.experiment import Experiment
+from ray.tune.logger import DEFAULT_LOGGERS
 from ray.tune.schedulers import PopulationBasedTraining
 
+from FlowMas.utils.evaluation import CustomoJsonLogger
 from FlowMas.utils.general_utils import inflow_random_edges
 from FlowMas.utils.parameters import Params
 from FlowMas.utils.train_utils import get_default_config
@@ -202,6 +204,11 @@ ray.init(num_cpus=Params.n_cpus,
          local_mode=Params.debug,  # use local mode when debugging, remove it for performance increase
          )
 
+
+loggers=list(DEFAULT_LOGGERS)
+loggers[0]=CustomoJsonLogger
+
+
 # initialize experiment
 exp = Experiment(
     name=f"Sim-{Params.training_alg}",
@@ -212,6 +219,7 @@ exp = Experiment(
     max_failures=9999,
     checkpoint_freq=Params.checkpoint_freq,
     checkpoint_at_end=True,
+    loggers=loggers,
 
 )
 
@@ -224,6 +232,7 @@ pbt_scheduler = PopulationBasedTraining(
     hyperparam_mutations={  # fixme: get correct params
         "lr": [1e-4],
     })
+
 
 # run the experiment
 trials = run(

@@ -1,11 +1,15 @@
 import itertools
 import json
+import os
 from collections import Counter
 
+import cloudpickle
 import numpy as np
 import termcolor
 
 # avaiable colors : red, green, yellow, blue, magenta, cyan, white.
+from ray.tune.logger import  JsonLogger
+
 from FlowMas.utils.parameters import Params
 
 step_color = "cyan"
@@ -14,39 +18,35 @@ end_color = "green"
 train_color = "yellow"
 
 
-class Memory:
 
-    def __init__(self):
-        self.rewards = []
-        self.delays = []
-        self.window = 10
-        print("Memory class initialized")
+class CustomoJsonLogger(JsonLogger):
 
-    def add_reward(self, reward):
-        self.rewards.append(reward)
+    def _init(self):
 
-    def add_delay(self, delay):
-        self.delays.append(delay)
+        # save parameter
+
+        params_out = os.path.join(self.logdir, "parameter_attributes.json")
+        with open(params_out, "w") as f:
+            json.dump(
+                Params.get_attributes__(Params),
+                f,
+                indent=4,
+                sort_keys=True,)
+
+        super()._init()
+
+    def on_result(self, result):
+        """
+        Override method to remove config from result
+        :param result:
+        :return:
+        """
+        result['config']={}
+        super().on_result(result)
 
 
-mem = Memory()
 
 
-class CustomStdOut(object):
-    def _log_result(self, result):
-        if result["training_iteration"] % 50 == 0:
-            try:
-                print("steps: {}, episodes: {}, mean episode reward: {}, agent episode reward: {}, time: {}".format(
-                    result["timesteps_total"],
-                    result["episodes_total"],
-                    result["episode_reward_mean"],
-                    result["policy_reward_mean"],
-                    round(result["time_total_s"] - self.cur_time, 3)
-                ))
-            except:
-                pass
-
-            self.cur_time = result["time_total_s"]
 
 
 def configure_callbacks(config):
@@ -85,7 +85,6 @@ def get_delay_info(info):
 
     infos = multi_info_split(delay, "Delays")
 
-    mem.add_reward(infos)
 
     return infos
 
@@ -123,7 +122,6 @@ def get_reward_info(info):
 
     infos = multi_info_split(rewards, "Rewards")
 
-    mem.add_reward(infos)
 
     return infos
 
@@ -191,7 +189,8 @@ def print_title(title, hash_num=10):
 
 
 def log(msg, color="white"):
-    termcolor.cprint(msg, color)
+    msg=termcolor.colored(msg,color)
+    print_title(msg)
 
 
 def dict_print(dicts, title, indent=4):
@@ -263,6 +262,10 @@ def on_episode_start(info):
     )
 
     log(msg, color=start_color)
+
+    # remove env config from dict to avoid heavy files
+
+
 
 
 def outer_split(to_split, name):
