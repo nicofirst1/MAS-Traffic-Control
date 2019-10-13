@@ -393,22 +393,29 @@ def maddpg_config(config, env):
 
     # todo: split for selfhish and coop agents
     policies = {
-        "pol1": (None, env.observation_space_dict,
+        "coop": (None, env.observation_space_dict,
                  env.action_space_dict, {
                      "agent_id": 0,
                      "use_local_critic": "maddpg",
                  }),
-        "pol2": (None, env.observation_space_dict,
+        "self": (None, env.observation_space_dict,
                  env.action_space_dict, {
                      "agent_id": 1,
                      "use_local_critic": "dpg",
                  }),
     }
 
+    def mapping(agent):
+        if "coop" in agent:
+            return  "coop"
+
+        else:
+            return "self"
+
     # config['agent_id']=1
     config['multiagent'] = {
         "policies": policies,
-        "policy_mapping_fn": lambda x: "pol1"
+        "policy_mapping_fn": mapping
     }
 
     return config
