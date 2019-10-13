@@ -391,7 +391,9 @@ def maddpg_config(config, env):
 
     """
 
-    # todo: split for selfhish and coop agents
+    config["sample_batch_size"]=Params.sample_batch_size//Params.n_workers
+
+    # get different policies for coop and selfish agents
     policies = {
         "coop": (None, env.observation_space_dict,
                  env.action_space_dict, {
@@ -406,6 +408,11 @@ def maddpg_config(config, env):
     }
 
     def mapping(agent):
+        """
+        Mapping for agents policies
+        :param agent: (str) an agent name, eg. RL_coop_42/ RL_self_101
+        :return: (str) the policy name
+        """
         if "coop" in agent:
             return  "coop"
 
