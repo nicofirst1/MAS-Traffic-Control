@@ -104,14 +104,18 @@ inside your conda envs, for example mine is in:
 
 `/anaconda3/envs/dmas/lib/python3.6/site-packages/traci/_vehicle.py`
 
+#### Training algorithm 
+
+Add differentiation between MADDPG for cooperative AA and DPG for selfish ones [X]
+
 #### Related papers
 - [Reward function for accelerated learning](http://www.sci.brooklyn.cuny.edu/~sklar/teaching/boston-college/s01/mc375/ml94.pdf)
 - [1Safe, Efficient, and Comfortable Velocity Controlbased on Reinforcement Learning forAutonomous Driving](https://arxiv.org/pdf/1902.00089.pdf)
 
 ### Training
 
-- Use gpu support []
-- Print debug infos and training progress []
+- Use gpu support [x]
+- Print debug infos and training progress [x]
 
 #### Evaluation
 The evaluation functions are in the [train_utils.py](FlowMas/utils/train_utils.py).
