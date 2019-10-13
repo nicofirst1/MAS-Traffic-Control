@@ -9,14 +9,14 @@ import termcolor
 
 # avaiable colors : red, green, yellow, blue, magenta, cyan, white.
 from ray.tune.logger import  JsonLogger
-
+import logging
 from FlowMas.utils.parameters import Params
 
 step_color = "cyan"
 start_color = "green"
 end_color = "green"
 train_color = "yellow"
-
+logger = logging.getLogger("ray")
 
 
 class CustomoJsonLogger(JsonLogger):
@@ -191,6 +191,7 @@ def print_title(title, hash_num=10):
 def log(msg, color="white"):
     msg=termcolor.colored(msg,color)
     print_title(msg)
+    logger.info(msg)
 
 
 def dict_print(dicts, title, indent=4):
