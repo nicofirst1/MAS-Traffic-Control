@@ -1129,6 +1129,9 @@ class TraCIVehicle(KernelVehicle):
         :return: (float) the jerk in m/s^3
         """
 
+        if isinstance(veh_id, (list, np.ndarray)):
+            return [self.get_jerk(elem) for elem in veh_id]
+
         return self.__vehicles[veh_id]["jerk"]
 
     def get_rl_types(self):
