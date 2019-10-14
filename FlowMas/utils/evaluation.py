@@ -2,7 +2,7 @@ import itertools
 import json
 import os
 from collections import Counter
-
+from tabulate import tabulate
 import cloudpickle
 import numpy as np
 import termcolor
@@ -126,6 +126,28 @@ def get_reward_info(info):
     return infos
 
 
+
+def get_jerk_info(info):
+
+    env=info['env'].envs[0]
+
+    ids=env.k.vehicle.get_rl_ids()
+    ids={k:env.k.vehicle.get_jerk(k) for k in ids}
+
+    jerks={}
+
+    for ag,jrk in ids.items():
+        ag=ag.rsplit('_', 1)[0]
+
+        if ag not in jerks.keys():
+            jerks[ag]=[]
+
+        jerks[ag].append(jrk)
+
+    jerks=multi_info_split(jerks, "Jerk")
+    return jerks
+
+
 def multi_info_split(info, title):
     # split reward by type of agent
     split_info = {k: dict(
@@ -229,6 +251,7 @@ def on_episode_step(info):
     # get reward infos
     rewards = get_reward_info(info)
     delays = get_delay_info(info)
+    jerks=get_jerk_info(info)
 
     msg = ""
 
@@ -245,6 +268,13 @@ def on_episode_step(info):
         info["episode"].user_data["delays"]["split"].append(delays[0])
         info["episode"].user_data["delays"]["total"].append(delays[1])
 
+    if len(jerks) != 0:
+        if Params.verbose >= 3:
+            msg += dict_print(jerks, "Jerks")
+
+        info["episode"].user_data["jerks"]["split"].append(jerks[0])
+        info["episode"].user_data["jerks"]["total"].append(jerks[1])
+
     if Params.verbose >= 3:
         log(msg, color=step_color)
 
@@ -258,6 +288,11 @@ def on_episode_start(info):
         split=[],
     )
     info["episode"].user_data["delays"] = dict(
+        total=[],
+        split=[],
+    )
+
+    info["episode"].user_data["jerks"] = dict(
         total=[],
         split=[],
     )
@@ -313,6 +348,7 @@ def on_episode_end(info):
 
     delays = episode.user_data["delays"]
     rewards = episode.user_data["rewards"]
+    jerks = episode.user_data["jerks"]
 
     delay_total = delays['total']
     delay_split = delays['split']
@@ -320,12 +356,20 @@ def on_episode_end(info):
     reward_total = rewards['total']
     reward_split = rewards['split']
 
+    jerk_total = jerks['total']
+    jerk_split = jerks['split']
+
     custom = episode.custom_metrics
+
     tmp = outer_split(delay_split, "Delays/Split")
     tmp = {k: np.mean(v) for k, v in tmp.items()}
     custom.update(tmp)
 
     tmp = outer_split(reward_split, "Rewards/Split")
+    tmp = {k: np.mean(v) for k, v in tmp.items()}
+    custom.update(tmp)
+
+    tmp = outer_split(jerk_split, "Jerk/Split")
     tmp = {k: np.mean(v) for k, v in tmp.items()}
     custom.update(tmp)
 
@@ -337,11 +381,32 @@ def on_episode_end(info):
     tmp = {k: np.mean(v) for k, v in tmp.items()}
     custom.update(tmp)
 
+    tmp = inner_split(jerk_total, "Jerk/Total")
+    tmp = {k: np.mean(v) for k, v in tmp.items()}
+    custom.update(tmp)
+
     episode.custom_metrics = custom
 
     log(msg, color=end_color)
 
 
 def on_train_result(info):
-    log("trainer.train() result: {} -> {} episodes".format(
-        info["trainer"], info["result"]["episodes_this_iter"]))
+
+    result=info["result"]
+
+    table=dict(
+
+        episodes_total=result["episodes_total"],
+        training_iteration=result["training_iteration"],
+        time_this_iter_s=result["time_this_iter_s"],
+        time_total_s=result["time_total_s"],
+        timesteps_total=result["timesteps_total"],
+        policy=json.dumps(result["policy_reward_mean"],indent=4),
+        perf=json.dumps(result["perf"], indent=4),
+        episode_reward_mean=result["episode_reward_mean"],
+        episode_len_mean=result["episode_len_mean"],
+    )
+
+
+    msg=tabulate(list(table.items()), tablefmt="grid")
+    log(msg,train_color)
