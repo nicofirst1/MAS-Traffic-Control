@@ -398,21 +398,40 @@ def maddpg_config(config, env):
     config["evaluation_num_episodes"]=Params.evaluation_num_episodes
     config["train_batch_size"]=Params.train_batch_size//Params.n_workers
     config["learning_starts"]=Params.learning_starts//Params.n_workers
-    config["synchronize_sampling"]=False
 
     # get different policies for coop and selfish agents
-    policies = {
-        "coop": (None, env.observation_space_dict,
-                 env.action_space_dict, {
-                     "agent_id": 0,
-                     "use_local_critic": "maddpg",
-                 }),
-        "selfish": (None, env.observation_space_dict,
-                 env.action_space_dict, {
-                     "agent_id": 1,
-                     "use_local_critic": "dpg",
-                 }),
-    }
+
+    def gen_policy(type,idx):
+
+
+        coop=(None, env.observation_space_dict,
+                     env.action_space_dict, {
+                         "agent_id": idx,
+                         "use_local_critic": "maddpg",
+                     })
+
+        selfish= (None, env.observation_space_dict,
+                    env.action_space_dict, {
+                        "agent_id": idx,
+                        "use_local_critic": "dpg",
+                    })
+
+        if type=="coop": return coop
+        else: return selfish
+
+
+
+    policies={}
+
+    for idx in range(Params.coop_rl_vehicle_num):
+        policies.update(
+            {f"RL_coop_{idx}":gen_policy("coop",idx)}
+        )
+
+    for idx in range(Params.selfish_rl_vehicle_num):
+        policies.update(
+            {f"RL_selfish_{idx}": gen_policy("selfish", idx)}
+        )
 
     def mapping(agent):
         """
@@ -420,11 +439,7 @@ def maddpg_config(config, env):
         :param agent: (str) an agent name, eg. RL_coop_42/ RL_self_101
         :return: (str) the policy name
         """
-        if "coop" in agent:
-            return  "coop"
-
-        else:
-            return "selfish"
+        return agent
 
     # config['agent_id']=1
     config['multiagent'] = {
