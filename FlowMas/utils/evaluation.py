@@ -162,14 +162,28 @@ def multi_info_split(info, title):
 
     # concat every list
     total_info = list(itertools.chain.from_iterable(info.values()))
-    # do the same as before
-    total_info = dict(
-        name=f"Total {title}",
-        mean=np.mean(total_info),
-        max=np.max(total_info),
-        min=np.min(total_info)
 
-    )
+
+    try:
+
+
+        # do the same as before
+        total_info = dict(
+            name=f"Total {title}",
+            mean=np.mean(total_info),
+            max=np.max(total_info),
+            min=np.min(total_info)
+
+        )
+
+    except ValueError:
+        total_info = dict(
+            name=f"Total {title}",
+            mean=0,
+            max=0,
+            min=0
+
+        )
 
     return split_info, total_info
 
@@ -407,6 +421,6 @@ def on_train_result(info):
         episode_len_mean=result["episode_len_mean"],
     )
 
-
-    msg=tabulate(list(table.items()), tablefmt="grid")
+    msg="\n"
+    msg+=tabulate(list(table.items()), tablefmt="grid")
     log(msg,train_color)
