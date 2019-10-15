@@ -431,3 +431,8 @@ Exception: Unknown algorithm contrib/MADDPG.
 
 __Solution__:  update rllib :
 `pip install --upgrade ray`
+
+
+### Error 17
+
+If you're using pycharm and SUMO-HOME cannot be found, start pycharm from terminal.
