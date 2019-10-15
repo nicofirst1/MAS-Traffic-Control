@@ -398,6 +398,7 @@ def maddpg_config(config, env):
     config["evaluation_num_episodes"]=Params.evaluation_num_episodes
     config["train_batch_size"]=Params.train_batch_size//Params.n_workers
     config["learning_starts"]=Params.learning_starts//Params.n_workers
+    config["synchronize_sampling"]=False
 
     # get different policies for coop and selfish agents
     policies = {
@@ -406,7 +407,7 @@ def maddpg_config(config, env):
                      "agent_id": 0,
                      "use_local_critic": "maddpg",
                  }),
-        "self": (None, env.observation_space_dict,
+        "selfish": (None, env.observation_space_dict,
                  env.action_space_dict, {
                      "agent_id": 1,
                      "use_local_critic": "dpg",
@@ -423,7 +424,7 @@ def maddpg_config(config, env):
             return  "coop"
 
         else:
-            return "self"
+            return "selfish"
 
     # config['agent_id']=1
     config['multiagent'] = {
