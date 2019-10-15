@@ -144,15 +144,7 @@ class Params:
     inflow_prob_human = 0.001
 
 
-    ##############
-    # Batches size
-    ##############
-    # size for learning batch, note that this value will be divided by the number of workers so to have at most
-    # 'sample_batch_size' for the entire training
-    sample_batch_size=100 if not debug else 10
-    train_batch_size= 200*2 if not debug else 20
-    # number of episode after which the training start, and repets itself
-    learning_starts =2
+
 
 
     ##########################
