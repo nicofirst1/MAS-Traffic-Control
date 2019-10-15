@@ -156,7 +156,7 @@ class Params:
         Use argparse to change the default values in the param class
         """
 
-        EXAMPLE_USAGE = "python FlowMas/simulation.py {args}"
+        EXAMPLE_USAGE = "python FlowMas/train.py {args}"
 
         att = self.get_attributes__()
 

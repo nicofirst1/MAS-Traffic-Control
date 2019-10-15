@@ -45,9 +45,10 @@ The training results will be saved in the [ray_result dir](FlowMas/data/ray_resu
 
 To get a list of possible arguments run 
 
-`python FlowMas/simulation.py --help`
+`python FlowMas/train.py --help`
 
-A complete list of attributes will be then printed. Notice that each attribute is documented in the [param class](FlowMas/utils/parameters.py)
+A complete list of attributes will be then printed. Notice that each attribute is documented in the
+[param class](FlowMas/utils/parameters.py)
 
 
 ## Visualizing results
