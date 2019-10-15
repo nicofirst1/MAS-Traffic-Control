@@ -83,10 +83,9 @@ def get_delay_info(info):
     if not any(list(itertools.chain.from_iterable(delay.values()))):
         return []
 
-    infos = multi_info_split(delay, "Delays")
 
-
-    return infos
+    delay={k:np.mean(v) for k,v in delay.items()}
+    return delay
 
 
 def get_reward_info(info):
@@ -100,7 +99,7 @@ def get_reward_info(info):
     info = info.get("episode")
     # convert history to normal dict
     reward_history = dict(info._agent_reward_history)
-    rewards = {}
+    rewards = dict(all=[])
 
     # return if zero length
     if len(reward_history) == 0:
@@ -116,14 +115,14 @@ def get_reward_info(info):
 
         # add history to list
         rewards[new_k] += v
+        rewards["all"] += v
 
     # convert to numpy array
-    rewards = {k: np.array(v) for k, v in rewards.items()}
-
-    infos = multi_info_split(rewards, "Rewards")
+    rewards = {k: np.mean(v) for k, v in rewards.items()}
 
 
-    return infos
+
+    return rewards
 
 
 
@@ -134,7 +133,7 @@ def get_jerk_info(info):
     ids=env.k.vehicle.get_rl_ids()
     ids={k:env.k.vehicle.get_jerk(k) for k in ids}
 
-    jerks={}
+    jerks=dict(all=[])
 
     for ag,jrk in ids.items():
         ag=ag.rsplit('_', 1)[0]
@@ -143,49 +142,25 @@ def get_jerk_info(info):
             jerks[ag]=[]
 
         jerks[ag].append(jrk)
+        jerks["all"].append(jrk)
 
-    jerks=multi_info_split(jerks, "Jerk")
+    jerks={k:np.mean(v) for k,v in jerks.items()}
     return jerks
 
 
 def multi_info_split(info, title):
     # split reward by type of agent
-    split_info = {k: dict(
-        mean=np.mean(v),
-        max=np.max(v),
-        min=np.min(v)
 
-    ) for k, v in info.items()}
-
-    # add name to dict
-    split_info.update(name=f"Split {title}")
 
     # concat every list
     total_info = list(itertools.chain.from_iterable(info.values()))
 
 
-    try:
+    info.update(total=total_info)
 
 
-        # do the same as before
-        total_info = dict(
-            name=f"Total {title}",
-            mean=np.mean(total_info),
-            max=np.max(total_info),
-            min=np.min(total_info)
 
-        )
-
-    except ValueError:
-        total_info = dict(
-            name=f"Total {title}",
-            mean=0,
-            max=0,
-            min=0
-
-        )
-
-    return split_info, total_info
+    return info
 
 
 def get_env_infos(info):
@@ -272,22 +247,19 @@ def on_episode_step(info):
     if len(rewards) != 0:
         if Params.verbose >= 3:
             msg += dict_print(rewards, "Rewards")
-        info["episode"].user_data["rewards"]["split"].append(rewards[0])
-        info["episode"].user_data["rewards"]["total"].append(rewards[1])
+        info["episode"].user_data["rewards"].append(rewards)
 
     if len(delays) != 0:
         if Params.verbose >= 3:
             msg += dict_print(delays, "Delays")
 
-        info["episode"].user_data["delays"]["split"].append(delays[0])
-        info["episode"].user_data["delays"]["total"].append(delays[1])
+        info["episode"].user_data["delays"].append(delays)
 
     if len(jerks) != 0:
         if Params.verbose >= 3:
             msg += dict_print(jerks, "Jerks")
 
-        info["episode"].user_data["jerks"]["split"].append(jerks[0])
-        info["episode"].user_data["jerks"]["total"].append(jerks[1])
+        info["episode"].user_data["jerks"].append(jerks)
 
     if Params.verbose >= 3:
         log(msg, color=step_color)
@@ -297,19 +269,10 @@ def on_episode_start(info):
     msg = print_title("EPISODE STARTED", hash_num=60)
     msg += get_env_infos(info)
 
-    info["episode"].user_data["rewards"] = dict(
-        total=[],
-        split=[],
-    )
-    info["episode"].user_data["delays"] = dict(
-        total=[],
-        split=[],
-    )
+    info["episode"].user_data["rewards"] =[]
+    info["episode"].user_data["delays"] = []
 
-    info["episode"].user_data["jerks"] = dict(
-        total=[],
-        split=[],
-    )
+    info["episode"].user_data["jerks"] =[]
 
     log(msg, color=start_color)
 
@@ -356,6 +319,30 @@ def inner_split(to_split, title):
 
 
 def on_episode_end(info):
+
+
+    def chain_list(dict_list):
+
+        tmp = {k: [] for k in dict_list[0].keys()}
+        for elem in dict_list:
+            for k, v in elem.items():
+                tmp[k].append(v)
+
+        return tmp
+
+    def add_to_metrics(what, metrics, name):
+
+
+        for k,v in what.items():
+
+            new_k= "/".join((name,k))
+
+            metrics.update(
+               {new_k:v}
+            )
+
+
+
     episode = info["episode"]
 
     msg = print_title("EPISODE END", hash_num=60)
@@ -364,40 +351,18 @@ def on_episode_end(info):
     rewards = episode.user_data["rewards"]
     jerks = episode.user_data["jerks"]
 
-    delay_total = delays['total']
-    delay_split = delays['split']
+    delays=chain_list(delays)
+    rewards=chain_list(rewards)
+    jerks=chain_list(jerks)
 
-    reward_total = rewards['total']
-    reward_split = rewards['split']
-
-    jerk_total = jerks['total']
-    jerk_split = jerks['split']
+    jerks={k:np.mean(v) for k,v in jerks.items()}
+    delays={k:np.mean(v) for k,v in delays.items()}
+    rewards={k:np.mean(v) for k,v in rewards.items()}
 
     custom = episode.custom_metrics
-
-    tmp = outer_split(delay_split, "Delays/Split")
-    tmp = {k: np.mean(v) for k, v in tmp.items()}
-    custom.update(tmp)
-
-    tmp = outer_split(reward_split, "Rewards/Split")
-    tmp = {k: np.mean(v) for k, v in tmp.items()}
-    custom.update(tmp)
-
-    tmp = outer_split(jerk_split, "Jerk/Split")
-    tmp = {k: np.mean(v) for k, v in tmp.items()}
-    custom.update(tmp)
-
-    tmp = inner_split(delay_total, "Delays/Total")
-    tmp = {k: np.mean(v) for k, v in tmp.items()}
-    custom.update(tmp)
-
-    tmp = inner_split(reward_total, "Rewards/Total")
-    tmp = {k: np.mean(v) for k, v in tmp.items()}
-    custom.update(tmp)
-
-    tmp = inner_split(jerk_total, "Jerk/Total")
-    tmp = {k: np.mean(v) for k, v in tmp.items()}
-    custom.update(tmp)
+    add_to_metrics(delays,custom,"Delays")
+    add_to_metrics(rewards,custom,"Rewards")
+    add_to_metrics(jerks,custom,"Jerks")
 
     episode.custom_metrics = custom
 
