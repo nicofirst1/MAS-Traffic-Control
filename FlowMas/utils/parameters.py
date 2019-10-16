@@ -100,7 +100,7 @@ class Params:
     sample_batch_size=100 if not debug else 10
     train_batch_size= 512 if not debug else 20
     # number of episode after which the training start, and repeats itself
-    learning_starts = train_batch_size
+    learning_starts = train_batch_size if not debug else 2
 
     # number of iterations for training
     training_iteration = 600 if not debug else 100
