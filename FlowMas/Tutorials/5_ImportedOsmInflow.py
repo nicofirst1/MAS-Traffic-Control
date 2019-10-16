@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from FlowMas.utils.general_utils import inflow_random_edges
+from FlowMas.utils.maps_utils import inflow_random_edges
 # the Experiment class is used for running simulations
 from FlowMas.utils.parameters import Params
 from flow.controllers import IDMController

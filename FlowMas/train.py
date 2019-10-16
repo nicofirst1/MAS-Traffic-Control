@@ -8,7 +8,7 @@ from ray.tune.logger import DEFAULT_LOGGERS
 from ray.tune.schedulers import PopulationBasedTraining
 
 from FlowMas.utils.evaluation import CustomoJsonLogger
-from FlowMas.utils.general_utils import inflow_random_edges
+from FlowMas.utils.maps_utils import inflow_random_edges
 from FlowMas.utils.parameters import Params
 from FlowMas.utils.train_utils import get_default_config
 from flow.controllers import IDMController, RLController
