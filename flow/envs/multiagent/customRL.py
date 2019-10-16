@@ -7,7 +7,7 @@ from copy import deepcopy
 
 import numpy as np
 import termcolor
-from gym.spaces import Box
+from gym.spaces import Box,Tuple
 from ray.rllib.env import MultiAgentEnv
 from traci.exceptions import FatalTraCIError
 from traci.exceptions import TraCIException
@@ -37,13 +37,36 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
         super().__init__(env_params, sim_params, network, simulator)
 
-        self.observation_space_dict = Box(low=(-sys.maxsize - 1), high=self.k.vehicle.num_vehicles, shape=(8,),
+        self.observation_space_dict = Box(low=0, high=self.k.vehicle.num_vehicles, shape=(8,),
                                           dtype=np.float32)
-        self.action_space_dict = Box(
+
+
+        action_dict=dict(
+            rl_id=Box(low=0, high=1, shape=(Params.coop_rl_vehicle_num,),dtype=np.int),
+
+            message=Box(low=0, high=1, shape=(1,),dtype=np.float32),
+
+            acceleration=Box(
             low=-np.abs(self.env_params.additional_params['max_decel']),
             high=self.env_params.additional_params['max_accel'],
             shape=(1,),  # (4,),
             dtype=np.float32)
+
+        )
+
+        acceleration = Box(
+            low=-np.abs(self.env_params.additional_params['max_decel']),
+            high=self.env_params.additional_params['max_accel'],
+            shape=(1+Params.coop_rl_vehicle_num*2,),  # (4,),
+            dtype=np.float32)
+
+
+
+
+
+
+
+        self.action_space_dict = acceleration
 
     #############################
     #       UPDATE
@@ -425,6 +448,14 @@ class CustoMultiRL(MultiAgentEnv, Env):
         if rl_actions:
             for rl_id, actions in rl_actions.items():
                 accel = actions[0]
+                rl_ids=actions[1:Params.coop_rl_vehicle_num+1]
+                messages=actions[Params.coop_rl_vehicle_num+1:]
+                neigh=self.k.vehicle.get_neighbors(rl_id,Params.min_neighbors_distance)
+
+                if len(neigh)>0:
+                    pass
+
+
 
                 # lane_change_softmax = np.exp(actions[1:4])
                 # lane_change_softmax /= np.sum(lane_change_softmax)
