@@ -1,15 +1,15 @@
 import itertools
 import json
+import logging
 import os
 from collections import Counter
-from tabulate import tabulate
-import cloudpickle
+
 import numpy as np
 import termcolor
-
 # avaiable colors : red, green, yellow, blue, magenta, cyan, white.
-from ray.tune.logger import  JsonLogger
-import logging
+from ray.tune.logger import JsonLogger
+from tabulate import tabulate
+
 from FlowMas.utils.parameters import Params
 
 step_color = "cyan"
@@ -22,7 +22,6 @@ logger = logging.getLogger("ray")
 class CustomoJsonLogger(JsonLogger):
 
     def _init(self):
-
         # save parameter
 
         params_out = os.path.join(self.logdir, "parameter_attributes.json")
@@ -31,7 +30,7 @@ class CustomoJsonLogger(JsonLogger):
                 Params.get_attributes__(Params),
                 f,
                 indent=4,
-                sort_keys=True,)
+                sort_keys=True, )
 
         super()._init()
 
@@ -41,12 +40,8 @@ class CustomoJsonLogger(JsonLogger):
         :param result:
         :return:
         """
-        result['config']={}
+        result['config'] = {}
         super().on_result(result)
-
-
-
-
 
 
 def configure_callbacks(config):
@@ -83,8 +78,7 @@ def get_delay_info(info):
     if not any(list(itertools.chain.from_iterable(delay.values()))):
         return []
 
-
-    delay={k:np.mean(v) for k,v in delay.items()}
+    delay = {k: np.mean(v) for k, v in delay.items()}
     return delay
 
 
@@ -120,45 +114,71 @@ def get_reward_info(info):
     # convert to numpy array
     rewards = {k: np.mean(v) for k, v in rewards.items()}
 
-
-
     return rewards
 
 
+def get_action_info(info):
+    """
+    Prints rewards for step, both split and not.
+    :param info:
+    :return: (string)
+    """
+
+    # get the episode from the infos
+    info=info.get("episode")._agent_to_last_action
+
+    # return if zero length
+    if len(info) == 0:
+        return []
+
+    actions = dict(all=[])
+
+        # for every id:list in the history of rewards
+    for k, v in info.items():
+        # split the name to get the type of agent
+        new_k = k.rsplit("_", 1)[0]
+
+        if new_k not in actions.keys():
+            actions[new_k] = []
+
+        # add history to list
+        actions[new_k].append(v)
+        actions["all"].append(v)
+
+        # convert to numpy array
+    actions = {k: np.mean(v) for k, v in actions.items()}
+
+    return actions
+
 
 def get_jerk_info(info):
+    env = info['env'].envs[0]
 
-    env=info['env'].envs[0]
+    ids = env.k.vehicle.get_rl_ids()
+    ids = {k: env.k.vehicle.get_jerk(k) for k in ids}
 
-    ids=env.k.vehicle.get_rl_ids()
-    ids={k:env.k.vehicle.get_jerk(k) for k in ids}
+    jerks = dict(all=[])
 
-    jerks=dict(all=[])
-
-    for ag,jrk in ids.items():
-        ag=ag.rsplit('_', 1)[0]
+    for ag, jrk in ids.items():
+        ag = ag.rsplit('_', 1)[0]
 
         if ag not in jerks.keys():
-            jerks[ag]=[]
+            jerks[ag] = []
 
         jerks[ag].append(jrk)
         jerks["all"].append(jrk)
 
-    jerks={k:np.mean(v) for k,v in jerks.items()}
+    jerks = {k: np.mean(v) for k, v in jerks.items()}
     return jerks
 
 
 def multi_info_split(info, title):
     # split reward by type of agent
 
-
     # concat every list
     total_info = list(itertools.chain.from_iterable(info.values()))
 
-
     info.update(total=total_info)
-
-
 
     return info
 
@@ -200,7 +220,7 @@ def print_title(title, hash_num=10):
 
 
 def log(msg, color="white"):
-    msg=termcolor.colored(msg,color)
+    msg = termcolor.colored(msg, color)
     print_title(msg)
     logger.info(msg)
 
@@ -234,13 +254,13 @@ def on_episode_step(info):
     :param info:
     :return:
     """
-    # todo: mean jerk (?)
     # todo: get action min/max/mean
 
     # get reward infos
     rewards = get_reward_info(info)
     delays = get_delay_info(info)
-    jerks=get_jerk_info(info)
+    jerks = get_jerk_info(info)
+    actions= get_action_info(info)
 
     msg = ""
 
@@ -261,6 +281,12 @@ def on_episode_step(info):
 
         info["episode"].user_data["jerks"].append(jerks)
 
+    if len(actions) != 0:
+        if Params.verbose >= 3:
+            msg += dict_print(actions, "Actions")
+
+        info["episode"].user_data["actions"].append(actions)
+
     if Params.verbose >= 3:
         log(msg, color=step_color)
 
@@ -269,16 +295,14 @@ def on_episode_start(info):
     msg = print_title("EPISODE STARTED", hash_num=60)
     msg += get_env_infos(info)
 
-    info["episode"].user_data["rewards"] =[]
+    info["episode"].user_data["rewards"] = []
     info["episode"].user_data["delays"] = []
-
-    info["episode"].user_data["jerks"] =[]
+    info["episode"].user_data["actions"] = []
+    info["episode"].user_data["jerks"] = []
 
     log(msg, color=start_color)
 
     # remove env config from dict to avoid heavy files
-
-
 
 
 def outer_split(to_split, name):
@@ -319,8 +343,6 @@ def inner_split(to_split, title):
 
 
 def on_episode_end(info):
-
-
     def chain_list(dict_list):
 
         tmp = {k: [] for k in dict_list[0].keys()}
@@ -332,16 +354,12 @@ def on_episode_end(info):
 
     def add_to_metrics(what, metrics, name):
 
-
-        for k,v in what.items():
-
-            new_k= "/".join((name,k))
+        for k, v in what.items():
+            new_k = "/".join((name, k))
 
             metrics.update(
-               {new_k:v}
+                {new_k: v}
             )
-
-
 
     episode = info["episode"]
 
@@ -350,19 +368,23 @@ def on_episode_end(info):
     delays = episode.user_data["delays"]
     rewards = episode.user_data["rewards"]
     jerks = episode.user_data["jerks"]
+    actions = episode.user_data["actions"]
 
-    delays=chain_list(delays)
-    rewards=chain_list(rewards)
-    jerks=chain_list(jerks)
+    delays = chain_list(delays)
+    rewards = chain_list(rewards)
+    jerks = chain_list(jerks)
+    actions = chain_list(actions)
 
-    jerks={k:np.mean(v) for k,v in jerks.items()}
-    delays={k:np.mean(v) for k,v in delays.items()}
-    rewards={k:np.mean(v) for k,v in rewards.items()}
+    jerks = {k: np.mean(v) for k, v in jerks.items()}
+    delays = {k: np.mean(v) for k, v in delays.items()}
+    rewards = {k: np.mean(v) for k, v in rewards.items()}
+    actions = {k: np.mean(v) for k, v in actions.items()}
 
     custom = episode.custom_metrics
-    add_to_metrics(delays,custom,"Delays")
-    add_to_metrics(rewards,custom,"Rewards")
-    add_to_metrics(jerks,custom,"Jerks")
+    add_to_metrics(delays, custom, "Delays")
+    add_to_metrics(rewards, custom, "Rewards")
+    add_to_metrics(jerks, custom, "Jerks")
+    add_to_metrics(actions, custom, "Actions")
 
     episode.custom_metrics = custom
 
@@ -370,22 +392,21 @@ def on_episode_end(info):
 
 
 def on_train_result(info):
+    result = info["result"]
 
-    result=info["result"]
-
-    table=dict(
+    table = dict(
 
         episodes_total=result["episodes_total"],
         training_iteration=result["training_iteration"],
         time_this_iter_s=result["time_this_iter_s"],
         time_total_s=result["time_total_s"],
         timesteps_total=result["timesteps_total"],
-        policy=json.dumps(result["policy_reward_mean"],indent=4),
+        policy=json.dumps(result["policy_reward_mean"], indent=4),
         perf=json.dumps(result["perf"], indent=4),
         episode_reward_mean=result["episode_reward_mean"],
         episode_len_mean=result["episode_len_mean"],
     )
 
-    msg="\n"
-    msg+=tabulate(list(table.items()), tablefmt="grid")
-    log(msg,train_color)
+    msg = "\n"
+    msg += tabulate(list(table.items()), tablefmt="grid")
+    log(msg, train_color)
