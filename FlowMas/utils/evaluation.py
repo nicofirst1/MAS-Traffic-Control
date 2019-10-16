@@ -20,6 +20,10 @@ logger = logging.getLogger("ray")
 
 
 class CustomJsonLogger(JsonLogger):
+    """
+    Overload of json logger used to discard long env configuration during the result logging,
+    it also saves the custom Params class at the start
+    """
 
     def _init(self):
         # save parameter class
@@ -58,10 +62,10 @@ def configure_callbacks(config):
 
 def get_delay_info(info):
     """
-    Prints info about vehicle delays both split and total
-    :param info:
-    :return:
-    """
+       Extract information regarding the delays
+       :param info: dict, containing the general information given by the callback
+       :return: dict, delays values for each agent as well as the total one
+       """
 
     # get agent types
     delay = info["env"].envs[0].k.vehicle.get_rl_types()
@@ -83,10 +87,10 @@ def get_delay_info(info):
 
 def get_reward_info(info):
     """
-    Prints rewards for step, both split and not.
-    :param info:
-    :return: (string)
-    """
+       Extract information regarding the rewards
+       :param info: dict, containing the general information given by the callback
+       :return: dict, rewards values for each agent as well as the total one
+       """
 
     # get the episode from the infos
     info = info.get("episode")
@@ -118,13 +122,13 @@ def get_reward_info(info):
 
 def get_action_info(info):
     """
-    Prints rewards for step, both split and not.
-    :param info:
-    :return: (string)
-    """
+       Extract information regarding the actions
+       :param info: dict, containing the general information given by the callback
+       :return: dict, actions values for each agent as well as the total one
+       """
 
     # get the episode from the infos
-    info=info.get("episode")._agent_to_last_action
+    info = info.get("episode")._agent_to_last_action
 
     # return if zero length
     if len(info) == 0:
@@ -132,7 +136,7 @@ def get_action_info(info):
 
     actions = dict(all=[])
 
-        # for every id:list in the history of rewards
+    # for every id:list in the history of rewards
     for k, v in info.items():
         # split the name to get the type of agent
         new_k = k.rsplit("_", 1)[0]
@@ -151,6 +155,11 @@ def get_action_info(info):
 
 
 def get_jerk_info(info):
+    """
+    Extract information regarding the jerk
+    :param info: dict, containing the general information given by the callback
+    :return: dict, jerk values for each agent as well as the total one
+    """
     env = info['env'].envs[0]
 
     ids = env.k.vehicle.get_rl_ids()
@@ -171,18 +180,12 @@ def get_jerk_info(info):
     return jerks
 
 
-def multi_info_split(info, title):
-    # split reward by type of agent
-
-    # concat every list
-    total_info = list(itertools.chain.from_iterable(info.values()))
-
-    info.update(total=total_info)
-
-    return info
-
-
 def get_env_infos(info):
+    """
+    Extract information regarding the environment
+    :param info: dict, containing the general information given by the callback
+    :return: str, printable info
+    """
     info = info.get("env").envs[0]
     msg = ""
 
@@ -249,7 +252,7 @@ def dict_print(dicts, title, indent=4):
 
 def on_episode_step(info):
     """
-    On step function for debugging and traning
+    Custom callback to be called
     :param info:
     :return:
     """
@@ -259,7 +262,7 @@ def on_episode_step(info):
     rewards = get_reward_info(info)
     delays = get_delay_info(info)
     jerks = get_jerk_info(info)
-    actions= get_action_info(info)
+    actions = get_action_info(info)
 
     msg = ""
 
@@ -291,21 +294,21 @@ def on_episode_step(info):
 
 
 def on_episode_start(info):
+    """
+    Custom callback to be run on the start of an episode, logs some env params
+    :param info: dict, information about run
+    :return: None
+    """
     msg = print_title("EPISODE STARTED", hash_num=60)
     msg += get_env_infos(info)
 
+    # Initialize lists for user data to be used later on
     info["episode"].user_data["rewards"] = []
     info["episode"].user_data["delays"] = []
     info["episode"].user_data["actions"] = []
     info["episode"].user_data["jerks"] = []
 
     log(msg, color=start_color)
-
-    # remove env config from dict to avoid heavy files
-
-
-
-
 
 
 def on_episode_end(info):
@@ -314,6 +317,7 @@ def on_episode_end(info):
     :param info: dictionary containing all the information
     :return:
     """
+
     def chain_list(dict_list):
         """
         Flat dictionary to make it printalbe
@@ -389,6 +393,17 @@ def on_train_result(info):
 
     result = info["result"]
 
+    policy_reward_mean = {}
+    for ag, jrk in result["policy_reward_mean"].items():
+        ag = ag.rsplit('_', 1)[0]
+
+        if ag not in policy_reward_mean.keys():
+            policy_reward_mean[ag] = []
+
+        policy_reward_mean[ag].append(jrk)
+        policy_reward_mean["all"].append(jrk)
+
+    policy_reward_mean = {k: np.mean(v) for k, v in policy_reward_mean.items()}
 
     table = dict(
 
@@ -397,7 +412,7 @@ def on_train_result(info):
         time_this_iter_s=result["time_this_iter_s"],
         time_total_s=result["time_total_s"],
         timesteps_total=result["timesteps_total"],
-        policy=json.dumps(result["policy_reward_mean"], indent=4),
+        policy=json.dumps(policy_reward_mean, indent=4),
         perf=json.dumps(result["perf"], indent=4),
         episode_reward_mean=result["episode_reward_mean"],
         episode_len_mean=result["episode_len_mean"],
