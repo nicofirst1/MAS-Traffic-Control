@@ -393,7 +393,7 @@ def on_train_result(info):
 
     result = info["result"]
 
-    policy_reward_mean = {}
+    policy_reward_mean = dict(all=[])
     for ag, jrk in result["policy_reward_mean"].items():
         ag = ag.rsplit('_', 1)[0]
 
