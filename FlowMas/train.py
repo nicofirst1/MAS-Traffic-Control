@@ -12,7 +12,7 @@ from FlowMas.utils.maps_utils import inflow_random_edges
 from FlowMas.utils.parameters import Params
 from FlowMas.utils.train_utils import get_default_config
 from flow.controllers import IDMController, RLController
-from flow.controllers.routing_controllers import GridRouter
+from flow.controllers.routing_controllers import MinicityRouter
 from flow.core.params import EnvParams, InitialConfig, CustomVehicleParams
 from flow.core.params import NetParams
 from flow.core.params import SumoParams
@@ -39,7 +39,7 @@ vehicles = CustomVehicleParams()
 # add human drivers with premade controllers/routers
 vehicles.add("human",
              acceleration_controller=(IDMController, {}),
-             routing_controller=(GridRouter, {}),
+             routing_controller=(MinicityRouter, {}),
              num_vehicles=Params.human_vehicle_num)
 
 # add RL agents with premade controller
@@ -47,7 +47,7 @@ vehicles.add("human",
 vehicles.add(
     "RL_coop",
     acceleration_controller=(RLController, {}),
-    routing_controller=(GridRouter, {}),
+    routing_controller=(MinicityRouter, {}),
     num_vehicles=Params.coop_rl_vehicle_num,
     cooperative_weight=Params.coop_weight
 )
@@ -56,7 +56,7 @@ vehicles.add(
 vehicles.add(
     "RL_selfish",
     acceleration_controller=(RLController, {}),
-    routing_controller=(GridRouter, {}),
+    routing_controller=(MinicityRouter, {}),
     num_vehicles=Params.selfish_rl_vehicle_num,
     cooperative_weight=0
 )
@@ -109,7 +109,7 @@ human_inflow = dict(
 )
 
 # adding human inflows
-inflow_random_edges(inflow, **human_inflow)
+#inflow_random_edges(inflow, **human_inflow)
 
 #######################
 #  NETWORK
