@@ -22,8 +22,7 @@ logger = logging.getLogger("ray")
 class CustomoJsonLogger(JsonLogger):
 
     def _init(self):
-        # save parameter
-
+        # save parameter class
         params_out = os.path.join(self.logdir, "parameter_attributes.json")
         with open(params_out, "w") as f:
             json.dump(
@@ -305,45 +304,22 @@ def on_episode_start(info):
     # remove env config from dict to avoid heavy files
 
 
-def outer_split(to_split, name):
-    prov = {}
-
-    for elem in to_split:
-
-        for k, v in elem.items():
-
-            if k == "name": continue
-
-            for k2, v2 in v.items():
-
-                new_k = "/".join([name, k, k2])
-                if new_k not in prov.keys():
-                    prov[new_k] = []
-
-                prov[new_k].append(v2)
-
-    return prov
 
 
-def inner_split(to_split, title):
-    prov = {}
-
-    for elem in to_split:
-
-        for k2, v2 in elem.items():
-            if k2 == "name": continue
-
-            new_k = "/".join([title, k2])
-            if new_k not in prov.keys():
-                prov[new_k] = []
-
-            prov[new_k].append(v2)
-
-    return prov
 
 
 def on_episode_end(info):
+    """
+    Custom callback to be called when an episode ends
+    :param info: dictionary containing all the information
+    :return:
+    """
     def chain_list(dict_list):
+        """
+        Flat dictionary to make it printalbe
+        :param dict_list:
+        :return:
+        """
 
         tmp = {k: [] for k in dict_list[0].keys()}
         for elem in dict_list:
@@ -353,6 +329,13 @@ def on_episode_end(info):
         return tmp
 
     def add_to_metrics(what, metrics, name):
+        """
+        Add information to metric
+        :param what: dictionary of infos§
+        :param metrics: dict to be updated
+        :param name: str, name of the updated value
+        :return: None
+        """
 
         for k, v in what.items():
             new_k = "/".join((name, k))
@@ -362,38 +345,51 @@ def on_episode_end(info):
             )
 
     episode = info["episode"]
-
+    # add end episode to message§
     msg = print_title("EPISODE END", hash_num=60)
 
+    # get every custom metric list from the userd data field
     delays = episode.user_data["delays"]
     rewards = episode.user_data["rewards"]
     jerks = episode.user_data["jerks"]
     actions = episode.user_data["actions"]
 
+    # flat the list
     delays = chain_list(delays)
     rewards = chain_list(rewards)
     jerks = chain_list(jerks)
     actions = chain_list(actions)
 
+    # get the mean for every episode
     jerks = {k: np.mean(v) for k, v in jerks.items()}
     delays = {k: np.mean(v) for k, v in delays.items()}
     rewards = {k: np.mean(v) for k, v in rewards.items()}
     actions = {k: np.mean(v) for k, v in actions.items()}
 
     custom = episode.custom_metrics
+    # add to custom metrics
     add_to_metrics(delays, custom, "Delays")
     add_to_metrics(rewards, custom, "Rewards")
     add_to_metrics(jerks, custom, "Jerks")
     add_to_metrics(actions, custom, "Actions")
 
+    # update custom metrics
     episode.custom_metrics = custom
 
+    # log message
     log(msg, color=end_color)
 
 
 def on_train_result(info):
+    """
+    Custom callback to be called on the end of a trainig instance
+    :param info: dict, usefull infos about the training result
+    :return: None
+    """
+
     result = info["result"]
 
+    
     table = dict(
 
         episodes_total=result["episodes_total"],
