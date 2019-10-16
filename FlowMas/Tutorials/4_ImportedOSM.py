@@ -50,7 +50,7 @@ sim_params = SumoParams(
     show_radius=True,  # show a circle on top of RL agents
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
     emission_path=Params.DATA_DIR,
-    restart_instance=True,
+    restart_instance=False,
 )
 
 # setting initial configuration files
@@ -59,7 +59,7 @@ initial_config = InitialConfig(
     perturbation=50.0,
 )
 
-# specify net params
+# specify net params, you can change the map in the dir
 net_params = NetParams(
     additional_params=additional_net_params,
     osm_path=Params.MAP_DIRS_DICT["rome"] + "/osm_bbox.osm.xml"
