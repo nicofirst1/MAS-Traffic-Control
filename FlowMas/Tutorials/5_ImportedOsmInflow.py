@@ -35,7 +35,7 @@ vehicles.add("human",
              num_vehicles=human_num)
 
 horizon = 1000
-sim_step = 0.1
+sim_step = 0.3
 # total simulation time is horizon/sim_step seconds
 
 # create some default parameters parameters
@@ -52,13 +52,12 @@ sim_params = SumoParams(
     show_radius=True,  # show a circle on top of RL agents
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
     emission_path=Params.DATA_DIR,
-    restart_instance=True,
+    restart_instance=False,
 )
 
 # setting initial configuration files
 initial_config = InitialConfig(
     shuffle=True,
-    perturbation=50.0,
 )
 
 # Adding inflows
@@ -79,7 +78,7 @@ inflow_random_edges(inflow, **human_inflow)
 net_params = NetParams(
     additional_params=additional_net_params,
     inflows=inflow,
-    osm_path=Params.MAP_DIRS_DICT["rome"] + "/osm_bbox.osm.xml"
+    osm_path=Params.MAP_DIRS_DICT["groningen"] + "/osm_bbox.osm.xml"
 
 )
 
