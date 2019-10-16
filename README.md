@@ -50,6 +50,9 @@ To get a list of possible arguments run
 A complete list of attributes will be then printed. Notice that each attribute is documented in the
 [param class](FlowMas/utils/parameters.py)
 
+__NB__: If you change some attributes of the Params class, but the changes does not seem to be working, use:
+
+`python setup.py install`
 
 ## Visualizing results
 
