@@ -7,7 +7,7 @@ from ray.tune.experiment import Experiment
 from ray.tune.logger import DEFAULT_LOGGERS
 from ray.tune.schedulers import PopulationBasedTraining
 
-from FlowMas.utils.evaluation import CustomoJsonLogger
+from FlowMas.utils.evaluation import CustomJsonLogger
 from FlowMas.utils.maps_utils import inflow_random_edges
 from FlowMas.utils.parameters import Params
 from FlowMas.utils.train_utils import get_default_config
@@ -206,7 +206,7 @@ ray.init(num_cpus=Params.n_cpus,
 
 
 loggers=list(DEFAULT_LOGGERS)
-loggers[0]=CustomoJsonLogger
+loggers[0]=CustomJsonLogger
 
 
 # initialize experiment

@@ -19,7 +19,7 @@ train_color = "yellow"
 logger = logging.getLogger("ray")
 
 
-class CustomoJsonLogger(JsonLogger):
+class CustomJsonLogger(JsonLogger):
 
     def _init(self):
         # save parameter class
@@ -389,7 +389,7 @@ def on_train_result(info):
 
     result = info["result"]
 
-    
+
     table = dict(
 
         episodes_total=result["episodes_total"],
