@@ -9,16 +9,9 @@ To install the required modules run the following commands:
 
  `source ~/.bashrc`
  
-- Clone the flow repo:
-
-```
-git clone https://github.com/flow-project/flow.git
-cd flow
-```
-
 - Create a custom environment with conda
  
- `conda env create -f environment.yml --name dmas`
+ `conda env create --name dmas python=3.6`
 
 - Source custom environment: 
 
@@ -54,8 +47,6 @@ pip install -e . --verbose  # Add --user if you see a permission denied error.
 
 ```
 
-- Install baseline following [this](https://stable-baselines.readthedocs.io/en/master/guide/install.html)
-
 - Install sumotools: 
 
 `pip install https://akreidieh.s3.amazonaws.com/sumo/flow-0.4.0/sumotools-0.4.0-py3-none-any.whl`
@@ -64,6 +55,3 @@ pip install -e . --verbose  # Add --user if you see a permission denied error.
 
 `python setup.py install` 
 
-- Lastly remove the flow package
-
-`pip uninstall flow`

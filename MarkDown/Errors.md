@@ -436,3 +436,40 @@ __Solution__:  update rllib :
 ### Error 17
 
 If you're using pycharm and SUMO-HOME cannot be found, start pycharm from terminal.
+
+### Error 18
+
+
+__Traceback__:
+
+```
+Traceback (most recent call last):
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/tune/trial_runner.py", line 438, in _process_trial
+    result = self.trial_executor.fetch_result(trial)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/tune/ray_trial_executor.py", line 351, in fetch_result
+    result = ray.get(trial_future[0])
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/worker.py", line 2121, in get
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(IndexError): �[36mray_MADDPG:train()�[39m (pid=30410, ip=100.81.9.4)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/rllib/agents/trainer.py", line 421, in train
+    raise e
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/rllib/agents/trainer.py", line 407, in train
+    result = Trainable.train(self)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/tune/trainable.py", line 176, in train
+    result = self._train()
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/rllib/agents/trainer_template.py", line 129, in _train
+    fetches = self.optimizer.step()
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/rllib/optimizers/sync_replay_optimizer.py", line 142, in step
+    self._optimize()
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/rllib/optimizers/sync_replay_optimizer.py", line 162, in _optimize
+    samples = self._replay()
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/rllib/optimizers/sync_replay_optimizer.py", line 205, in _replay
+    dones) = replay_buffer.sample_with_idxes(idxes)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/rllib/optimizers/replay_buffer.py", line 81, in sample_with_idxes
+    return self._encode_sample(idxes)
+  File "/home/dizzi/.conda/envs/dmas/lib/python3.6/site-packages/ray-0.8.0.dev5-py3.6-linux-x86_64.egg/ray/rllib/optimizers/replay_buffer.py", line 60, in _encode_sample
+    data = self._storage[i]
+IndexError: list index out of range
+```
+
+__Solution__: Follow [this](https://github.com/flow-project/flow/issues/755)
