@@ -1,8 +1,8 @@
 import ray
+from ray.rllib.agents.registry import get_agent_class
 from ray.tune import register_env, run_experiments
 
 from FlowMas.utils.parameters import Params
-from FlowMas.utils.train_utils import get_default_config
 from flow.controllers import IDMController, RLController
 from flow.controllers.routing_controllers import GridRouter
 from flow.core.params import SumoParams, EnvParams, NetParams, InitialConfig
@@ -131,11 +131,32 @@ params = dict(
 #  ENV CREATION
 ########################
 
+
+def ppo_config():
+    alg_run = "PPO"
+
+    agent_cls = get_agent_class(alg_run)
+    config = agent_cls._default_config.copy()
+    config["num_workers"] = Params.n_cpus - 1  # number of parallel workers
+    config["train_batch_size"] = HORIZON   # batch size
+    config["gamma"] = 0.999  # discount rate
+    config["model"].update({"fcnet_hiddens": [16, 16]})  # size of hidden layers in network
+    config["use_gae"] = True  # using generalized advantage estimation
+    config["lambda"] = 0.97
+    config["sgd_minibatch_size"] = min(16 * 1024, config["train_batch_size"])  # stochastic gradient descent
+    config["kl_target"] = 0.02  # target KL divergence
+    config["num_sgd_iter"] = 10  # number of SGD iterations
+    config["horizon"] = HORIZON  # rollout horizon
+    config['env_config']['run'] = alg_run
+
+    return config
+
+
 # define new trainable enviroment
 create_env, gym_name = make_create_env(params=params, version=0)
 
 # get default config for ppo
-config = get_default_config(params)
+config = ppo_config()
 
 # Register as rllib env
 register_env(gym_name, create_env)

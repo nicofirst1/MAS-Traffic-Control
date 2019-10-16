@@ -37,36 +37,14 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
         super().__init__(env_params, sim_params, network, simulator)
 
-        self.observation_space_dict = Box(low=0, high=self.k.vehicle.num_vehicles, shape=(8,),
+        self.observation_space_dict = Box(low=(-sys.maxsize - 1), high=self.k.vehicle.num_vehicles, shape=(8,),
                                           dtype=np.float32)
 
-
-        action_dict=dict(
-            rl_id=Box(low=0, high=1, shape=(Params.coop_rl_vehicle_num,),dtype=np.int),
-
-            message=Box(low=0, high=1, shape=(1,),dtype=np.float32),
-
-            acceleration=Box(
+        self.action_space_dict = Box(
             low=-np.abs(self.env_params.additional_params['max_decel']),
             high=self.env_params.additional_params['max_accel'],
             shape=(1,),  # (4,),
             dtype=np.float32)
-
-        )
-
-        acceleration = Box(
-            low=-np.abs(self.env_params.additional_params['max_decel']),
-            high=self.env_params.additional_params['max_accel'],
-            shape=(1+Params.coop_rl_vehicle_num*2,),  # (4,),
-            dtype=np.float32)
-
-
-
-
-
-
-
-        self.action_space_dict = acceleration
 
     #############################
     #       UPDATE
@@ -448,13 +426,6 @@ class CustoMultiRL(MultiAgentEnv, Env):
         if rl_actions:
             for rl_id, actions in rl_actions.items():
                 accel = actions[0]
-                rl_ids=actions[1:Params.coop_rl_vehicle_num+1]
-                messages=actions[Params.coop_rl_vehicle_num+1:]
-                neigh=self.k.vehicle.get_neighbors(rl_id,Params.min_neighbors_distance)
-
-                if len(neigh)>0:
-                    pass
-
 
 
                 # lane_change_softmax = np.exp(actions[1:4])
@@ -465,23 +436,6 @@ class CustoMultiRL(MultiAgentEnv, Env):
                 self.k.vehicle.apply_acceleration(rl_id, accel)
                 # self.k.vehicle.apply_lane_change(rl_id, lane_change_action)
 
-    def apply_rl_actions(self, rl_actions=None):
-        """Specify the actions to be performed by the rl agent(s).
-
-        If no actions are provided at any given step, the rl agents default to
-        performing actions specified by SUMO.
-
-        Parameters
-        ----------
-        rl_actions : array_like
-            list of actions provided by the RL algorithm
-        """
-        # ignore if no actions are issued
-        if rl_actions is None:
-            return
-        if Params.clip_action:
-            rl_actions = self.clip_actions(rl_actions)
-        self._apply_rl_actions(rl_actions)
 
     def clip_actions(self, rl_actions=None):
         """Clip the actions passed from the RL agent.
