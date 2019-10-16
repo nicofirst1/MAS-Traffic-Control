@@ -34,12 +34,12 @@ class Params:
     ##########################
     # Performance stuff
     ##########################
-    debug = False
+    debug = True
 
     # level of verbosity
     # 0 : print start/end of episode
-    # 1 : same as 0 + verobse ray level 1
-    # 2 : same as 1 + verobse ray level 2
+    # 1 : same as 0 + verbose ray level 1
+    # 2 : same as 1 + verbose ray level 2
     # 3 : same as 2 + print at each time step
     # 4 : same as 3 + verbose for sumo
     verbose = 2
@@ -62,7 +62,6 @@ class Params:
     ##########################
     # Agent  params
     ##########################
-    # todo: make distance dependent of map measures
     # minimum distance between vehicle to be considered neighbors (in meters)
     min_neighbors_distance = 50
 
@@ -74,6 +73,8 @@ class Params:
 
     # baseline for reward
     baseline = 10
+
+    clip_action=False
 
     ##########################
     #  Training  params
@@ -98,11 +99,12 @@ class Params:
     # 'sample_batch_size' for the entire training
     sample_batch_size=100 if not debug else 10
     train_batch_size= 512 if not debug else 20
-    learning_starts = train_batch_size * 15 if not debug else train_batch_size
+    # number of episode after which the training start, and repeats itself
+    learning_starts = train_batch_size
 
     # number of iterations for training
-    training_iteration = 600 if not debug else 10
-    episode_num = 9999 if not debug else 5
+    training_iteration = 600 if not debug else 100
+    episode_num = 9999 if not debug else 15
 
     # training algorithms
     implemented_algs = ["MARWIL", "contrib/MADDPG", "PPO"]  # see journal, research section

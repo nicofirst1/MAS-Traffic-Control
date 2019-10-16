@@ -12,11 +12,11 @@ from ray.rllib.env import MultiAgentEnv
 from traci.exceptions import FatalTraCIError
 from traci.exceptions import TraCIException
 
+from FlowMas.utils.parameters import Params
 from flow.core.rewards import min_delay, penalize_standstill, avg_delay_specified_vehicles
 from flow.envs.base import Env
 from flow.envs.env_utils import standard_observation, neighbors_observation
 from flow.utils.exceptions import FatalFlowError
-from FlowMas.utils.parameters import Params
 
 ADDITIONAL_ENV_PARAMS = {
     # maximum acceleration of autonomous vehicles
@@ -37,13 +37,17 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
         super().__init__(env_params, sim_params, network, simulator)
 
-        self.observation_space_dict=Box(low=(-sys.maxsize - 1), high=self.k.vehicle.num_vehicles, shape=(8,), dtype=np.float32)
-        self.action_space_dict=Box(
+        self.observation_space_dict = Box(low=(-sys.maxsize - 1), high=self.k.vehicle.num_vehicles, shape=(8,),
+                                          dtype=np.float32)
+        self.action_space_dict = Box(
             low=-np.abs(self.env_params.additional_params['max_decel']),
             high=self.env_params.additional_params['max_accel'],
             shape=(1,),  # (4,),
             dtype=np.float32)
 
+    #############################
+    #       UPDATE
+    #############################
 
     def step(self, rl_actions):
         """Advance the environment by one step.
@@ -136,13 +140,10 @@ class CustoMultiRL(MultiAgentEnv, Env):
         done = {key: key in self.k.vehicle.get_arrived_ids()
                 for key in states.keys()}
 
-
         if crash:
             done['__all__'] = True
         else:
             done['__all__'] = False
-
-       
 
         infos = {key: {} for key in states.keys()}
 
@@ -279,38 +280,9 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
         return self.get_state()
 
-    def clip_actions(self, rl_actions=None):
-        """Clip the actions passed from the RL agent.
-
-        If no actions are provided at any given step, the rl agents default to
-        performing actions specified by sumo.
-
-        Parameters
-        ----------
-        rl_actions : array_like
-            list of actions provided by the RL algorithm
-
-        Returns
-        -------
-        rl_clipped : array_like
-            The rl_actions clipped according to the box
-        """
-        # ignore if no actions are issued
-        if rl_actions is None:
-            return None
-
-        #fixme: findout why the accel is close to zero before clipping
-
-        # clip according to the action space requirements
-        if isinstance(self.action_space, Box):
-            for key, action in rl_actions.items():
-                rl_actions[key] = np.clip(
-                    action,
-                    a_min=self.action_space.low,
-                    a_max=self.action_space.high)
-        return rl_actions
-
-
+    #############################
+    #       REWARDS
+    #############################
 
     def compute_reward(self, rl_actions, **kwargs):
         """Reward function for the RL agent(s).
@@ -362,7 +334,6 @@ class CustoMultiRL(MultiAgentEnv, Env):
                 # then get the coop weight
                 w = self.k.vehicle.type_parameters.get(rl_type).get('cooperative_weight')
 
-
                 # estimate the coop part of the reward
                 coop_reward = (cost1 + cost2) * w
 
@@ -377,29 +348,18 @@ class CustoMultiRL(MultiAgentEnv, Env):
                 # the higher the worst, tha
                 jerk = - pow(jerk, 2) / pow(scaling_factor, 2)
 
-
                 # maximum penalization can be 4
-                reward = max(Params.baseline -coop_reward - cost3 - jerk , 0)
+                reward = max(Params.baseline - coop_reward - cost3 - jerk, 0)
 
                 if Params.debug:
-                    termcolor.colored(f"\nReward for agent {rl_id} is : {reward}","yellow")
+                    termcolor.colored(f"\nReward for agent {rl_id} is : {reward}", "yellow")
 
             rewards[rl_id] = reward
         return rewards
 
-
-    @property
-    def action_space(self):
-        """Identify the dimensions and bounds of the action space.
-
-        Returns
-        -------
-        gym Box or Tuple type
-            a bounded box depicting the shape and bounds of the action space
-        """
-
-        # The action space is just the de/acceleration
-        return self.action_space_dict
+    #############################
+    #       OBSERVATIONS
+    #############################
 
     @property
     def observation_space(self):
@@ -411,7 +371,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
             a bounded box depicting the shape and bounds of the observation
             space
         """
-        #fixme: get lowest value right (-max_speed?)
+        # fixme: get lowest value right (-max_speed?)
         return self.observation_space_dict
 
     def get_state(self):
@@ -455,6 +415,10 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
         return obs
 
+    #############################
+    #       ACTIONS
+    #############################
+
     def _apply_rl_actions(self, rl_actions):
         """See class definition."""
         # in the warmup steps, rl_actions is None
@@ -469,3 +433,65 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
                 self.k.vehicle.apply_acceleration(rl_id, accel)
                 # self.k.vehicle.apply_lane_change(rl_id, lane_change_action)
+
+    def apply_rl_actions(self, rl_actions=None):
+        """Specify the actions to be performed by the rl agent(s).
+
+        If no actions are provided at any given step, the rl agents default to
+        performing actions specified by SUMO.
+
+        Parameters
+        ----------
+        rl_actions : array_like
+            list of actions provided by the RL algorithm
+        """
+        # ignore if no actions are issued
+        if rl_actions is None:
+            return
+        if Params.clip_action:
+            rl_actions = self.clip_actions(rl_actions)
+        self._apply_rl_actions(rl_actions)
+
+    def clip_actions(self, rl_actions=None):
+        """Clip the actions passed from the RL agent.
+
+        If no actions are provided at any given step, the rl agents default to
+        performing actions specified by sumo.
+
+        Parameters
+        ----------
+        rl_actions : array_like
+            list of actions provided by the RL algorithm
+
+        Returns
+        -------
+        rl_clipped : array_like
+            The rl_actions clipped according to the box
+        """
+        # ignore if no actions are issued
+        if rl_actions is None:
+            return None
+
+        # fixme: findout why the accel is close to zero before clipping
+
+        # clip according to the action space requirements
+        if isinstance(self.action_space, Box):
+            for key, action in rl_actions.items():
+                rl_actions[key] = np.clip(
+                    action,
+                    a_min=self.action_space.low,
+                    a_max=self.action_space.high)
+        return rl_actions
+
+    @property
+    def action_space(self):
+        """Identify the dimensions and bounds of the action space.
+
+        Returns
+        -------
+        gym Box or Tuple type
+            a bounded box depicting the shape and bounds of the action space
+        """
+
+        # The action space is just the de/acceleration
+        return self.action_space_dict
