@@ -414,7 +414,7 @@ def on_train_result(info):
         timesteps_total=result["timesteps_total"],
         policy=json.dumps(policy_reward_mean, indent=4),
         perf=json.dumps(result["perf"], indent=4),
-        episode_reward_mean=result["episode_reward_mean"],
+        episode_reward_mean=result["episode_reward_mean"]/Params.num_agents,
         episode_len_mean=result["episode_len_mean"],
     )
 
