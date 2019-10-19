@@ -430,7 +430,7 @@ def maddpg_config(config, env):
 
     for idx in range(Params.selfish_rl_vehicle_num):
         policies.update(
-            {f"RL_selfish_{idx}": gen_policy("selfish", idx)}
+            {f"RL_selfish_{idx}": gen_policy("selfish", idx+Params.coop_rl_vehicle_num)}
         )
 
     def mapping(agent):
