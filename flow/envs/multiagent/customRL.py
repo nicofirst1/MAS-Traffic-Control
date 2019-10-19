@@ -116,6 +116,8 @@ class CustoMultiRL(MultiAgentEnv, Env):
                     routing_actions.append(route_contr.choose_route(self))
             self.k.vehicle.choose_routes(routing_ids, routing_actions)
 
+            self.reroute_if_final_edge()
+
             self.apply_rl_actions(rl_actions)
 
             self.additional_command()
@@ -280,6 +282,36 @@ class CustoMultiRL(MultiAgentEnv, Env):
         self.render(reset=True)
 
         return self.get_state()
+
+    def reroute_if_final_edge(self):
+        """Checks if an edge is the final edge. If it is return the route it
+        should start off at.
+        """
+        veh_ids =  self.k.vehicle.get_rl_ids()
+        for veh_id in veh_ids:
+            route = self.k.vehicle.get_route(veh_id)
+            edge = self.k.vehicle.get_edge(veh_id)
+            self.k.vehicle.get_position(veh_id)
+
+            pos=self.k.vehicle.get_position(veh_id)
+            length=self.k.network.edge_length(edge)
+
+            eta=length*0.01
+
+
+            # check if its on the final edge
+            if edge == route[-1] and pos+eta>=length:
+                type_id = self.k.vehicle.get_type(veh_id)
+                # remove the vehicle
+                self.k.vehicle.remove(veh_id)
+                # reintroduce it at the start of the network
+                self.k.vehicle.add(
+                    veh_id=veh_id,
+                    edge=route[0],
+                    type_id=str(type_id),
+                    lane="random",
+                    pos="0",
+                    speed="random")
 
     #############################
     #       REWARDS
