@@ -108,7 +108,7 @@ class Params:
 
     # training algorithms
     implemented_algs = ["MARWIL", "contrib/MADDPG", "PPO"]  # see journal, research section
-    training_alg = implemented_algs[1]
+    training_alg = implemented_algs[2]
 
     # learning rate
     learning_rate = 1e-4
