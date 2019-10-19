@@ -66,7 +66,7 @@ class Params:
     min_neighbors_distance = 50
 
     # the duration of one episode in steps.
-    horizon = 4000 if not debug else 10  # set to 1 for debug in order to start learning immediately
+    horizon = 1500 if not debug else 10  # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> super coop, 0-> selfish)
     coop_weight = 1
