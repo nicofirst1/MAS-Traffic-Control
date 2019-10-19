@@ -35,11 +35,8 @@ def get_edges(map_name, perc=1.0):
 
         return edges
 
-    if map_name == 'lust':
-        path = os.path.join(Params.MAP_DIRS_DICT["lust"], "scenario/lust.net.xml")
-        edges = import_edges_from_path(path)
 
-    elif map_name == 'rome':
+    if map_name == 'rome':
         path = os.path.join(Params.MAP_DIRS_DICT["rome"], "rome.net.xml")
         edges = import_edges_from_path(path)
 
