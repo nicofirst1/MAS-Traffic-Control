@@ -109,7 +109,7 @@ human_inflow = dict(
 )
 
 # adding human inflows
-#inflow_random_edges(inflow, **human_inflow)
+inflow_random_edges(inflow, **human_inflow)
 
 #######################
 #  NETWORK
