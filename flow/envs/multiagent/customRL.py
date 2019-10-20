@@ -296,7 +296,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
             pos=self.k.vehicle.get_position(veh_id)
             length=self.k.network.edge_length(edge)
 
-            eta=length*0.01
+            eta=length*0.1
 
 
             # check if its on the final edge
