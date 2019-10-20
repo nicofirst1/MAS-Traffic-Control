@@ -42,7 +42,7 @@ class Params:
     # 2 : same as 1 + verbose ray level 2
     # 3 : same as 2 + print at each time step
     # 4 : same as 3 + verbose for sumo
-    verbose = 2
+    verbose = 1
 
     # get max number of cpu available
     n_cpus = multiprocessing.cpu_count() if not debug else 1  # avoiding error 6
