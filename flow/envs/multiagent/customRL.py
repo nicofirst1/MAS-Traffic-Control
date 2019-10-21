@@ -116,7 +116,10 @@ class CustoMultiRL(MultiAgentEnv, Env):
                     routing_actions.append(route_contr.choose_route(self))
             self.k.vehicle.choose_routes(routing_ids, routing_actions)
 
-            self.reroute_if_final_edge()
+
+            if Params.training_alg==Params.implemented_algs[1]:
+                # if the training alg is MADDPG reroute exiting vehicles
+                self.reroute_if_final_edge()
 
             self.apply_rl_actions(rl_actions)
 
