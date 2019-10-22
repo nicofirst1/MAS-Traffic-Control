@@ -145,7 +145,7 @@ class Params:
     lane_length=100
 
     # number of humans in the initial config
-    human_vehicle_num = 500
+    human_vehicle_num = 300
 
     # number of selfish/coop rl agents in the initial conf
     selfish_rl_vehicle_num = 60 if not debug else 3
