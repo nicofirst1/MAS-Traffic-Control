@@ -17,8 +17,7 @@ from flow.core.params import EnvParams, InitialConfig, CustomVehicleParams
 from flow.core.params import NetParams
 from flow.core.params import SumoParams
 from flow.envs.multiagent.customRL import ADDITIONAL_ENV_PARAMS, CustoMultiRL
-from flow.networks import CustomGrid
-from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
+from flow.networks.custom_grid import CustomGrid, ADDITIONAL_NET_PARAMS
 from flow.utils.registry import make_create_env
 
 try:
@@ -101,12 +100,27 @@ initial_config = InitialConfig(
 
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
 
+# Estimating min length for lanes
+# getting total number of veh
+min_length=Params.num_agents+Params.human_vehicle_num
+# split in 4 (top, bottom, right, left)
+min_length//=4
+# get the maximum between row and cols, split per number
+min_length//=max(Params.cols,Params.rows)
+# add one (because of int split)
+min_length+=1
+# multiply per distance gap
+min_length*=Params.dx
+
+
 additional_net_params["grid_array"]=dict(
-    row_num=3,
-    col_num=3,
-    inner_length=500,
-    short_length=500,
-    long_length=500,
+    row_num=Params.rows,
+    col_num=Params.cols,
+    inner_length=min_length+Params.lane_length,
+    short_length=min_length+Params.lane_length,
+    long_length=min_length+Params.lane_length,
+
+    # vehicles are add on top
     cars_top=0,
     cars_bot=0,
     cars_left=0,
