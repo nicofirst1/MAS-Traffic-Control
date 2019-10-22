@@ -227,7 +227,7 @@ def log(msg, color="white"):
     logger.info(msg)
 
 
-def dict_print(dicts, title, indent=4):
+def dict_print(dict_, title, indent=4):
     """
     Print list of dictionaries
     :param dicts: list of dicts
@@ -237,9 +237,8 @@ def dict_print(dicts, title, indent=4):
     """
     msg = print_title(title + " START")
 
-    for d in dicts:
-        # make it printable
-        msg += json.dumps(d, indent=indent) + "\n"
+    dict_={k:float(v) for k,v in dict_.items()}
+    msg += json.dumps(dict_, indent=indent) + "\n"
 
     msg += print_title(title + " END")
 
