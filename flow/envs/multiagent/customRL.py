@@ -302,6 +302,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
 
             # check if its on the final edge
             if edge == route[-1] and pos+eta>=length:
+                print(f"Rerouting agent {veh_id}")
                 type_id = self.k.vehicle.get_type(veh_id)
                 # remove the vehicle
                 self.k.vehicle.remove(veh_id)
