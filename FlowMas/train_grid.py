@@ -79,11 +79,11 @@ env_params = EnvParams(additional_params=additional_env_params, horizon=Params.h
 
 # the simulation parameters
 sim_params = SumoParams(
-    render=True,
+    render=False,
     show_radius=True,  # show a circle on top of RL agents
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
     emission_path=Params.emission_path_dir,
-    restart_instance=False,
+    restart_instance=True,
     # port=8873,
 )
 
@@ -91,7 +91,7 @@ sim_params = SumoParams(
 initial_config = InitialConfig(
     shuffle=True,
     spacing="custom",
-    perturbation=1,  # todo: put in param
+    perturbation=1,
 )
 
 
