@@ -29,6 +29,11 @@
 
 ### Network : completed
 
+Using grid map from
+[flow tutorial](https://github.com/flow-project/flow/blob/master/tutorials/tutorial10_traffic_lights.ipynb).
+
+#### Failed attempt with OSM maps
+
 We can either import map with [OpenStreetMap](https://github.com/flow-project/flow/blob/master/tutorials/tutorial06_osm.ipynb)
 or create a custom one with [Scenario](https://github.com/flow-project/flow/blob/master/tutorials/tutorial05_scenarios.ipynb).
  
@@ -38,7 +43,7 @@ or create a custom one with [Scenario](https://github.com/flow-project/flow/blob
 - Set inflows from random starting edges in the OSM network [X]
 - Add GroningenOSM to the map_utils [x]
 
-#### Premade netwroks
+#### Premade network
 We can import a pre-made network as in [tutorial 4](../FlowMas/Tutorials/4.5_ImportedScenario.py), here's a list:
 - [Monaco](https://github.com/lcodeca/MoSTScenario)
 - [Lust](https://github.com/lcodeca/LuSTScenario)

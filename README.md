@@ -39,7 +39,7 @@ Once you are done you can run the first Tutorial with:
 
 For training you can use 
 
-`python FlowMas/simulation.py {args}`
+`python FlowMas/train.py {args}`
 
 The training results will be saved in the [ray_result dir](FlowMas/data/ray_results). 
 
@@ -89,7 +89,11 @@ There repository is currently structured as follows:
     - [maps](FlowMas/maps): a dir containing custom maps, you can follow the [readme](FlowMas/maps/README.md) for further information.
     - [Tutorials](FlowMas/Tutorials): which has an incrementing number of tutorials each being a step forward in the final implementation of the project. You can check the [tutorial readme](FlowMas/Tutorials/README.md) for more infos.
     - [utils](FlowMas/utils): contains utility scripts
-    - [simulation.py](FlowMas/simulation.py): which is the main file for training and evaluating the RL agents
+    - [train.py](Flowmas/train.py): main script for training the environment.
+  -   [train_osm.py](Flowmas/train_osm.py): Failed attempt to work with
+      [OSM maps]((https://github.com/flow-project/flow/blob/master/tutorials/tutorial06_osm.ipynb)). If
+      you're intrested in solving this problem please see
+      [this](https://github.com/flow-project/flow/issues/755).
 - [MarkDown](MarkDown): a directory for useful markdowns:
     - The [Error](MarkDown/Errors.md) markdown file contains common errors encountered during the project development.
     - The [Journal](MarkDown/Journal.md) markdown file has both an _useful_link_ section as well as a _todo_ section in which the project'steps are enumerated.
