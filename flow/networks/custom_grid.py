@@ -36,8 +36,8 @@ ADDITIONAL_NET_PARAMS = {
     # speed limit for all edges, may be represented as a float value, or a
     # dictionary with separate values for vertical and horizontal lanes
     "speed_limit": {
-        "horizontal": 35,
-        "vertical": 35
+        "horizontal": 50,
+        "vertical": 50
     }
 }
 
