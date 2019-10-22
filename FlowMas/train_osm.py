@@ -12,12 +12,13 @@ from FlowMas.utils.maps_utils import inflow_random_edges
 from FlowMas.utils.parameters import Params
 from FlowMas.utils.train_utils import get_default_config
 from flow.controllers import IDMController, RLController
-from flow.controllers.routing_controllers import GridRouter
+from flow.controllers.routing_controllers import MinicityRouter
 from flow.core.params import EnvParams, InitialConfig, CustomVehicleParams
 from flow.core.params import NetParams
 from flow.core.params import SumoParams
 from flow.envs.multiagent.customRL import ADDITIONAL_ENV_PARAMS, CustoMultiRL
-from flow.networks.custom_grid import CustomGrid, ADDITIONAL_NET_PARAMS
+from flow.networks import OSMap
+from flow.networks.traffic_light_grid import ADDITIONAL_NET_PARAMS
 from flow.utils.registry import make_create_env
 
 try:
@@ -38,7 +39,7 @@ vehicles = CustomVehicleParams()
 # add human drivers with premade controllers/routers
 vehicles.add("human",
              acceleration_controller=(IDMController, {}),
-             routing_controller=(GridRouter, {}),
+             routing_controller=(MinicityRouter, {}),
              num_vehicles=Params.human_vehicle_num)
 
 # add RL agents with premade controller
@@ -46,7 +47,7 @@ vehicles.add("human",
 vehicles.add(
     "RL_coop",
     acceleration_controller=(RLController, {}),
-    routing_controller=(GridRouter, {}),
+    routing_controller=(MinicityRouter, {}),
     num_vehicles=Params.coop_rl_vehicle_num,
     cooperative_weight=Params.coop_weight
 )
@@ -55,7 +56,7 @@ vehicles.add(
 vehicles.add(
     "RL_selfish",
     acceleration_controller=(RLController, {}),
-    routing_controller=(GridRouter, {}),
+    routing_controller=(MinicityRouter, {}),
     num_vehicles=Params.selfish_rl_vehicle_num,
     cooperative_weight=0
 )
@@ -89,54 +90,32 @@ sim_params = SumoParams(
 # setting initial configuration files
 initial_config = InitialConfig(
     shuffle=True,
-    spacing="custom",
-    perturbation=1,
+    perturbation=50.0,  # todo: put in param
 )
 
+#######################
+#       INFLOW
+########################
+
+# Adding inflows
+inflow = InFlows()
+
+human_inflow = dict(
+    veh_type="human",
+    probability=Params.inflow_prob_human,
+    depart_lane="random",
+    depart_speed="random",
+    begin=5,  # time in seconds to start the inflow
+)
+
+# adding human inflows
+inflow_random_edges(inflow, **human_inflow)
 
 #######################
 #  NETWORK
 ########################
 
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
-
-# Estimating min length for lanes
-# getting total number of veh
-min_length=Params.num_agents+Params.human_vehicle_num
-# split in 4 (top, bottom, right, left)
-min_length//=4
-# get the maximum between row and cols, split per number
-min_length//=max(Params.cols,Params.rows)
-# add one (because of int split)
-min_length+=1
-# multiply per distance gap
-min_length*=Params.dx
-
-
-additional_net_params["grid_array"]=dict(
-    row_num=Params.rows,
-    col_num=Params.cols,
-    inner_length=min_length+Params.lane_length,
-    short_length=min_length+Params.lane_length,
-    long_length=min_length+Params.lane_length,
-
-    # vehicles are add on top
-    cars_top=0,
-    cars_bot=0,
-    cars_left=0,
-    cars_right=0,
-)
-
-# defining inflow parameters, see later
-additional_net_params["merge_lanes"] = 1
-additional_net_params["horizontal_lanes"] = 1 #todo: increase if control on lane switch
-additional_net_params["highway_lanes"] = 1
-additional_net_params["pre_merge_length"] = 500
-additional_net_params["post_merge_length"] = 100
-additional_net_params["merge_length"] = 200
-
-
-additional_net_params["traffic_lights"]=False
 
 if Params.verbose >= 4:
     additional_net_params['sumo_warnings'] = True
@@ -146,6 +125,8 @@ else:
 # specify net params
 net_params = NetParams(
     additional_params=additional_net_params,
+    inflows=inflow,
+    osm_path=Params.MAP_DIRS_DICT[Params.map] + "/osm_bbox.osm.xml"
 
 )
 
@@ -164,7 +145,7 @@ params = dict(
     env_name="CustoMultiRL",
 
     # name of the network class the experiment is running on
-    network="CustomGrid",
+    network="OSMap",
 
     # inflow for network
     vehicles=vehicles,
@@ -198,11 +179,11 @@ params = dict(
 # define new trainable enviroment
 create_env, gym_name = make_create_env(params=params, version=0)
 
-env = CustoMultiRL(env_params, sim_params, CustomGrid(
+env = CustoMultiRL(env_params, sim_params, OSMap(
     Params.map,
     vehicles,
     net_params,
-    initial_config=initial_config,
+    initial_config=InitialConfig(),
 )
                    )
 
