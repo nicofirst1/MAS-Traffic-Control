@@ -42,7 +42,7 @@ class Params:
     # 2 : same as 1 + verbose ray level 2
     # 3 : same as 2 + print at each time step
     # 4 : same as 3 + verbose for sumo
-    verbose = 2
+    verbose = 1
 
     # get max number of cpu available
     n_cpus = multiprocessing.cpu_count() if not debug else 1  # avoiding error 6
@@ -94,10 +94,10 @@ class Params:
     ##############
     # size for learning batch, note that this value will be divided by the number of workers so to have at most
     # 'sample_batch_size' for the entire training
-    sample_batch_size=100 if not debug else 10
-    train_batch_size= 512 if not debug else 20
+    sample_batch_size=512 if not debug else 10
+    train_batch_size= 1024 if not debug else 20
     # number of episode after which the training start, and repeats itself
-    learning_starts = train_batch_size if not debug else 2
+    learning_starts = train_batch_size
 
     # number of iterations for training
     training_iteration = 600 if not debug else 100
