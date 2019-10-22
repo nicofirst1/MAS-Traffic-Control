@@ -42,7 +42,7 @@ class Params:
     # 2 : same as 1 + verbose ray level 2
     # 3 : same as 2 + print at each time step
     # 4 : same as 3 + verbose for sumo
-    verbose = 1
+    verbose = 2
 
     # get max number of cpu available
     n_cpus = multiprocessing.cpu_count() if not debug else 1  # avoiding error 6
@@ -133,8 +133,8 @@ class Params:
     human_vehicle_num = 100
 
     # number of selfish/coop rl agents in the initial conf
-    selfish_rl_vehicle_num = 60 if not debug else 3
-    coop_rl_vehicle_num = 120 if not debug else 6
+    selfish_rl_vehicle_num = 30 if not debug else 3
+    coop_rl_vehicle_num = 60  if not debug else 6
     num_agents = coop_rl_vehicle_num + selfish_rl_vehicle_num
 
     # INFLOW PARAMS
