@@ -108,7 +108,7 @@ class Params:
 
     # training algorithms
     implemented_algs = ["MARWIL", "contrib/MADDPG", "PPO"]  # see journal, research section
-    training_alg = implemented_algs[2]
+    training_alg = implemented_algs[1]
 
     # learning rate
     learning_rate = 1e-4
@@ -130,11 +130,11 @@ class Params:
     map = "groningen"
 
     # number of humans in the initial config
-    human_vehicle_num = 100
+    human_vehicle_num = 500
 
     # number of selfish/coop rl agents in the initial conf
-    selfish_rl_vehicle_num = 30 if not debug else 3
-    coop_rl_vehicle_num = 60  if not debug else 6
+    selfish_rl_vehicle_num = 60 if not debug else 3
+    coop_rl_vehicle_num = 120  if not debug else 6
     num_agents = coop_rl_vehicle_num + selfish_rl_vehicle_num
 
     # INFLOW PARAMS
