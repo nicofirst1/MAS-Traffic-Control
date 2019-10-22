@@ -3,7 +3,7 @@
 import random
 import sys
 import traceback
-from copy import deepcopy
+from copy import deepcopy, copy
 
 import numpy as np
 import termcolor
@@ -45,6 +45,8 @@ class CustoMultiRL(MultiAgentEnv, Env):
             high=self.env_params.additional_params['max_accel'],
             shape=(1,),  # (4,),
             dtype=np.float32)
+
+        self.reroutes=0
 
     #############################
     #       UPDATE
@@ -179,6 +181,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
         """
         # reset the time counter
         self.time_counter = 0
+        self.reroutes=0
 
         # warn about not using restart_instance when using inflows
         if len(self.net_params.inflows.get()) > 0 and \
@@ -288,36 +291,56 @@ class CustoMultiRL(MultiAgentEnv, Env):
         """Checks if an edge is the final edge. If it is return the route it
         should start off at.
         """
-        veh_ids =  self.k.vehicle.get_rl_ids()
+        veh_ids = copy( self.k.vehicle.get_ids())
         for veh_id in veh_ids:
             route = self.k.vehicle.get_route(veh_id)
             edge = self.k.vehicle.get_edge(veh_id)
             self.k.vehicle.get_position(veh_id)
+            type_id = self.k.vehicle.get_type(veh_id)
 
             pos=self.k.vehicle.get_position(veh_id)
             length=self.k.network.edge_length(edge)
 
             eta=length*0.1
 
-
             # check if its on the final edge
             if edge == route[-1] and pos+eta>=length:
-                print(f"Rerouting agent {veh_id}")
-                type_id = self.k.vehicle.get_type(veh_id)
-                # remove the vehicle
-                self.k.vehicle.remove(veh_id)
-                # reintroduce it at the start of the network
-                self.k.vehicle.add(
-                    veh_id=veh_id,
-                    edge=route[0],
-                    type_id=str(type_id),
-                    lane="random",
-                    pos="0",
-                    speed="random")
 
-    #############################
-    #       REWARDS
-    #############################
+                if "human" in type_id :
+                    # remove the vehicle
+                    self.k.vehicle.remove(veh_id)
+                    # reintroduce it at the start of the network
+                    self.k.vehicle.add(
+                        veh_id=veh_id,
+                        edge=route[0],
+                        type_id=str(type_id),
+                        lane="random",
+                        pos="0",
+                        speed=0,
+                    )
+                else:
+
+                    sumo_obs=self.k.vehicle.get_sumo_observation(veh_id)
+                    self.k.vehicle.remove(veh_id)
+
+                    self.k.vehicle.add_rl(
+                        veh_id=veh_id,
+                        edge=route[0],
+                        type_id=str(type_id),
+                        lane="random",
+                        pos="0",
+                        speed=0,
+                        sumo_obs=sumo_obs,
+                    )
+
+                    self.reroutes += 1
+                    print(f"Rerouting agent {veh_id}")
+
+                    if self.reroutes==len(self.k.vehicle.get_rl_ids()):
+                        print("ALL RL AGENTS HAVE BEEN REROUTED")
+                        self.reroutes=0
+
+
 
     def compute_reward(self, rl_actions, **kwargs):
         """Reward function for the RL agent(s).
