@@ -34,6 +34,20 @@ Using grid map from
 
 #### Failed attempt with OSM maps
 
+Unfortunately OSM maps do not work for their inability to programmatically generate routes, which are then
+use for checking if an agent has exited the map or not. This leads to the disappearing of agents during one
+episode, thus having an array of samples with different lengths for every agent
+([see this](https://github.com/ray-project/ray/issues/5913)). 
+
+A workaround was introduced [here](https://github.com/flow-project/flow/issues/755) but for that one step in
+which an agent is deleted and reintroduced in the map, an observation is missing. This leads to the same
+error from before. 
+
+A possible solution could be to fill holes in the observation array by adding a fake observation, but I
+don't know how this will influence the training.
+
+##### Previous network todo
+
 We can either import map with [OpenStreetMap](https://github.com/flow-project/flow/blob/master/tutorials/tutorial06_osm.ipynb)
 or create a custom one with [Scenario](https://github.com/flow-project/flow/blob/master/tutorials/tutorial05_scenarios.ipynb).
  
@@ -50,10 +64,7 @@ We can import a pre-made network as in [tutorial 4](../FlowMas/Tutorials/4.5_Imp
 
 This approach has been discarded since there is no easy way to remove traffic lights (network geometry) form this imported scenarios. Using OSM instead.
 
-#### Router
-We could use a custom router to choose random direction in the grid.
 
-- Create a router which is like MinicityRouter but makes car exit the map more often []
 
 
 
@@ -74,7 +85,7 @@ Action space is used to tell the Agent it what can/cannot do. Notice that decele
 - __Deceleration__: using comfortable deceleration rate at 3.5 m/s^2 as stated [here](http://ijtte.com/uploads/2012-10-01/5ebd8343-9b9c-b1d4IJTTE%20vol2%20no3%20(7).pdf)
 - __Acceleration__: using 10m/s^2 (ferrari acceleration rate), should look into this [wiki link](https://en.wikipedia.org/wiki/G-force#Horizontal) which states that comfortable acceleration for 10 seconds is 20g (200m/s^2) and 10g for 1 minute
 - __Lane_changing__: todo
-- __Message__: check what happens when AA are able to send a float (0-1) to neighbors cars
+- __Message__: todo, check what happens when AA are able to send a float (0-1) to neighbors cars 
 
 #### Observable space
 Define what cars know about each other (turning direction), if you go by neighbors check out *getNeighbors* in the [TraCi documentation](https://sumo.dlr.de/pydoc/traci.html)
