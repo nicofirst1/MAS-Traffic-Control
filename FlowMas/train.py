@@ -246,7 +246,7 @@ pbt_scheduler = PopulationBasedTraining(
 # run the experiment
 trials = run(
     exp,
-    reuse_actors=False,
+    reuse_actors=True,
     verbose=Params.verbose,
     raise_on_failed_trial=True,  # avoid agent not known error
     return_trials=True,
