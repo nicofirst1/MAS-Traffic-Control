@@ -120,20 +120,10 @@ additional_net_params["grid_array"]=dict(
     short_length=min_length+Params.lane_length,
     long_length=min_length+Params.lane_length,
 
-    # vehicles are add on top
-    cars_top=0,
-    cars_bot=0,
-    cars_left=0,
-    cars_right=0,
 )
 
 # defining inflow parameters, see later
-additional_net_params["merge_lanes"] = 1
 additional_net_params["horizontal_lanes"] = 1 #todo: increase if control on lane switch
-additional_net_params["highway_lanes"] = 1
-additional_net_params["pre_merge_length"] = 500
-additional_net_params["post_merge_length"] = 100
-additional_net_params["merge_length"] = 200
 
 
 additional_net_params["traffic_lights"]=False
