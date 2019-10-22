@@ -68,7 +68,7 @@ class Params:
     # the duration of one episode in steps.
     horizon = 1500 if not debug else 100  # set to 1 for debug in order to start learning immediately
 
-    # the weight for cooperative agents (1-> super coop, 0-> selfish)
+    # the weight for cooperative agents (1-> fully coop, 0-> selfish)
     coop_weight = 1
 
     # baseline for reward
@@ -82,9 +82,6 @@ class Params:
 
     # number fo units for model
     num_units = 64
-
-    # Number of evaluation to perform
-    evaluation_interval = 4
 
     # frequency of checkpoint
     checkpoint_freq = 20
@@ -125,7 +122,6 @@ class Params:
     ##########################
     # Scenarios and Network
     ##########################
-
 
     # the map to be used
     map = "groningen"
