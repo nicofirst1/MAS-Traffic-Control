@@ -66,7 +66,7 @@ class Params:
     min_neighbors_distance = 50
 
     # the duration of one episode in steps.
-    horizon = 1500 if not debug else 10  # set to 1 for debug in order to start learning immediately
+    horizon = 1500 if not debug else 100  # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> super coop, 0-> selfish)
     coop_weight = 1
@@ -126,16 +126,9 @@ class Params:
     # Scenarios and Network
     ##########################
 
+
     # the map to be used
     map = "groningen"
-
-    # number of humans in the initial config
-    human_vehicle_num = 500
-
-    # number of selfish/coop rl agents in the initial conf
-    selfish_rl_vehicle_num = 60 if not debug else 3
-    coop_rl_vehicle_num = 120  if not debug else 6
-    num_agents = coop_rl_vehicle_num + selfish_rl_vehicle_num
 
     # INFLOW PARAMS
 
@@ -145,7 +138,23 @@ class Params:
     # probability to spawn a human
     inflow_prob_human = 0.001
 
+    # Number of cols and rows for grid network
+    cols=6
+    rows=6
 
+    # gap (in meters) for cars in initial starting position
+    dx=10
+
+    # additional length for lane in grid net
+    lane_length=100
+
+    # number of humans in the initial config
+    human_vehicle_num = 500
+
+    # number of selfish/coop rl agents in the initial conf
+    selfish_rl_vehicle_num = 60 if not debug else 3
+    coop_rl_vehicle_num = 120  if not debug else 6
+    num_agents = coop_rl_vehicle_num + selfish_rl_vehicle_num
 
 
 
