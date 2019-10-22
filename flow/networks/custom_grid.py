@@ -146,10 +146,6 @@ class CustomGrid(Network):
         self.cars_heading_left = self.grid_array["cars_left"]
         self.cars_heading_right = self.grid_array["cars_right"]
 
-        # specifies whether or not there will be traffic lights at the
-        # intersections (True by default)
-        self.use_traffic_lights = net_params.additional_params.get(
-            "traffic_lights", False)
 
         # radius of the inner nodes (ie of the intersections)
         self.inner_nodes_radius = 2.9 + 3.3 * max(self.vertical_lanes,
@@ -237,7 +233,7 @@ class CustomGrid(Network):
         list <dict>
             List of inner nodes
         """
-        node_type = "traffic_light" if self.use_traffic_lights else "priority"
+        node_type =  "priority"
 
         nodes = []
         for row in range(self.row_num):
