@@ -118,10 +118,7 @@ class CustomGrid(Network):
             if p not in net_params.additional_params and p not in optional:
                 raise KeyError('Network parameter "{}" not supplied'.format(p))
 
-        for p in ADDITIONAL_NET_PARAMS["grid_array"].keys():
-            if p not in net_params.additional_params["grid_array"]:
-                raise KeyError(
-                    'Grid array parameter "{}" not supplied'.format(p))
+
 
         # retrieve all additional parameters
         # refer to the ADDITIONAL_NET_PARAMS dict for more documentation
@@ -141,10 +138,13 @@ class CustomGrid(Network):
         self.inner_length = self.grid_array["inner_length"]
         self.short_length = self.grid_array["short_length"]
         self.long_length = self.grid_array["long_length"]
-        self.cars_heading_top = self.grid_array["cars_top"]
-        self.cars_heading_bot = self.grid_array["cars_bot"]
-        self.cars_heading_left = self.grid_array["cars_left"]
-        self.cars_heading_right = self.grid_array["cars_right"]
+
+        default_grid=ADDITIONAL_NET_PARAMS["grid_array"]
+
+        self.cars_heading_top = default_grid["cars_top"]
+        self.cars_heading_bot = default_grid["cars_bot"]
+        self.cars_heading_left = default_grid["cars_left"]
+        self.cars_heading_right = default_grid["cars_right"]
 
 
         # radius of the inner nodes (ie of the intersections)
