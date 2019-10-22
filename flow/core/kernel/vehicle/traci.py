@@ -1052,6 +1052,37 @@ class TraCIVehicle(KernelVehicle):
             departPos=str(pos),
             departSpeed=str(speed))
 
+    def add_rl(self, veh_id, type_id, edge, pos, lane, speed,sumo_obs):
+
+        """See parent class."""
+        if veh_id in self.master_kernel.network.rts:
+            # If the vehicle has its own route, use that route. This is used in
+            # the case of network templates.
+            route_id = 'route{}_0'.format(veh_id)
+        else:
+            num_routes = len(self.master_kernel.network.rts[edge])
+            frac = [val[1] for val in self.master_kernel.network.rts[edge]]
+            route_id = 'route{}_{}'.format(edge, np.random.choice(
+                [i for i in range(num_routes)], size=1, p=frac)[0])
+
+        self.kernel_api.vehicle.addFull(
+            veh_id,
+            route_id,
+            typeID=str(type_id),
+            departLane=str(lane),
+            departPos=str(pos),
+            departSpeed=str(speed))
+
+        self._add_departed(veh_id, type_id)
+        self.set_sumo_observation(veh_id,sumo_obs)
+
+
+
+        # modify the number of vehicles and RL vehicles
+        self.num_vehicles = len(self.get_ids())
+        self.num_rl_vehicles = len(self.get_rl_ids())
+
+
     def get_max_speed(self, veh_id, error=-1001):
         """See parent class."""
         if isinstance(veh_id, (list, np.ndarray)):
@@ -1073,7 +1104,7 @@ class TraCIVehicle(KernelVehicle):
 
         def point_dist(pt1, pt2):
             """
-            Return the distance betwen two points
+            Return the distance between two points
 
             :param pt1: (tuple) Point 1 : (x,y)
             :param pt2: (tuple) Point 2 : (x,y)
@@ -1160,3 +1191,22 @@ class TraCIVehicle(KernelVehicle):
 
         return vel
 
+    def get_sumo_observation(self,veh_id):
+        """
+        Get sumo observation for specific vehicle, return Non if there is no such observation for given vehicle
+        :param veh_id: vehicle id
+        :return: list
+        """
+        try:
+            return self.__sumo_obs[veh_id]
+        except KeyError:
+            return []
+
+    def set_sumo_observation(self,veh_id, obs):
+        """
+        Set sumo observation for specific vehicle id
+        :param veh_id: string, vehicle id
+        :param obs: list, list of observation
+        :return: None
+        """
+        self.__sumo_obs[veh_id]=obs
