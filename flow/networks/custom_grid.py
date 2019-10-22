@@ -4,6 +4,7 @@ from flow.networks.base import Network
 from flow.core.params import InitialConfig
 from flow.core.params import TrafficLightParams
 from collections import defaultdict
+from FlowMas.utils.parameters import Params
 import numpy as np
 
 ADDITIONAL_NET_PARAMS = {
@@ -557,7 +558,7 @@ class CustomGrid(Network):
         start_pos = []
 
         x0 = 6  # position of the first car
-        dx = 10  # distance between each car
+        dx = Params.dx  # distance between each car
 
         start_lanes = []
         for i in range(col_num):
