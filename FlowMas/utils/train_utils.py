@@ -294,6 +294,7 @@ def ppo_config(config):
     config["kl_target"] = 0.02  # target KL divergence
     config["num_sgd_iter"] = 10  # number of SGD iterations
     config["batch_mode"] = "truncate_episodes"
+    config["vf_clip_param"]=Params.num_agents*Params.baseline*100
 
     return config
 
