@@ -392,17 +392,8 @@ def on_train_result(info):
 
     result = info["result"]
 
-    policy_reward_mean = dict(all=[])
-    for ag, jrk in result["policy_reward_mean"].items():
-        ag = ag.rsplit('_', 1)[0]
+    policy_reward_mean = {k:v for k,v in result["custom_metrics"].items() if "Reward" in k and "mean" in k }
 
-        if ag not in policy_reward_mean.keys():
-            policy_reward_mean[ag] = []
-
-        policy_reward_mean[ag].append(jrk)
-        policy_reward_mean["all"].append(jrk)
-
-    policy_reward_mean = {k: np.mean(v) for k, v in policy_reward_mean.items()}
 
     table = dict(
 
