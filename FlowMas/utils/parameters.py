@@ -66,7 +66,7 @@ class Params:
     min_neighbors_distance = 50
 
     # the duration of one episode in steps.
-    horizon = 1500 if not debug else 100  # set to 1 for debug in order to start learning immediately
+    horizon = 500 if not debug else 100  # set to 1 for debug in order to start learning immediately
 
     # the weight for cooperative agents (1-> fully coop, 0-> selfish)
     coop_weight = 1
@@ -84,7 +84,7 @@ class Params:
     num_units = 64
 
     # frequency of checkpoint
-    checkpoint_freq = 20
+    checkpoint_freq = 5
 
     evaluation_num_episodes=10 if not debug else 2
 
@@ -94,8 +94,9 @@ class Params:
     ##############
     # size for learning batch, note that this value will be divided by the number of workers so to have at most
     # 'sample_batch_size' for the entire training
-    sample_batch_size=512 if not debug else 10
-    train_batch_size= 1024 if not debug else 20
+    train_batch_size= horizon//2
+    sample_batch_size=train_batch_size//2
+
     # number of episode after which the training start, and repeats itself
     learning_starts = train_batch_size
 
@@ -135,24 +136,22 @@ class Params:
     inflow_prob_human = 0.001
 
     # Number of cols and rows for grid network
-    cols=6
-    rows=6
+    cols=5
+    rows=5
 
     # gap (in meters) for cars in initial starting position
     dx=10
-
-    # additional length for lane in grid net
-    lane_length=100
 
     # number of humans in the initial config
     human_vehicle_num = 300
 
     # number of selfish/coop rl agents in the initial conf
-    selfish_rl_vehicle_num = 60 if not debug else 3
-    coop_rl_vehicle_num = 120  if not debug else 6
+    selfish_rl_vehicle_num = 20 if not debug else 4
+    coop_rl_vehicle_num = 40  if not debug else 8
     num_agents = coop_rl_vehicle_num + selfish_rl_vehicle_num
 
-
+    # Time for a simulation step
+    sim_step=0.1
 
     ##########################
     #    METHODS
