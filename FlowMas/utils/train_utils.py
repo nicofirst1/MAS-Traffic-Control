@@ -284,13 +284,16 @@ def ppo_config(config):
 
     """
 
+    config["sample_batch_size"]=Params.sample_batch_size//Params.n_workers
+    config["train_batch_size"]=Params.train_batch_size//Params.n_workers
+
+
     config["use_gae"] = True  # using generalized advantage estimation
     config["lambda"] = 0.97
-    config["sample_batch_size"] = 200
-    config["sgd_minibatch_size"] = min(16 * 1024, config["train_batch_size"])  # stochastic gradient descent
+    config["sgd_minibatch_size"] =Params.train_batch_size//Params.n_workers  # stochastic gradient descent
     config["kl_target"] = 0.02  # target KL divergence
     config["num_sgd_iter"] = 10  # number of SGD iterations
-    config["batch_mode"] = "complete_episodes"
+    config["batch_mode"] = "truncate_episodes"
 
     return config
 

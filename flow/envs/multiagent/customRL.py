@@ -291,7 +291,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
         """Checks if an edge is the final edge. If it is return the route it
         should start off at.
         """
-        veh_ids = copy( self.k.vehicle.get_ids())
+        veh_ids = deepcopy(self.k.vehicle.get_ids())
         for veh_id in veh_ids:
             route = self.k.vehicle.get_route(veh_id)
             edge = self.k.vehicle.get_edge(veh_id)
@@ -304,7 +304,7 @@ class CustoMultiRL(MultiAgentEnv, Env):
             eta=length*0.1
 
             # check if its on the final edge
-            if edge == route[-1] and pos+eta>=length:
+            if edge == route[-1] and pos+eta>=length or edge=='':
 
                 if "human" in type_id :
                     # remove the vehicle
@@ -320,25 +320,25 @@ class CustoMultiRL(MultiAgentEnv, Env):
                     )
                 else:
 
-                    sumo_obs=self.k.vehicle.get_sumo_observation(veh_id)
-                    self.k.vehicle.remove(veh_id)
-
-                    self.k.vehicle.add_rl(
-                        veh_id=veh_id,
-                        edge=route[0],
-                        type_id=str(type_id),
-                        lane="random",
-                        pos="0",
-                        speed=0,
-                        sumo_obs=sumo_obs,
-                    )
-
+                    raise KeyError(f"Rerouting agent {veh_id}")
                     self.reroutes += 1
-                    print(f"Rerouting agent {veh_id}")
+                    msg=termcolor.colored(f"Rerouting agent {veh_id}",color="cyan")
+                    print(msg)
 
                     if self.reroutes==len(self.k.vehicle.get_rl_ids()):
                         print("ALL RL AGENTS HAVE BEEN REROUTED")
                         self.reroutes=0
+
+                    sumo_obs=self.k.vehicle.get_sumo_observation(veh_id)
+                    self.k.vehicle.remove(veh_id)
+                    self.k.vehicle.add_rl(
+                        veh_id=veh_id,
+                        edge=route[0],
+                        pos="0",
+
+                        type_id=str(type_id),
+                        sumo_obs=sumo_obs,
+                    )
 
 
 

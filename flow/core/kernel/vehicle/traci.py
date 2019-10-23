@@ -1052,7 +1052,7 @@ class TraCIVehicle(KernelVehicle):
             departPos=str(pos),
             departSpeed=str(speed))
 
-    def add_rl(self, veh_id, type_id, edge, pos, lane, speed,sumo_obs):
+    def add_rl(self, veh_id, type_id, edge, pos,sumo_obs):
 
         """See parent class."""
         if veh_id in self.master_kernel.network.rts:
@@ -1069,12 +1069,11 @@ class TraCIVehicle(KernelVehicle):
             veh_id,
             route_id,
             typeID=str(type_id),
-            departLane=str(lane),
+            departLane="random",
             departPos=str(pos),
-            departSpeed=str(speed))
+            departSpeed=str(0))
 
         self._add_departed(veh_id, type_id)
-        self.set_sumo_observation(veh_id,sumo_obs)
 
 
 

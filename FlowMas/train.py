@@ -83,6 +83,8 @@ sim_params = SumoParams(
     overtake_right=True,  # overtake on right to simulate more aggressive behavior
     emission_path=Params.emission_path_dir,
     restart_instance=True,
+    sim_step=Params.sim_step,
+
     # port=8873,
 )
 
@@ -112,13 +114,16 @@ min_length+=1
 # multiply per distance gap
 min_length*=Params.dx
 
+max_speed=max(additional_net_params["speed_limit"]["vertical"],additional_net_params["speed_limit"]["horizontal"])
+max_possible_distance=max_speed*Params.horizon*Params.sim_step-min_length
+
 
 additional_net_params["grid_array"]=dict(
     row_num=Params.rows,
     col_num=Params.cols,
-    inner_length=min_length+Params.lane_length,
-    short_length=min_length+Params.lane_length,
-    long_length=min_length+Params.lane_length,
+    inner_length=200,
+    short_length=min_length+max_possible_distance,
+    long_length=min_length+max_possible_distance,
 
 )
 
