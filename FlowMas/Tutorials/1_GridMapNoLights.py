@@ -30,9 +30,11 @@ vehicles.add("human",
 
 # Setting grid measures
 additional_net_params = deepcopy(ADDITIONAL_NET_PARAMS)
-additional_net_params['grid_array']['inner_length'] = 500
-additional_net_params['grid_array']['long_length'] = 500
-additional_net_params['grid_array']['short_length'] = 500
+additional_net_params['grid_array']['col_num'] = 10
+additional_net_params['grid_array']['row_num'] = 10
+additional_net_params['grid_array']['inner_length'] = 200
+additional_net_params['grid_array']['long_length'] = 1000
+additional_net_params['grid_array']['short_length'] = 1000
 additional_net_params['traffic_lights'] = False
 
 # standard stuff, check it out in the tutorial
