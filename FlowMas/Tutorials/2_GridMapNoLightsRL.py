@@ -106,8 +106,8 @@ params = dict(
     # sumo-related parameters (see flow.core.params.SumoParams)
     sim=SumoParams(
         sim_step=0.2,
-        render=False,  # no renderer will be displayed for training, this is for speed up
-        restart_instance=True,
+        render=True,  # no renderer will be displayed for training, this is for speed up
+        restart_instance=False,
         emission_path=Params.DATA_DIR,
     ),
 
