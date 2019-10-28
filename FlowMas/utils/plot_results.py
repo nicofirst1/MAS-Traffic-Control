@@ -3,6 +3,23 @@ import os
 import json
 import matplotlib.pyplot as plt
 import collections
+import argparse
+from tqdm import tqdm
+
+parser = argparse.ArgumentParser(description='Plot results from different trainings. You should use as input a folder in which multiple dirs store "result.json" and "parameter_attributes.json"')
+parser.add_argument('-input_dir', type=str, required=True,
+                    help='The direcotry in which the training folders are stored')
+parser.add_argument('--out_dir',type=str,default="out/",
+                    help='Output dir to which save images')
+
+args = parser.parse_args()
+
+
+input_dir=args.input_dir
+out_dir=os.path.join(input_dir, args.out_dir)
+
+if not os.path.exists(out_dir):
+    os.mkdir(out_dir)
 
 def flatten(d, parent_key='', sep='/'):
     items = []
@@ -14,12 +31,11 @@ def flatten(d, parent_key='', sep='/'):
             items.append((new_key, v))
     return dict(items)
 
-res_dir="/Users/giulia/Desktop/results"
 
 res_dict={}
 
 # traverse root directory, and list directories as dirs and files as files
-for root, dirs, files in os.walk(res_dir):
+for root, dirs, files in os.walk(input_dir):
     if "result.json" in files:
         pt=os.path.join(root,"result.json")
         with open(pt,"r+") as f:
@@ -51,10 +67,12 @@ to_plot=[
 ]
 
 
-for field in to_plot:
+for field in tqdm(to_plot):
 
     for k,v in res_dict.items():
         # gca stands for 'get current axis'
+
+        plt.clf()
         ax = plt.gca()
 
         df=v["results"]
@@ -70,7 +88,13 @@ for field in to_plot:
         ax.set_title(k)
         ax.set_xlabel("generation")
         ax.set_ylabel(field)
-        plt.show()
+
+        if "/" in k:
+            key=k.split("/")[-1]
+        else:
+            key=k
+        pt=os.path.join(out_dir,f"{key}_{field}")
+        plt.savefig(pt)
 
 
 
