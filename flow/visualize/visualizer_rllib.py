@@ -13,15 +13,14 @@ parser : ArgumentParser
 """
 
 import argparse
+from datetime import datetime
+import gym
+import numpy as np
 import os
 import sys
 import time
-from datetime import datetime
 
-import gym
-import numpy as np
 import ray
-
 try:
     from ray.rllib.agents.agent import get_agent_class
 except ImportError:
@@ -33,6 +32,7 @@ from flow.utils.registry import make_create_env
 from flow.utils.rllib import get_flow_params
 from flow.utils.rllib import get_rllib_config
 from flow.utils.rllib import get_rllib_pkl
+
 
 EXAMPLE_USAGE = """
 example usage:
@@ -55,16 +55,12 @@ def visualizer_rllib(args):
         else args.result_dir[:-1]
 
     config = get_rllib_config(result_dir)
-    # TODO(ev) backwards compatibility hack
-    try:
-        pkl = get_rllib_pkl(result_dir)
-    except Exception:
-        pass
 
     # check if we have a multiagent environment but in a
     # backwards compatible way
-    if config.get('multiagent', {}).get('policy_graphs', {}):
+    if config.get('multiagent', {}).get('policies', None):
         multiagent = True
+        pkl = get_rllib_pkl(result_dir)
         config['multiagent'] = pkl['multiagent']
     else:
         multiagent = False
@@ -151,20 +147,13 @@ def visualizer_rllib(args):
         config['horizon'] = args.horizon
         env_params.horizon = args.horizon
 
-    # if the users wants the last checkpoint
     if args.checkpoint_num == '-1':
-        # get all the dirs in the dir
-        tmp = [elem for elem in os.listdir(result_dir)]
-        # keep the one that has checkpoint_ in them
-        tmp = [elem for elem in tmp if 'checkpoint_' in elem]
-        # remove the checkpoint_ string
-        tmp = [elem.replace('checkpoint_', '') for elem in tmp]
-        # convert to int
-        tmp = [int(elem) for elem in tmp]
-        # get the last one
-        args.checkpoint_num = str(sorted(tmp)[-1])
+        checks=os.listdir(args.result_dir)
+        checks = [elem for elem in checks if "check" in elem]
+        checks = [elem.split("_")[1] for elem in checks]
+        checks = [int(elem) for elem in checks]
+        args.checkpoint_num=str(max(checks))
 
-        del tmp
 
     # create the agent that will be used to compute the actions
     agent = agent_cls(env=env_name, config=config)
@@ -182,7 +171,7 @@ def visualizer_rllib(args):
         rets = {}
         # map the agent id to its policy
         policy_map_fn = config['multiagent']['policy_mapping_fn'].func
-        for key in config['multiagent']['policy_graphs'].keys():
+        for key in config['multiagent']['policies'].keys():
             rets[key] = []
     else:
         rets = []
@@ -194,10 +183,9 @@ def visualizer_rllib(args):
             # map the agent id to its policy
             policy_map_fn = config['multiagent']['policy_mapping_fn'].func
             size = config['model']['lstm_cell_size']
-            for key in config['multiagent']['policy_graphs'].keys():
+            for key in config['multiagent']['policies'].keys():
                 state_init[key] = [np.zeros(size, np.float32),
-                                   np.zeros(size, np.float32)
-                                   ]
+                                   np.zeros(size, np.float32)]
         else:
             state_init = [
                 np.zeros(config['model']['lstm_cell_size'], np.float32),
@@ -230,16 +218,12 @@ def visualizer_rllib(args):
                     if use_lstm:
                         action[agent_id], state_init[agent_id], logits = \
                             agent.compute_action(
-                                state[agent_id], state=state_init[agent_id],
-                                policy_id=policy_map_fn(agent_id))
+                            state[agent_id], state=state_init[agent_id],
+                            policy_id=policy_map_fn(agent_id))
                     else:
                         action[agent_id] = agent.compute_action(
                             state[agent_id], policy_id=policy_map_fn(agent_id))
             else:
-
-                # setting state to None if dict is empty
-                state= state if bool(state) else np.array([])
-
                 action = agent.compute_action(state)
             state, reward, done, _ = env.step(action)
             if multiagent:
@@ -330,12 +314,16 @@ def visualizer_rllib(args):
         # convert the emission file into a csv file
         emission_to_csv(emission_path)
 
+        # print the location of the emission csv file
+        emission_path_csv = emission_path[:-4] + ".csv"
+        print("\nGenerated emission file at " + emission_path_csv)
+
         # delete the .xml version of the emission file
         os.remove(emission_path)
 
     # if we wanted to save the render, here we create the movie
     if args.save_render:
-        dirs = os.listdir(os.path.expanduser('~') + '/flow_rendering')
+        dirs = os.listdir(os.path.expanduser('~')+'/flow_rendering')
         # Ignore hidden files
         dirs = [d for d in dirs if d[0] != '.']
         dirs.sort(key=lambda date: datetime.strptime(date, "%Y-%m-%d-%H%M%S"))
