@@ -25,5 +25,5 @@ __all__ = [
     "MiniCityNetwork", "HighwayRampsNetwork",
 
     # Custom
-    "OSMap","CustomGrid"
+    "OSMap","CustomGrid",
 ]
