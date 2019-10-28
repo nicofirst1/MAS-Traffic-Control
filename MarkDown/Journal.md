@@ -72,8 +72,8 @@ This approach has been discarded since there is no easy way to remove traffic li
 Check out the [environment tutorial](https://github.com/flow-project/flow/blob/master/tutorials/tutorial08_environments.ipynb)
 for this part. This part covers the Autonomous agents using RL.
 
-The custom environments must be placed in the [envs dir](flow/envs/multiagent) and you should add it to the [init](flow/envs/multiagent/__init__.py) file.
-There is already a [customRL Agent](flow/envs/multiagent/customRL.py) which can be modified as you please. 
+The custom environments must be placed in the [envs dir](flow/flow/envs/multiagent) and you should add it to the [init](flow/flow/envs/multiagent/__init__.py) file.
+There is already a [customRL Agent](flow/flow/envs/multiagent/customRL.py) which can be modified as you please. 
 
 I advise yuo to use the [third tutorial](FlowMas/Tutorials/3_GridMapCustomRL.py) to implement the agent (remember to set the DEGUB option to true in the 
 [Parameter file](FlowMas/utils/parameters.py) ) and, when you are ready, you can train it on the [simulation](FlowMas/simulation.py). 
@@ -114,7 +114,7 @@ The current reward is the sum of the following params:
 - __Selfish__: agent_specific_delay
 - __Scaled jerk__: the lower the better
     
-#### Modifying flow/core/kernel/vehicle/traci.py
+#### Modifying flow/flow/core/kernel/vehicle/traci.py
 If you wish to add more functions to the traci file you need to look into the [Vehicle file](/anaconda3/envs/dmas/lib/python3.6/site-packages/traci/_vehicle.py) which can be found 
 inside your conda envs, for example mine is in:
 

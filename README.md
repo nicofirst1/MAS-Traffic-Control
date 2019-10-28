@@ -112,7 +112,7 @@ An _out_ directory will be created in the  [ray_result dir](FlowMas/data/ray_res
 
 There repository is currently structured as follows:
 
-- The [flow](flow) core framework, containing modified files
+- The [flow](flow) git [fork](https://github.com/nicofirst1/flow) for flow framework
 - [FlowMas](FlowMas): the project's core containing the following dirs:
     - [maps](FlowMas/maps): a dir containing custom maps, you can follow the [readme](FlowMas/maps/README.md) for further information.
     - [Tutorials](FlowMas/Tutorials): which has an incrementing number of tutorials each being a step forward in the final implementation of the project. You can check the [tutorial readme](FlowMas/Tutorials/README.md) for more infos.
