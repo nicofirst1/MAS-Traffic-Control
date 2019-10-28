@@ -4,7 +4,15 @@ We simulate various scenarios such as: selfishness vs cooperativeness in AAs, be
 
 If you wish to learn more about the papers and the project goal refer to [Project_definiton.md](MarkDown/Project_definiton.md).
 
-# Setup
+# Instructions
+
+## Download
+
+To download the repo use
+
+`git clone --recursive https://gitlab.com/nicofirst1/mas_traffic`
+
+## Setup
 
 To get install the necessary packages use:
 
