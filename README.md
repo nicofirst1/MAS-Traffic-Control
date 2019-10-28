@@ -16,10 +16,11 @@ Then configure the python package with (ensure that your conda environment is dm
 
 `python setup.py install`
 
-If you encounter an error that says SUMO_HOME is not defined:
+If you encounter an error regarding SUMO_HOME not being defined, run the appropriate sumo install script in 
+[sumo_setup](scripts/sumo_setup) with:
 
-Run the appropriate sumo install script in scripts/sumo_setup
 `source ~/.bashrc`
+
 `conda activate dmas`
 
 Supported OS:
@@ -76,7 +77,26 @@ Moreover, for visualizing the SUMO gui with your trained agent use:
 `python flow/visualize/visualizer_rllib.py FlowMas/data/ray_results/experiment_dir/result/directory 1`
 
 
+### Visualizing multiple training instances
 
+Once you have populated the [ray_result dir](FlowMas/data/ray_results) with multiple training instances you can use the 
+[plot_results script](FlowMas/utils/plot_results.py) to generate plots for different training parameters such as:
+- Delays: selfish, cooperative, total
+- Actions:  selfish, cooperative, total
+- Jerks:  selfish, cooperative, total
+- Rewards:  selfish, cooperative, total
+
+#### Usage
+
+To use the script just run it with:
+
+`python FlowMas/utils/plot_results.py -input_dir  path/to/your/dir [-output_dir custom/output/folder ] `
+
+For instance if you want to plot every training instance in your [ray_result dir](FlowMas/data/ray_results), use:
+
+`python FlowMas/utils/plot_results.py -input_dir  FlowMas/data/ray_results `
+
+An _out_ directory will be created in the  [ray_result dir](FlowMas/data/ray_results) containing your plots.
 
 
 
@@ -88,7 +108,7 @@ There repository is currently structured as follows:
 - [FlowMas](FlowMas): the project's core containing the following dirs:
     - [maps](FlowMas/maps): a dir containing custom maps, you can follow the [readme](FlowMas/maps/README.md) for further information.
     - [Tutorials](FlowMas/Tutorials): which has an incrementing number of tutorials each being a step forward in the final implementation of the project. You can check the [tutorial readme](FlowMas/Tutorials/README.md) for more infos.
-    - [utils](FlowMas/utils): contains utility scripts
+    - [utils](FlowMas/utils): contains utility scripts, check the [README](FlowMas/utils/README.md) for more infos.
     - [train.py](Flowmas/train.py): main script for training the environment.
   -   [train_osm.py](Flowmas/train_osm.py): Failed attempt to work with
       [OSM maps]((https://github.com/flow-project/flow/blob/master/tutorials/tutorial06_osm.ipynb)). If
