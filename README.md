@@ -2,7 +2,7 @@
 This repo is about modelling the interaction between Autonomous Agents [AA] and Human Agents [HA] in a mixed traffic environment.
 We simulate various scenarios such as: selfishness vs cooperativeness in AAs, behavior of AAs with varying number of HAs and other.
 
-If you wish to learn more about the papers and the project goal refer to [Project_definiton.md](MarkDown/Project_definiton.md).
+If you wish to learn more about the papers and the project goal refer to [project report](MarkDown/Report.pdf) or, for a quiker summary, refer to the [Project_definiton.md](MarkDown/Project_definiton.md).
 
 # Instructions
 
