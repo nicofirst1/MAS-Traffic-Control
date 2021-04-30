@@ -96,7 +96,7 @@ tensorflow-estimator-2-0-preview==2.0.0
 tf-nightly-2-0-preview==2.0.0.dev20191002
 tfp-nightly==0.9.0.dev20191012
 tornado==6.0.3
-urllib3==1.25.6
+urllib3==1.25.8
 wcwidth==0.1.7
 werkzeug==0.16.0
 wheel==0.33.6
