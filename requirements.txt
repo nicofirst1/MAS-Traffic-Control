@@ -99,7 +99,7 @@ tornado==6.0.3
 urllib3==1.25.6
 wcwidth==0.1.7
 werkzeug==0.16.0
-wheel==0.33.6
+wheel==0.38.1
 wrapt==1.11.2
 yarg==0.1.9
 zipp==0.6.0
